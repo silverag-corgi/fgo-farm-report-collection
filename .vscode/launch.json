@@ -1,0 +1,17 @@
+// 起動構成ファイル
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: farm_report_col",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main.farm_report_col",
+            "args": [
+                "2022-01",
+                "-a", "0"
+            ]
+        }
+    ]
+}
