@@ -64,7 +64,8 @@ def do_logic(
             
             # 周回報告一覧生成要否の判定
             if list_gen_start_date is None \
-                or list_gen_start_date > list_gen_end_date:
+                or (list_gen_start_date is not None \
+                and list_gen_start_date > list_gen_end_date):
                 should_generate = False
                 lg.info(f'周回報告一覧は最新です。({col_year_month})')
             elif list_gen_start_date is not None \
@@ -122,17 +123,17 @@ def __generate_list_gen_start_date(
                     encoding=ENCODING
                 )
             
-            posting_date_of_last_line_timestamp: pd.Timestamp = \
-                farm_report_list_data_frame[FARM_REPORT_LIST_HEADER[1]].tail(1).item()
+            posting_date_of_last_line_timestamp: pd.Timestamp = pd.Timestamp(
+                farm_report_list_data_frame[FARM_REPORT_LIST_HEADER[1]].tail(1).item())
             posting_date_of_last_line: date = posting_date_of_last_line_timestamp.date()
             
             if posting_date_of_last_line != \
                 mylib.get_last_date_of_this_month(posting_date_of_last_line):
-                list_gen_start_date: date = posting_date_of_last_line + timedelta(days=1)
+                list_gen_start_date = posting_date_of_last_line + timedelta(days=1)
             else:
-                list_gen_start_date: date = None
+                list_gen_start_date = None
         else:
-            list_gen_start_date: date = col_first_date
+            list_gen_start_date = col_first_date
     except Exception as e:
         raise(e)
     
@@ -144,18 +145,18 @@ def __generate_list_gen_end_date(
         col_first_date: date,
         first_date_of_this_month: date,
         today: date
-    ) -> None:
+    ) -> date:
     
     '''周回報告一覧生成終了日付生成'''
     
     try:
-        list_gen_end_date = None
+        list_gen_end_date: date = None
         if list_gen_start_date != None \
             and col_first_date == first_date_of_this_month:
-            list_gen_end_date: date = today + timedelta(days=-1)
+            list_gen_end_date = today + timedelta(days=-1)
         elif list_gen_start_date != None \
             and col_first_date != first_date_of_this_month:
-            list_gen_end_date: date = mylib.get_last_date_of_this_month(list_gen_start_date)
+            list_gen_end_date = mylib.get_last_date_of_this_month(list_gen_start_date)
     except Exception as e:
         raise(e)
     
@@ -243,8 +244,8 @@ def __get_num_of_farm_reports(sub_title: str) -> int:
     '''周回報告数取得'''
     
     try:
-        matched_result_of_event_quest = re.match('イベント \((.*)\)', sub_title)
-        matched_result_of_normal_quest = re.match('恒常フリークエスト \((.*)\)', sub_title)
+        matched_result_of_event_quest = re.match('イベント \\((.*)\\)', sub_title)
+        matched_result_of_normal_quest = re.match('恒常フリークエスト \\((.*)\\)', sub_title)
         
         if matched_result_of_event_quest is not None:
             num_of_farm_reports: int = int(matched_result_of_event_quest.group(1))
