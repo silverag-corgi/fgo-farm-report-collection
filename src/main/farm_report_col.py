@@ -48,7 +48,8 @@ def main():
                     args.should_output_user_name
                 )
     except Exception as e:
-        lg.exception('', exc_info=True)
+        if lg is not None:
+            lg.exception('', exc_info=True)
         return 1
     
     return 0
