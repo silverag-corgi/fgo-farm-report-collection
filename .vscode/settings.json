@@ -1,0 +1,6 @@
+{
+    "[csv]": {
+        "files.autoGuessEncoding": false,
+        "files.encoding": "shiftjis",
+    },
+}
