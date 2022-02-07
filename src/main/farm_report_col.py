@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import datetime
 from logging import Logger
+from typing import Optional
 
 import python_lib_for_me
 from src.logic import farm_report_col
@@ -12,9 +13,11 @@ from src.util import const_util
 def main():
     '''メイン'''
     
+    lg: Optional[Logger] = None
+    
     try:
         # ロガー取得
-        lg: Logger = python_lib_for_me.get_logger(__name__)
+        lg = python_lib_for_me.get_logger(__name__)
         
         # 実行コマンド表示
         sys.argv[0] = os.path.basename(sys.argv[0])
@@ -91,9 +94,11 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     '''引数検証'''
     
+    lg: Optional[Logger] = None
+    
     try:
         # ロガー取得
-        lg: Logger = python_lib_for_me.get_logger(__name__)
+        lg = python_lib_for_me.get_logger(__name__)
         
         # 検証：収集年月が年月(yyyy-mm形式)であること
         try:
