@@ -2,7 +2,7 @@ import os
 import re
 from datetime import date, datetime, timedelta
 from logging import Logger
-from typing import Optional
+from typing import Final, Optional
 
 import pandas as pd
 import python_lib_for_me as mylib
@@ -12,15 +12,15 @@ from bs4.element import ResultSet
 from requests.models import Response
 from src.util import const_util
 
-FARM_REPORT_LIST_FILE_PATH: str = './dest/farm_report_list_{0}.csv'
-FARM_REPORT_SUMMARY_FILE_PATH: str = './dest/farm_report_summary_{0}.csv'
-FARM_REPORT_LIST_HEADER: list[str] = \
+FARM_REPORT_LIST_FILE_PATH: Final[str] = './dest/farm_report_list_{0}.csv'
+FARM_REPORT_SUMMARY_FILE_PATH: Final[str] = './dest/farm_report_summary_{0}.csv'
+FARM_REPORT_LIST_HEADER: Final[list[str]] = \
     ['quest_kind', 'posting_date', 'user_id', 'quest_place', 'num_of_farms', 'material']
-FARM_REPORT_LIST_HEADER_RAW: list[str] = FARM_REPORT_LIST_HEADER[1:6]
-FARM_REPORT_SUMMARY_HEADER: list[str] = ['user_id', 'user_name', 'num_of_farms']
-ENCODING: str = 'cp932'
-FARM_REPORT_SITE_URL: str = 'https://fgojunks.max747.org/harvest/contents/date/{0}.html'
-USER_INFO_SITE_URL: str = 'https://twpro.jp/{0}'
+FARM_REPORT_LIST_HEADER_RAW: Final[list[str]] = FARM_REPORT_LIST_HEADER[1:6]
+FARM_REPORT_SUMMARY_HEADER: Final[list[str]] = ['user_id', 'user_name', 'num_of_farms']
+ENCODING: Final[str] = 'cp932'
+FARM_REPORT_SITE_URL: Final[str] = 'https://fgojunks.max747.org/harvest/contents/date/{0}.html'
+USER_INFO_SITE_URL: Final[str] = 'https://twpro.jp/{0}'
 
 
 def do_logic(
@@ -66,16 +66,16 @@ def do_logic(
                 list_gen_start_date, col_first_date, first_date_of_this_month, today)
             
             # 周回報告一覧生成要否の判定
-            if list_gen_start_date is not None and list_gen_end_date is not None:
+            if list_gen_start_date is None or list_gen_end_date is None:
+                should_generate = False
+                lg.info(f'周回報告一覧は最新です。({col_year_month})')
+            else:
                 if list_gen_start_date > list_gen_end_date:
                     should_generate = False
                     lg.info(f'周回報告一覧は最新です。({col_year_month})')
                 else:
                     should_generate = True
                     lg.info(f'周回報告一覧を生成します。({list_gen_start_date} ~ {list_gen_end_date})')
-            else:
-                should_generate = False
-                lg.info(f'周回報告一覧は最新です。({col_year_month})')
             
             # 周回報告一覧ファイルの生成
             if should_generate == True:
@@ -296,8 +296,11 @@ def __generate_farm_report_summary(
         
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
-            farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame.query(
-                f'{FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
+            if quest_kind in const_util.QUEST_KINDS[1:3]:
+                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame.query(
+                    f'{FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
+            else:
+                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame
         
             # 投稿者による集計
             farm_report_summary_data_frame = farm_report_summary_data_frame.groupby(
