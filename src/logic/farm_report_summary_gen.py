@@ -1,9 +1,13 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from logging import Logger
 from typing import Optional
 
 import pandas as pd
 import python_lib_for_me as mylib
+import requests
+from bs4 import BeautifulSoup
+from bs4.element import ResultSet
+from requests.models import Response
 from src.util import *
 
 
@@ -110,9 +114,20 @@ def __generate_farm_report_summary(
             farm_report_summary_data_frame.insert(
                 0, const_util.FARM_REPORT_SUMMARY_HEADER[1], '-')
             
-            # TODO ユーザ名の設定
+            # ユーザ名の設定
             if should_output_user_name == True:
-                pass
+                for index, row in farm_report_summary_data_frame.iterrows():
+                    try:
+                        user_site_info_url: str = USER_INFO_SITE_URL.format(index)
+                        response_for_bs: Response = requests.get(user_site_info_url)
+                        bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
+                        user_name_list: ResultSet = bs.find_all(class_='name')
+                        farm_report_summary_data_frame.at[
+                            index, const_util.FARM_REPORT_SUMMARY_HEADER[1]] = \
+                                user_name_list[0].get_text()
+                        lg.debug(f'ユーザ名の設定に成功しました。(user_id:{index})')
+                    except Exception as e:
+                        lg.warning(f'ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{index})')
             
             # 周回報告概要ファイルの保存
             lg.info(f'\n{farm_report_summary_data_frame}')
