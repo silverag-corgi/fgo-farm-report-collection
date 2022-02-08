@@ -10,24 +10,11 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 from requests.models import Response
-from src.util import const_util
-
-FARM_REPORT_LIST_FILE_PATH: Final[str] = './dest/farm_report_list_{0}.csv'
-FARM_REPORT_SUMMARY_FILE_PATH: Final[str] = './dest/farm_report_summary_{0}.csv'
-FARM_REPORT_LIST_HEADER: Final[list[str]] = \
-    ['quest_kind', 'posting_date', 'user_id', 'quest_place', 'num_of_farms', 'material']
-FARM_REPORT_LIST_HEADER_RAW: Final[list[str]] = FARM_REPORT_LIST_HEADER[1:6]
-FARM_REPORT_SUMMARY_HEADER: Final[list[str]] = ['user_id', 'user_name', 'num_of_farms']
-ENCODING: Final[str] = 'cp932'
-FARM_REPORT_SITE_URL: Final[str] = 'https://fgojunks.max747.org/harvest/contents/date/{0}.html'
-USER_INFO_SITE_URL: Final[str] = 'https://twpro.jp/{0}'
+from src.util import *
 
 
 def do_logic(
-        col_year_month: str,
-        min_num_of_farms: str,
-        quest_kind: str,
-        should_output_user_name: bool
+        col_year_month: str
     ) -> None:
     
     '''ロジック実行'''
@@ -37,7 +24,7 @@ def do_logic(
     try:
         # ロガー取得
         lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告収集を開始します。')
+        lg.info(f'周回報告一覧生成を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
@@ -50,12 +37,12 @@ def do_logic(
             should_execute = True
         else:
             should_execute = False
-            lg.info(f'収集年月が未来のため処理を終了します。(col_year_month:{col_year_month})')
+            lg.info(f'収集年月が未来です。(col_year_month:{col_year_month})')
         
         if should_execute == True:
-            # 周回報告一覧ファイルパス、周回報告概要ファイルパスの生成
-            farm_report_list_file_path: str = FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
-            farm_report_summary_file_path: str = FARM_REPORT_SUMMARY_FILE_PATH.format(col_year_month)
+            # 周回報告一覧ファイルパスの生成
+            farm_report_list_file_path: str = \
+                const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
             
             # 周回報告一覧生成開始日付の設定
             list_gen_start_date: Optional[date] = __generate_list_gen_start_date(
@@ -75,26 +62,18 @@ def do_logic(
                     lg.info(f'周回報告一覧は最新です。({col_year_month})')
                 else:
                     should_generate = True
-                    lg.info(f'周回報告一覧を生成します。({list_gen_start_date} ~ {list_gen_end_date})')
+                    lg.info(f'周回報告一覧を生成します。({list_gen_start_date}～{list_gen_end_date})')
             
             # 周回報告一覧ファイルの生成
             if should_generate == True:
+                lg.info(f'周回報告一覧ファイル：{farm_report_list_file_path}')
                 __generate_farm_report_list(
                         list_gen_start_date,
                         list_gen_end_date,
                         farm_report_list_file_path
                     )
-            
-            # 周回報告概要ファイルの生成
-            __generate_farm_report_summary(
-                    farm_report_list_file_path,
-                    quest_kind,
-                    min_num_of_farms,
-                    farm_report_summary_file_path,
-                    should_output_user_name
-                )
         
-        lg.info(f'周回報告収集を終了します。')
+        lg.info(f'周回報告一覧生成を終了します。')
     except Exception as e:
         raise(e)
     
@@ -123,14 +102,14 @@ def __generate_list_gen_start_date(
             farm_report_list_data_frame: pd.DataFrame = pd.read_csv(
                     farm_report_list_file_path,
                     header=None,
-                    names=FARM_REPORT_LIST_HEADER,
+                    names=const_util.FARM_REPORT_LIST_HEADER,
                     index_col=None,
-                    parse_dates=[FARM_REPORT_LIST_HEADER[1]],
-                    encoding=ENCODING
+                    parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
+                    encoding=const_util.ENCODING
                 )
             
             posting_date_of_last_line_timestamp: pd.Timestamp = pd.Timestamp(
-                farm_report_list_data_frame[FARM_REPORT_LIST_HEADER[1]].tail(1).item())
+                farm_report_list_data_frame[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item())
             posting_date_of_last_line: date = posting_date_of_last_line_timestamp.date()
             
             if posting_date_of_last_line != \
@@ -184,22 +163,25 @@ def __generate_farm_report_list(
         lg = mylib.get_logger(__name__)
         
         # 周回報告一覧作業変数の初期化
-        farm_report_list_data_frame_work: pd.DataFrame = pd.DataFrame(columns=FARM_REPORT_LIST_HEADER)
+        farm_report_list_data_frame_work: pd.DataFrame = \
+            pd.DataFrame(columns=const_util.FARM_REPORT_LIST_HEADER)
         
         # 開始日付から終了日付までの繰り返し
         if list_gen_start_date is not None and list_gen_end_date is not None:
             list_gen_date: Optional[date] = None
             for list_gen_date in mylib.gen_date_range(list_gen_start_date, list_gen_end_date):
                 # 周回報告サイトURLの生成
-                farm_report_site_url: str = FARM_REPORT_SITE_URL.format(list_gen_date)
+                farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
                 lg.info(farm_report_site_url)
                 
                 # クエスト種別ごとの周回報告数の取得
                 response_for_bs: Response = requests.get(farm_report_site_url)
                 bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
                 num_of_farm_reports_list: ResultSet = bs.find_all(class_='subtitle')
-                num_of_farm_reports_of_event_quest: int = __get_num_of_farm_reports(num_of_farm_reports_list[0].get_text())
-                num_of_farm_reports_of_normal_quest: int = __get_num_of_farm_reports(num_of_farm_reports_list[1].get_text())
+                num_of_farm_reports_of_event_quest: int = \
+                    __get_num_of_farm_reports(num_of_farm_reports_list[0].get_text())
+                num_of_farm_reports_of_normal_quest: int = \
+                    __get_num_of_farm_reports(num_of_farm_reports_list[1].get_text())
                 
                 # 周回報告一覧データフレームの取得
                 farm_report_list_data_frames: list[pd.DataFrame] = pd.read_html(
@@ -210,8 +192,10 @@ def __generate_farm_report_list(
                 
                 # 周回報告一覧(イベクエ)の取得
                 if num_of_farm_reports_of_event_quest > 0:
-                    farm_report_list_data_frames[0].set_axis(FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_data_frames[0].insert(0, FARM_REPORT_LIST_HEADER[0], 'イベクエ')
+                    farm_report_list_data_frames[0].set_axis(
+                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
+                    farm_report_list_data_frames[0].insert(
+                        0, const_util.FARM_REPORT_LIST_HEADER[0], 'イベクエ')
                     farm_report_list_data_frame_work = pd.concat(
                             [farm_report_list_data_frame_work, farm_report_list_data_frames[0]]
                         )
@@ -219,15 +203,19 @@ def __generate_farm_report_list(
                 # 周回報告一覧(通常クエ)の取得
                 if num_of_farm_reports_of_event_quest == 0 \
                     and num_of_farm_reports_of_normal_quest > 0:
-                    farm_report_list_data_frames[0].set_axis(FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_data_frames[0].insert(0, FARM_REPORT_LIST_HEADER[0], '通常クエ')
+                    farm_report_list_data_frames[0].set_axis(
+                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
+                    farm_report_list_data_frames[0].insert(
+                        0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
                     farm_report_list_data_frame_work = pd.concat(
                             [farm_report_list_data_frame_work, farm_report_list_data_frames[0]]
                         )
                 elif num_of_farm_reports_of_event_quest > 0 \
                     and num_of_farm_reports_of_normal_quest > 0:
-                    farm_report_list_data_frames[1].set_axis(FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_data_frames[1].insert(0, FARM_REPORT_LIST_HEADER[0], '通常クエ')
+                    farm_report_list_data_frames[1].set_axis(
+                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
+                    farm_report_list_data_frames[1].insert(
+                        0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
                     farm_report_list_data_frame_work = pd.concat(
                             [farm_report_list_data_frame_work, farm_report_list_data_frames[1]]
                         )
@@ -241,7 +229,7 @@ def __generate_farm_report_list(
                 header=False,
                 index=False,
                 mode='a',
-                encoding=ENCODING
+                encoding=const_util.ENCODING
             )
     except Exception as e:
         raise(e)
@@ -266,71 +254,3 @@ def __get_num_of_farm_reports(sub_title: str) -> int:
         raise(e)
     
     return num_of_farm_reports
-
-
-def __generate_farm_report_summary(
-        farm_report_list_file_path: str,
-        quest_kind: str,
-        min_num_of_farms: str,
-        farm_report_summary_file_path: str,
-        should_output_user_name: bool
-    ) -> None:
-    
-    '''周回報告概要ファイル生成'''
-    
-    lg: Optional[Logger] = None
-    
-    try:
-        # ロガー取得
-        lg = mylib.get_logger(__name__)
-        
-        # 周回報告一覧ファイルの読み込み
-        farm_report_list_data_frame: pd.DataFrame = pd.read_csv(
-                farm_report_list_file_path,
-                header=None,
-                names=FARM_REPORT_LIST_HEADER,
-                index_col=None,
-                parse_dates=[FARM_REPORT_LIST_HEADER[1]],
-                encoding=ENCODING
-            )
-        
-        if quest_kind in const_util.QUEST_KINDS:
-            # クエスト種別による抽出
-            if quest_kind in const_util.QUEST_KINDS[1:3]:
-                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame.query(
-                    f'{FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
-            else:
-                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame
-        
-            # 投稿者による集計
-            farm_report_summary_data_frame = farm_report_summary_data_frame.groupby(
-                FARM_REPORT_LIST_HEADER[2]).sum()
-            
-            # 周回数による降順ソート
-            farm_report_summary_data_frame.sort_values(
-                FARM_REPORT_LIST_HEADER[4], ascending=False, inplace=True)
-            
-            # 周回数による抽出
-            farm_report_summary_data_frame.query(
-                f'{FARM_REPORT_LIST_HEADER[4]} >= {min_num_of_farms}', inplace=True)
-            
-            # 列(ユーザ名)の追加
-            farm_report_summary_data_frame.insert(0, FARM_REPORT_SUMMARY_HEADER[1], '-')
-            
-            # TODO ユーザ名の設定
-            if should_output_user_name == True:
-                pass
-            
-            # 周回報告概要ファイルの保存
-            lg.info(f'\n{farm_report_summary_data_frame}')
-            farm_report_summary_data_frame.to_csv(
-                    farm_report_summary_file_path,
-                    header=False,
-                    index=True,
-                    mode='w',
-                    encoding=ENCODING
-                )
-    except Exception as e:
-        raise(e)
-    
-    return None

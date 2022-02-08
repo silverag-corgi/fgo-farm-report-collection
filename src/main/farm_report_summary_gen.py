@@ -6,12 +6,37 @@ from logging import Logger
 from typing import Optional
 
 import python_lib_for_me
-from src.logic import farm_report_col
-from src.util import const_util
+from src.logic import *
+from src.util import *
 
 
-def main():
-    '''メイン'''
+def main() -> int:
+    
+    '''
+    メイン
+    
+    Summary:
+        コマンドラインから実行する。
+        
+        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告概要ファイルを生成する。
+    
+    Args:
+        -
+    
+    Args on cmd line:
+        col_year_month (str)            : [必須] 収集年月(yyyy-mm形式)
+        min_num_of_all_quest (int)      : [いずれかが必須] 最低周回数(全て)
+        min_num_of_normal_quest (int)   : [いずれかが必須] 最低周回数(通常クエ)
+        min_num_of_event_quest (int)    : [いずれかが必須] 最低周回数(イベクエ)
+        should_output_user_name (bool)  : [任意] ユーザ名出力要否(概要ファイルにユーザ名を出力するか)
+    
+    Returns:
+        int: 終了コード(0：正常、1：異常)
+    
+    Destinations:
+        周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
+        周回報告概要ファイル: ./dest/farm_report_summary/farm_report_summary_[収集年月]_[クエスト種別]_[最低周回数].csv
+    '''
     
     lg: Optional[Logger] = None
     
@@ -28,25 +53,30 @@ def main():
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告収集
+        # 周回報告一覧ファイル生成
+        farm_report_list_gen.do_logic(
+                args.col_year_month
+            )
+        
+        # 周回報告概要ファイル生成
         if args.min_num_of_all_quest is not None:
-            farm_report_col.do_logic(
+            farm_report_summary_gen.do_logic(
                     args.col_year_month,
-                    args.min_num_of_all_quest,
+                    int(args.min_num_of_all_quest),
                     const_util.QUEST_KINDS[0],
                     args.should_output_user_name
                 )
         elif args.min_num_of_normal_quest is not None:
-            farm_report_col.do_logic(
+            farm_report_summary_gen.do_logic(
                     args.col_year_month,
-                    args.min_num_of_normal_quest,
+                    int(args.min_num_of_normal_quest),
                     const_util.QUEST_KINDS[1],
                     args.should_output_user_name
                 )
         elif args.min_num_of_event_quest is not None:
-            farm_report_col.do_logic(
+            farm_report_summary_gen.do_logic(
                     args.col_year_month,
-                    args.min_num_of_event_quest,
+                    int(args.min_num_of_event_quest),
                     const_util.QUEST_KINDS[2],
                     args.should_output_user_name
                 )
@@ -74,11 +104,15 @@ def __get_args() -> argparse.Namespace:
         parser.add_argument('col_year_month', help=help_msg)
         
         # グループで1つのみ必須の引数
-        group: argparse._MutuallyExclusiveGroup = parser.add_mutually_exclusive_group(required=True)
+        group: argparse._MutuallyExclusiveGroup = \
+            parser.add_mutually_exclusive_group(required=True)
         help_msg = '最低周回数({0})\nグループで1つのみ必須'
-        group.add_argument('-a', '--min_num_of_all_quest', type=int, help=help_msg.format('全て'))
-        group.add_argument('-n', '--min_num_of_normal_quest', type=int, help=help_msg.format('通常クエ'))
-        group.add_argument('-e', '--min_num_of_event_quest', type=int, help=help_msg.format('イベクエ'))
+        group.add_argument(
+            '-a', '--min_num_of_all_quest', type=int, help=help_msg.format('全て'))
+        group.add_argument(
+            '-n', '--min_num_of_normal_quest', type=int, help=help_msg.format('通常クエ'))
+        group.add_argument(
+            '-e', '--min_num_of_event_quest', type=int, help=help_msg.format('イベクエ'))
         
         # 任意の引数
         help_msg = 'ユーザ名出力要否'
