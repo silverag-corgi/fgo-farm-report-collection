@@ -19,7 +19,8 @@
             "module": "src.main.farm_report_summary_gen",
             "args": [
                 "2022-01",
-                "-a", "0"
+                "-a", "100",
+                "-u"
             ]
         }
     ]
