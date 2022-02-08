@@ -4,10 +4,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: farm_report_col",
+            "name": "Python: farm_report_list_gen",
             "type": "python",
             "request": "launch",
-            "module": "src.main.farm_report_col",
+            "module": "src.main.farm_report_list_gen",
+            "args": [
+                "2022-01",
+            ]
+        },
+        {
+            "name": "Python: farm_report_summary_gen",
+            "type": "python",
+            "request": "launch",
+            "module": "src.main.farm_report_summary_gen",
             "args": [
                 "2022-01",
                 "-a", "0"
