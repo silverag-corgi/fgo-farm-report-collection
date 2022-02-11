@@ -5,7 +5,7 @@ from typing import Optional
 import pandas as pd
 import python_lib_for_me as mylib
 from src.logic import farm_report_list_gen
-from src.util import *
+from src.util import const_util, pandas_util
 
 
 def do_logic(
@@ -28,12 +28,12 @@ def do_logic(
         
         # データフレーム用の投稿年月の生成
         posting_month: list[str] = []
-        for index in range(NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
+        for index in range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
             posting_month.append(f'{col_year:02}-{(index+1):02}')
         
         # 周回報告実績データフレームの初期化
         farm_report_performance_df: pd.DataFrame = pd.DataFrame(
-                index=range(NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE),
+                index=range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE),
                 columns=const_util.FARM_REPORT_PERFORMANCE_HEADER
             )
         farm_report_performance_df[
@@ -41,7 +41,7 @@ def do_logic(
         farm_report_performance_df.fillna(0, inplace=True)
         
         # 指定したユーザの周回数の集計
-        for index in range(NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
+        for index in range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
             # 収集年月の生成
             col_year_month: str = f'{col_year:02}-{(index+1):02}'
             
@@ -75,15 +75,10 @@ def do_logic(
         farm_report_performance_file_path: str = \
             const_util.FARM_REPORT_PERFORMANCE_FILE_PATH.format(col_year, user_id)
         
-        # 周回報告実績ファイルへの保存
+        # 周回報告実績データフレームの保存
         lg.info(f'周回報告実績\n{farm_report_performance_df}')
-        farm_report_performance_df.to_csv(
-                farm_report_performance_file_path,
-                header=True,
-                index=False,
-                mode='w',
-                encoding=const_util.ENCODING
-            )
+        pandas_util.save_farm_report_performance_data_frame(
+            farm_report_performance_df, farm_report_performance_file_path)
         
         lg.info(f'周回報告実績生成を終了します。')
     except Exception as e:
@@ -108,14 +103,8 @@ def __update_farm_report_performance_data_frame(
         lg = mylib.get_logger(__name__)
         
         # 周回報告一覧ファイルの読み込み
-        farm_report_list_df: pd.DataFrame = pd.read_csv(
-                farm_report_list_file_path,
-                header=None,
-                names=const_util.FARM_REPORT_LIST_HEADER,
-                index_col=None,
-                parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
-                encoding=const_util.ENCODING
-            )
+        farm_report_list_df: pd.DataFrame = \
+                pandas_util.read_farm_report_list_file(farm_report_list_file_path)
         
         # ユーザID、クエスト種別による抽出
         df_by_user_id: pd.DataFrame = \
