@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 from requests.models import Response
-from src.util import *
+from src.util import const_util, pandas_util
 
 
 def do_logic(
@@ -45,7 +45,8 @@ def do_logic(
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
             farm_report_summary_file_path: str = \
-                const_util.FARM_REPORT_SUMMARY_FILE_PATH.format(col_year_month, quest_kind, f'{min_num_of_farms}周以上')
+                const_util.FARM_REPORT_SUMMARY_FILE_PATH.format(
+                    col_year_month, quest_kind, f'{min_num_of_farms}周以上')
             
             # 周回報告概要ファイルの生成
             lg.info(f'周回報告概要ファイル：{farm_report_summary_file_path}')
@@ -81,14 +82,8 @@ def __generate_farm_report_summary_file(
         lg = mylib.get_logger(__name__)
         
         # 周回報告一覧ファイルの読み込み
-        farm_report_list_df: pd.DataFrame = pd.read_csv(
-                farm_report_list_file_path,
-                header=None,
-                names=const_util.FARM_REPORT_LIST_HEADER,
-                index_col=None,
-                parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
-                encoding=const_util.ENCODING
-            )
+        farm_report_list_df: pd.DataFrame = \
+            pandas_util.read_farm_report_list_file(farm_report_list_file_path)
         
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
@@ -118,7 +113,7 @@ def __generate_farm_report_summary_file(
             if should_output_user_name == True:
                 for index, _ in farm_report_summary_df.iterrows():
                     try:
-                        user_site_info_url: str = USER_INFO_SITE_URL.format(index)
+                        user_site_info_url: str = const_util.USER_INFO_SITE_URL.format(index)
                         response_for_bs: Response = requests.get(user_site_info_url)
                         bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
                         user_name_list: ResultSet = bs.find_all(class_='name')
@@ -129,15 +124,10 @@ def __generate_farm_report_summary_file(
                     except Exception as e:
                         lg.warning(f'ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{index})')
             
-            # 周回報告概要ファイルへの保存
+            # 周回報告概要データフレームの保存
             lg.info(f'\n{farm_report_summary_df}')
-            farm_report_summary_df.to_csv(
-                    farm_report_summary_file_path,
-                    header=False,
-                    index=True,
-                    mode='w',
-                    encoding=const_util.ENCODING
-                )
+            pandas_util.save_farm_report_summary_data_frame(
+                farm_report_summary_df, farm_report_summary_file_path)
     except Exception as e:
         raise(e)
     

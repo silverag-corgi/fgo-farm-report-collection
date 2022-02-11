@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 from requests.models import Response
-from src.util import *
+from src.util import const_util, pandas_util
 
 
 def do_logic(
@@ -99,14 +99,8 @@ def __generate_list_gen_start_date(
         # 周回報告一覧生成開始日付の生成
         list_gen_start_date: Optional[date] = None
         if has_farm_report_list == True:
-            farm_report_list_df: pd.DataFrame = pd.read_csv(
-                    farm_report_list_file_path,
-                    header=None,
-                    names=const_util.FARM_REPORT_LIST_HEADER,
-                    index_col=None,
-                    parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
-                    encoding=const_util.ENCODING
-                )
+            farm_report_list_df: pd.DataFrame = \
+                pandas_util.read_farm_report_list_file(farm_report_list_file_path)
             
             posting_date_of_last_line_timestamp: pd.Timestamp = pd.Timestamp(
                 farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item())
@@ -220,17 +214,12 @@ def __generate_farm_report_list_file(
                             [farm_report_list_df, farm_report_list_dfs_by_html[1]]
                         )
         
-        # 周回報告一覧ファイルへの保存
+        # 周回報告一覧データフレームの保存
         farm_report_list_df.reset_index(drop=True, inplace=True)
         lg.info(f'周回報告一覧(追加分先頭n行)\n{farm_report_list_df.head(5)}')
         lg.info(f'周回報告一覧(追加分末尾n行)\n{farm_report_list_df.tail(5)}')
-        farm_report_list_df.to_csv(
-                farm_report_list_file_path,
-                header=False,
-                index=False,
-                mode='a',
-                encoding=const_util.ENCODING
-            )
+        pandas_util.save_farm_report_list_data_frame(
+            farm_report_list_df, farm_report_list_file_path)
     except Exception as e:
         raise(e)
     
