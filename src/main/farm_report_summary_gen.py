@@ -53,12 +53,12 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告一覧ファイル生成
+        # 周回報告一覧生成ロジックの実行
         farm_report_list_gen.do_logic(
                 args.col_year_month
             )
         
-        # 周回報告概要ファイル生成
+        # 周回報告概要生成ロジックの実行
         if args.min_num_of_all_quest is not None:
             farm_report_summary_gen.do_logic(
                     args.col_year_month,

@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from logging import Logger
 from typing import Optional
 
@@ -49,7 +49,7 @@ def do_logic(
             
             # 周回報告概要ファイルの生成
             lg.info(f'周回報告概要ファイル：{farm_report_summary_file_path}')
-            __generate_farm_report_summary(
+            __generate_farm_report_summary_file(
                     farm_report_list_file_path,
                     quest_kind,
                     min_num_of_farms,
@@ -64,7 +64,7 @@ def do_logic(
     return None
 
 
-def __generate_farm_report_summary(
+def __generate_farm_report_summary_file(
         farm_report_list_file_path: str,
         quest_kind: str,
         min_num_of_farms: int,
@@ -81,7 +81,7 @@ def __generate_farm_report_summary(
         lg = mylib.get_logger(__name__)
         
         # 周回報告一覧ファイルの読み込み
-        farm_report_list_data_frame: pd.DataFrame = pd.read_csv(
+        farm_report_list_df: pd.DataFrame = pd.read_csv(
                 farm_report_list_file_path,
                 header=None,
                 names=const_util.FARM_REPORT_LIST_HEADER,
@@ -93,45 +93,45 @@ def __generate_farm_report_summary(
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
             if quest_kind in const_util.QUEST_KINDS[1:3]:
-                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame.query(
+                farm_report_summary_df: pd.DataFrame = farm_report_list_df.query(
                     f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
             else:
-                farm_report_summary_data_frame: pd.DataFrame = farm_report_list_data_frame
+                farm_report_summary_df: pd.DataFrame = farm_report_list_df
         
             # 投稿者による集計
-            farm_report_summary_data_frame = farm_report_summary_data_frame.groupby(
+            farm_report_summary_df = farm_report_summary_df.groupby(
                 const_util.FARM_REPORT_LIST_HEADER[2]).sum()
             
             # 周回数による降順ソート
-            farm_report_summary_data_frame.sort_values(
+            farm_report_summary_df.sort_values(
                 const_util.FARM_REPORT_LIST_HEADER[4], ascending=False, inplace=True)
             
             # 周回数による抽出
-            farm_report_summary_data_frame.query(
+            farm_report_summary_df.query(
                 f'{const_util.FARM_REPORT_LIST_HEADER[4]} >= {min_num_of_farms}', inplace=True)
             
             # 列(ユーザ名)の追加
-            farm_report_summary_data_frame.insert(
+            farm_report_summary_df.insert(
                 0, const_util.FARM_REPORT_SUMMARY_HEADER[1], '-')
             
             # ユーザ名の設定
             if should_output_user_name == True:
-                for index, row in farm_report_summary_data_frame.iterrows():
+                for index, _ in farm_report_summary_df.iterrows():
                     try:
                         user_site_info_url: str = USER_INFO_SITE_URL.format(index)
                         response_for_bs: Response = requests.get(user_site_info_url)
                         bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
                         user_name_list: ResultSet = bs.find_all(class_='name')
-                        farm_report_summary_data_frame.at[
+                        farm_report_summary_df.at[
                             index, const_util.FARM_REPORT_SUMMARY_HEADER[1]] = \
                                 user_name_list[0].get_text()
                         lg.debug(f'ユーザ名の設定に成功しました。(user_id:{index})')
                     except Exception as e:
                         lg.warning(f'ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{index})')
             
-            # 周回報告概要ファイルの保存
-            lg.info(f'\n{farm_report_summary_data_frame}')
-            farm_report_summary_data_frame.to_csv(
+            # 周回報告概要ファイルへの保存
+            lg.info(f'\n{farm_report_summary_df}')
+            farm_report_summary_df.to_csv(
                     farm_report_summary_file_path,
                     header=False,
                     index=True,
