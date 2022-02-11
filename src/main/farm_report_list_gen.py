@@ -48,7 +48,7 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告一覧ファイル生成
+        # 周回報告一覧生成ロジックの実行
         farm_report_list_gen.do_logic(
                 args.col_year_month
             )

@@ -51,7 +51,7 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告実績ファイル生成
+        # 周回報告実績生成ロジックの実行
         farm_report_performance_gen.do_logic(
                 args.col_year,
                 args.user_id,
