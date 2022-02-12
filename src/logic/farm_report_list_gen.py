@@ -191,7 +191,8 @@ def __generate_farm_report_list_file(
                     farm_report_list_dfs_by_html[0].insert(
                         0, const_util.FARM_REPORT_LIST_HEADER[0], 'イベクエ')
                     farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[0]]
+                            [farm_report_list_df, farm_report_list_dfs_by_html[0]],
+                            ignore_index=True
                         )
                 
                 # 周回報告一覧(通常クエ)の取得
@@ -202,7 +203,8 @@ def __generate_farm_report_list_file(
                     farm_report_list_dfs_by_html[0].insert(
                         0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
                     farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[0]]
+                            [farm_report_list_df, farm_report_list_dfs_by_html[0]],
+                            ignore_index=True
                         )
                 elif num_of_farm_reports_of_event_quest > 0 \
                     and num_of_farm_reports_of_normal_quest > 0:
@@ -211,13 +213,13 @@ def __generate_farm_report_list_file(
                     farm_report_list_dfs_by_html[1].insert(
                         0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
                     farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[1]]
+                            [farm_report_list_df, farm_report_list_dfs_by_html[1]],
+                            ignore_index=True
                         )
         
         # 周回報告一覧データフレームの保存
-        farm_report_list_df.reset_index(drop=True, inplace=True)
-        lg.info(f'周回報告一覧(追加分先頭n行)\n{farm_report_list_df.head(5)}')
-        lg.info(f'周回報告一覧(追加分末尾n行)\n{farm_report_list_df.tail(5)}')
+        lg.info(f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
+        lg.info(f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
         pandas_util.save_farm_report_list_data_frame(
             farm_report_list_df, farm_report_list_file_path)
     except Exception as e:
