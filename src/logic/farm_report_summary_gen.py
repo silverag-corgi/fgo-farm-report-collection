@@ -11,6 +11,7 @@ from requests.models import Response
 from src.util import const_util, pandas_util
 
 
+@mylib.measure_proc_time
 def do_logic(
         col_year_month: str,
         min_num_of_farms: int,
