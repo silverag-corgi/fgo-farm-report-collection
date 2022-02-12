@@ -139,10 +139,10 @@ options:
 
 周回報告一覧ファイルが下記パスに生成される。
 
-| 種類         | ファイルパス                                            |
-| ------------ | ------------------------------------------------------- |
-| フォーマット | ./dest/farm_report_list/farm_report_list_[取得年月].csv |
-| 例           | ./dest/farm_report_list/farm_report_list_2022-01.csv    |
+| 種類         | ファイルパス                                             |
+| ------------ | -------------------------------------------------------- |
+| フォーマット | ./dest/farm_report_list/farm_report_list\_[収集年月].csv |
+| 例           | ./dest/farm_report_list/farm_report_list_2022-01.csv     |
 
 また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
 
@@ -213,11 +213,11 @@ options:
 
 ### 5.2.2. 実行結果
 
-周回報告一覧ファイルが周回報告一覧生成と同様に生成され、周回報告概要ファイルが下記パスに生成される。
+周回報告一覧ファイルが[周回報告一覧生成](#51-周回報告一覧生成)と同様に生成され、周回報告概要ファイルが下記パスに生成される。
 
 | 種類         | ファイルパス                                                                                 |
 | ------------ | -------------------------------------------------------------------------------------------- |
-| フォーマット | ./dest/farm_report_summary/farm_report_summary\_[取得年月]\_[クエスト種別]\_[最低周回数].csv |
+| フォーマット | ./dest/farm_report_summary/farm_report_summary\_[収集年月]\_[クエスト種別]\_[最低周回数].csv |
 | 例           | ./dest/farm_report_summary/farm_report_summary_2022-01_全て_100周以上.csv                    |
 
 また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
@@ -277,12 +277,12 @@ options:
 
 ### 5.3.2. 実行結果
 
-周回報告一覧ファイルが周回報告一覧生成と同様に生成され、周回報告実績ファイルが下記パスに生成される。
+周回報告一覧ファイルが[周回報告一覧生成](#51-周回報告一覧生成)と同様に生成され、周回報告実績ファイルが下記パスに生成される。
 
-| 種類         | ファイルパス                                                                   |
-| ------------ | ------------------------------------------------------------------------------ |
-| フォーマット | ./dest/farm_report_performance/farm_report_performance_[収集年]_[ユーザID(Twitter)].csv |
-| 例           | ./dest/farm_report_performance/farm_report_performance_2022_silverag_corgi.csv |
+| 種類         | ファイルパス                                                                              |
+| ------------ | ----------------------------------------------------------------------------------------- |
+| フォーマット | ./dest/farm_report_performance/farm_report_performance\_[収集年]\_[ユーザID(Twitter)].csv |
+| 例           | ./dest/farm_report_performance/farm_report_performance_2022_silverag_corgi.csv            |
 
 また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
 
