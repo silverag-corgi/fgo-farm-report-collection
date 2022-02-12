@@ -2,7 +2,7 @@ import os
 import re
 from datetime import date, datetime, timedelta
 from logging import Logger
-from typing import Final, Optional
+from typing import Optional
 
 import pandas as pd
 import python_lib_for_me as mylib
@@ -13,6 +13,7 @@ from requests.models import Response
 from src.util import const_util, pandas_util
 
 
+@mylib.measure_proc_time
 def do_logic(
         col_year_month: str
     ) -> None:

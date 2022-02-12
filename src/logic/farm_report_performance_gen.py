@@ -8,6 +8,7 @@ from src.logic import farm_report_list_gen
 from src.util import const_util, pandas_util
 
 
+@mylib.measure_proc_time
 def do_logic(
         col_year: str,
         user_id: str,
