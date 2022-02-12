@@ -125,7 +125,8 @@ def __generate_farm_report_summary_file(
                         lg.warning(f'ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{index})')
             
             # 周回報告概要データフレームの保存
-            lg.info(f'\n{farm_report_summary_df}')
+            lg.info(f'周回報告概要(先頭n行)：\n{farm_report_summary_df.head(5)}')
+            lg.info(f'周回報告概要(末尾n行)：\n{farm_report_summary_df.tail(5)}')
             pandas_util.save_farm_report_summary_data_frame(
                 farm_report_summary_df, farm_report_summary_file_path)
     except Exception as e:

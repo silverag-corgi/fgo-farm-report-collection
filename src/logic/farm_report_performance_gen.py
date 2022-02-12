@@ -26,18 +26,11 @@ def do_logic(
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
-        # データフレーム用の投稿年月の生成
-        posting_month: list[str] = []
-        for index in range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
-            posting_month.append(f'{col_year:02}-{(index+1):02}')
-        
         # 周回報告実績データフレームの初期化
         farm_report_performance_df: pd.DataFrame = pd.DataFrame(
                 index=range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE),
                 columns=const_util.FARM_REPORT_PERFORMANCE_HEADER
             )
-        farm_report_performance_df[
-            const_util.FARM_REPORT_PERFORMANCE_HEADER[0]] = posting_month
         farm_report_performance_df.fillna(0, inplace=True)
         
         # 指定したユーザの周回数の集計
@@ -63,6 +56,8 @@ def do_logic(
                     should_update = False
             
             # 周回報告実績データフレームの更新
+            farm_report_performance_df.at[index, const_util.FARM_REPORT_PERFORMANCE_HEADER[0]] = \
+                col_year_month
             if should_update == True:
                 __update_farm_report_performance_data_frame(
                         farm_report_list_file_path,
@@ -76,7 +71,7 @@ def do_logic(
             const_util.FARM_REPORT_PERFORMANCE_FILE_PATH.format(col_year, user_id)
         
         # 周回報告実績データフレームの保存
-        lg.info(f'周回報告実績\n{farm_report_performance_df}')
+        lg.info(f'周回報告実績：\n{farm_report_performance_df}')
         pandas_util.save_farm_report_performance_data_frame(
             farm_report_performance_df, farm_report_performance_file_path)
         
