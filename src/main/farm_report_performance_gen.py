@@ -5,7 +5,7 @@ from datetime import datetime
 from logging import Logger
 from typing import Optional
 
-import python_lib_for_me
+import python_lib_for_me as mylib
 from src.logic import farm_report_performance_gen
 from src.util import *
 
@@ -40,7 +40,7 @@ def main() -> int:
     
     try:
         # ロガー取得
-        lg = python_lib_for_me.get_logger(__name__)
+        lg = mylib.get_logger(__name__)
         
         # 実行コマンド表示
         sys.argv[0] = os.path.basename(sys.argv[0])
@@ -52,7 +52,7 @@ def main() -> int:
             return 1
         
         # 周回報告実績生成ロジックの実行
-        farm_report_performance_gen.do_logic(
+        mylib.measure_proc_time(farm_report_performance_gen.do_logic)(
                 args.col_year,
                 args.user_id,
                 bool(args.should_generate_list)
@@ -101,7 +101,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     
     try:
         # ロガー取得
-        lg = python_lib_for_me.get_logger(__name__)
+        lg = mylib.get_logger(__name__)
         
         # 検証：収集年が年(yyyy形式)であること
         try:

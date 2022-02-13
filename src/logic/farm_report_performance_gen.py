@@ -8,7 +8,6 @@ from src.logic import farm_report_list_gen
 from src.util import const_util, pandas_util
 
 
-@mylib.measure_proc_time
 def do_logic(
         col_year: str,
         user_id: str,
@@ -48,7 +47,7 @@ def do_logic(
             if os.path.isfile(farm_report_list_file_path) == False:
                 if should_generate_list == True:
                     # 周回報告一覧生成ロジックの実行
-                    farm_report_list_gen.do_logic(col_year_month)
+                    mylib.measure_proc_time(farm_report_list_gen.do_logic)(col_year_month)
                     
                     # 周回報告一覧ファイルの存在有無チェック
                     if os.path.isfile(farm_report_list_file_path) == False:
