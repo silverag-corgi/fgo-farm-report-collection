@@ -54,27 +54,27 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        farm_report_list_gen.do_logic(
+        mylib.measure_proc_time(farm_report_list_gen.do_logic)(
                 args.col_year_month
             )
         
         # 周回報告概要生成ロジックの実行
         if args.min_num_of_all_quest is not None:
-            farm_report_summary_gen.do_logic(
+            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_all_quest),
                     const_util.QUEST_KINDS[0],
                     args.should_output_user_name
                 )
         elif args.min_num_of_normal_quest is not None:
-            farm_report_summary_gen.do_logic(
+            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_normal_quest),
                     const_util.QUEST_KINDS[1],
                     args.should_output_user_name
                 )
         elif args.min_num_of_event_quest is not None:
-            farm_report_summary_gen.do_logic(
+            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_event_quest),
                     const_util.QUEST_KINDS[2],

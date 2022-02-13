@@ -49,7 +49,7 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        farm_report_list_gen.do_logic(
+        mylib.measure_proc_time(farm_report_list_gen.do_logic)(
                 args.col_year_month
             )
     except Exception as e:
