@@ -28,13 +28,13 @@ def do_logic(
         
         # 周回報告実績データフレームの初期化
         farm_report_performance_df: pd.DataFrame = pd.DataFrame(
-                index=range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE),
+                index=range(const_util.NUM_OF_MONTHS),
                 columns=const_util.FARM_REPORT_PERFORMANCE_HEADER
             )
         farm_report_performance_df.fillna(0, inplace=True)
         
         # 指定したユーザの周回数の集計
-        for index in range(const_util.NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE):
+        for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
             col_year_month: str = f'{col_year:02}-{(index+1):02}'
             
@@ -47,7 +47,7 @@ def do_logic(
             if os.path.isfile(farm_report_list_file_path) == False:
                 if should_generate_list == True:
                     # 周回報告一覧生成ロジックの実行
-                    mylib.measure_proc_time(farm_report_list_gen.do_logic)(col_year_month)
+                    mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
                     
                     # 周回報告一覧ファイルの存在有無チェック
                     if os.path.isfile(farm_report_list_file_path) == False:

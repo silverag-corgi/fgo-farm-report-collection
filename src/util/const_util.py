@@ -20,4 +20,4 @@ ENCODING: Final[str] = 'utf8'
 
 QUEST_KINDS: Final[list[str]] = ['全て', '通常クエ', 'イベクエ']
 
-NUM_OF_LINES_IN_FARM_REPORT_PERFORMANCE: Final[int] = 12
+NUM_OF_MONTHS: Final[int] = 12
