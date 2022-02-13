@@ -13,18 +13,47 @@ from requests.models import Response
 from src.util import const_util, pandas_util
 
 
-def do_logic(
-        col_year_month: str
+def do_logic_by_col_year(
+        col_year: str
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(年指定)実行'''
     
     lg: Optional[Logger] = None
     
     try:
         # ロガー取得
         lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告一覧生成を開始します。')
+        lg.info(f'周回報告一覧生成(年指定)を開始します。')
+        
+        for index in range(const_util.NUM_OF_MONTHS):
+            # 収集年月の生成
+            col_year_month: str = f'{col_year:02}-{(index+1):02}'
+            
+            # 周回報告一覧生成ロジックの実行
+            do_logic_by_col_year_month(
+                    col_year_month
+                )
+        
+        lg.info(f'周回報告一覧生成(年指定)を終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
+
+
+def do_logic_by_col_year_month(
+        col_year_month: str
+    ) -> None:
+    
+    '''ロジック(年月指定)実行'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガー取得
+        lg = mylib.get_logger(__name__)
+        lg.info(f'周回報告一覧生成(年月指定)を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
@@ -73,7 +102,7 @@ def do_logic(
                         farm_report_list_file_path
                     )
         
-        lg.info(f'周回報告一覧生成を終了します。')
+        lg.info(f'周回報告一覧生成(年月指定)を終了します。')
     except Exception as e:
         raise(e)
     

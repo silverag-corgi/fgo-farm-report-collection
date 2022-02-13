@@ -24,7 +24,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year_month (str): [必須] 収集年月(yyyy-mm形式)
+        col_year (str)          : [いずれかが必須] 収集年(yyyy形式)
+        col_year_month (str)    : [いずれかが必須] 収集年月(yyyy-mm形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -49,9 +50,14 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        mylib.measure_proc_time(farm_report_list_gen.do_logic)(
-                args.col_year_month
-            )
+        if args.col_year is not None:
+            mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year)(
+                    args.col_year
+                )
+        elif args.col_year_month is not None:
+            mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
+                    args.col_year_month
+                )
     except Exception as e:
         if lg is not None:
             lg.exception('', exc_info=True)
@@ -71,9 +77,14 @@ def __get_args() -> argparse.Namespace:
         
         help_msg: str = ''
         
-        # 必須の引数
-        help_msg = '収集年月(yyyy-mm形式)'
-        parser.add_argument('col_year_month', help=help_msg)
+        # グループで1つのみ必須の引数
+        group: argparse._MutuallyExclusiveGroup = \
+            parser.add_mutually_exclusive_group(required=True)
+        help_msg = '{0}\nグループで1つのみ必須'
+        group.add_argument(
+            '-y', '--col_year', type=str, help=help_msg.format('収集年(yyyy形式)'))
+        group.add_argument(
+            '-m', '--col_year_month', type=str, help=help_msg.format('収集年月(yyyy-mm形式)'))
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -91,12 +102,19 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガー取得
         lg = python_lib_for_me.get_logger(__name__)
         
-        # 検証：収集年月が年月(yyyy-mm形式)であること
-        try:
-            datetime.strptime(args.col_year_month, '%Y-%m')
-        except ValueError:
-            lg.info(f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
-            return False
+        # 検証：収集年が年(yyyy形式)であるか、もしくは収集年月が年月(yyyy-mm形式)であること
+        if args.col_year is not None:
+            try:
+                datetime.strptime(args.col_year, '%Y')
+            except ValueError:
+                lg.info(f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+                return False
+        elif args.col_year_month is not None:
+            try:
+                datetime.strptime(args.col_year_month, '%Y-%m')
+            except ValueError:
+                lg.info(f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
+                return False
     except Exception as e:
         raise(e)
     

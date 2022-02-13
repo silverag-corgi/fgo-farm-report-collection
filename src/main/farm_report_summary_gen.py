@@ -54,7 +54,7 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        mylib.measure_proc_time(farm_report_list_gen.do_logic)(
+        mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
                 args.col_year_month
             )
         
