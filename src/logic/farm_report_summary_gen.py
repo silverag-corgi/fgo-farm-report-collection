@@ -81,7 +81,7 @@ def __generate_farm_report_summary_file(
         # ロガー取得
         lg = mylib.get_logger(__name__)
         
-        # 周回報告一覧ファイルの読み込み
+        # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = \
             pandas_util.read_farm_report_list_file(farm_report_list_file_path)
         
