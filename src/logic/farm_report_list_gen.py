@@ -197,16 +197,23 @@ def __generate_farm_report_list_file(
                 farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
                 lg.info(farm_report_site_url)
                 
+                # 周回報告サイトからの応答の取得(周回報告サイトへの要求)
+                response_from_farm_report_site: Response = requests.get(farm_report_site_url)
+                if response_from_farm_report_site.status_code != requests.codes['ok']:
+                    lg.warning(f'周回報告サイトへのアクセスに失敗しました。' +
+                                f'(farm_report_site_url:{farm_report_site_url}, ' +
+                                f'status_code:{response_from_farm_report_site.status_code})')
+                    return None
+                
                 # クエスト種別ごとの周回報告数の取得
-                response_for_bs: Response = requests.get(farm_report_site_url)
-                bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
+                bs: BeautifulSoup = BeautifulSoup(response_from_farm_report_site.content, 'html.parser')
                 num_of_farm_reports_list: ResultSet = bs.find_all(class_='subtitle')
                 num_of_farm_reports_of_event_quest: int = \
                     __get_num_of_farm_reports(num_of_farm_reports_list[0].get_text())
                 num_of_farm_reports_of_normal_quest: int = \
                     __get_num_of_farm_reports(num_of_farm_reports_list[1].get_text())
                 
-                # 周回報告一覧データフレームの取得
+                # 周回報告一覧データフレームの取得(周回報告サイトの読み込み)
                 farm_report_list_dfs_by_html: list[pd.DataFrame] = pd.read_html(
                         farm_report_site_url,
                         index_col=None,
