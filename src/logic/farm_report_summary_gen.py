@@ -111,6 +111,7 @@ def __generate_farm_report_summary_file(
             
             # ユーザ名の設定
             if should_output_user_name == True:
+                lg.info(f'時間がかかるため気長にお待ちください。')
                 for index, _ in farm_report_summary_df.iterrows():
                     try:
                         user_site_info_url: str = const_util.USER_INFO_SITE_URL.format(index)
