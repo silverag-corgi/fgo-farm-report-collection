@@ -5,6 +5,8 @@
 
 - [1. 概要](#1-概要)
 - [2. 機能](#2-機能)
+  - [2.1. 機能一覧](#21-機能一覧)
+  - [2.2. 実行結果](#22-実行結果)
 - [3. 動作確認済み環境](#3-動作確認済み環境)
 - [4. セットアップ手順](#4-セットアップ手順)
 - [5. 使い方](#5-使い方)
@@ -25,10 +27,11 @@
 
 FGOの周回報告をWebスクレイピングにより収集・集計し、csvファイルに保存する。
 
-また、そのcsvファイルの一部は`twitter-lib-for-me`リポジトリの入力ファイルになる。
-
 
 # 2. 機能
+
+
+## 2.1. 機能一覧
 
 アプリケーションとしてコマンドラインから実行できる。
 
@@ -38,6 +41,22 @@ FGOの周回報告をWebスクレイピングにより収集・集計し、csv�
   - 周回報告一覧ファイル、周回報告概要ファイルを生成する
 - 周回報告実績生成
   - 周回報告一覧ファイル、周回報告実績ファイルを生成する
+
+
+## 2.2. 実行結果
+
+下記画像が実行結果の例である。また、エディタ`editcsv`で開いている。
+
+- 周回報告一覧ファイル
+  - 指定した年月の周回報告の一覧
+  - ![farm_report_list](./pic/farm_report_list.JPG)
+- 周回報告概要ファイル
+  - 周回報告による、指定した年月のTwitterユーザごとの周回数
+  - `twitter-lib-for-me`リポジトリの入力ファイルになる
+  - ![farm_report_summary](./pic/farm_report_summary.JPG)
+- 周回報告実績ファイル
+  - 周回報告による、指定した年およびTwitterユーザの月ごとの周回数
+  - ![farm_report_performance](./pic/farm_report_performance.JPG)
 
 
 # 3. 動作確認済み環境
@@ -149,7 +168,7 @@ options:
 | フォーマット | ./dest/farm_report_list/farm_report_list\_[収集年月].csv |
 | 例           | ./dest/farm_report_list/farm_report_list_2022-01.csv     |
 
-また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
+また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
 
 ![farm_report_list](./pic/farm_report_list.JPG)
 
@@ -228,7 +247,7 @@ options:
 | フォーマット | ./dest/farm_report_summary/farm_report_summary\_[収集年月]\_[クエスト種別]\_[最低周回数].csv |
 | 例           | ./dest/farm_report_summary/farm_report_summary_2022-01_全て_100周以上.csv                    |
 
-また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
+また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
 
 ![farm_report_summary](./pic/farm_report_summary.JPG)
 
@@ -293,7 +312,7 @@ options:
 | フォーマット | ./dest/farm_report_performance/farm_report_performance\_[収集年]\_[ユーザID(Twitter)].csv |
 | 例           | ./dest/farm_report_performance/farm_report_performance_2022_silverag_corgi.csv            |
 
-また、下記画像はあるエディタ(editcsv)で開いた際のデータ例である。
+また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
 
 ![farm_report_performance](./pic/farm_report_performance.JPG)
 
