@@ -39,15 +39,15 @@ def save_farm_report_list_data_frame(
     return None
 
 
-def save_farm_report_performance_data_frame(
-        farm_report_performance_df: pd.DataFrame,
-        farm_report_performance_file_path: str
+def save_farm_report_individual_summary_data_frame(
+        farm_report_individual_summary_df: pd.DataFrame,
+        farm_report_individual_summary_file_path: str
     ) -> None:
     
-    '''周回報告実績データフレーム保存'''
+    '''周回報告個人概要データフレーム保存'''
     
-    farm_report_performance_df.to_csv(
-            farm_report_performance_file_path,
+    farm_report_individual_summary_df.to_csv(
+            farm_report_individual_summary_file_path,
             header=True,
             index=False,
             mode='w',
@@ -57,15 +57,15 @@ def save_farm_report_performance_data_frame(
     return None
 
 
-def save_farm_report_summary_data_frame(
-        farm_report_summary_df: pd.DataFrame,
-        farm_report_summary_file_path: str
+def save_farm_report_total_summary_data_frame(
+        farm_report_total_summary_df: pd.DataFrame,
+        farm_report_total_summary_file_path: str
     ) -> None:
     
-    '''周回報告概要データフレーム保存'''
+    '''周回報告全体概要データフレーム保存'''
     
-    farm_report_summary_df.to_csv(
-            farm_report_summary_file_path,
+    farm_report_total_summary_df.to_csv(
+            farm_report_total_summary_file_path,
             header=False,
             index=True,
             mode='w',
