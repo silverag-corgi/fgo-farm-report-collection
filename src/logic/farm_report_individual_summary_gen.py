@@ -21,17 +21,17 @@ def do_logic(
     try:
         # ロガー取得
         lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告実績生成を開始します。')
+        lg.info(f'周回報告個人概要生成を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
-        # 周回報告実績データフレームの初期化
-        farm_report_performance_df: pd.DataFrame = pd.DataFrame(
+        # 周回報告個人概要データフレームの初期化
+        farm_report_individual_summary_df: pd.DataFrame = pd.DataFrame(
                 index=range(const_util.NUM_OF_MONTHS),
-                columns=const_util.FARM_REPORT_PERFORMANCE_HEADER
+                columns=const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER
             )
-        farm_report_performance_df.fillna(0, inplace=True)
+        farm_report_individual_summary_df.fillna(0, inplace=True)
         
         # 指定したユーザの周回数の集計
         for index in range(const_util.NUM_OF_MONTHS):
@@ -42,12 +42,13 @@ def do_logic(
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
             
-            # 周回報告実績更新要否の判定
+            # 周回報告個人概要更新要否の判定
             should_update: bool = True
             if os.path.isfile(farm_report_list_file_path) == False:
                 if should_generate_list == True:
                     # 周回報告一覧生成ロジックの実行
-                    mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
+                    mylib.measure_proc_time(
+                        farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
                     
                     # 周回報告一覧ファイルの存在有無チェック
                     if os.path.isfile(farm_report_list_file_path) == False:
@@ -55,41 +56,41 @@ def do_logic(
                 else:
                     should_update = False
             
-            # 周回報告実績データフレームの更新
-            farm_report_performance_df.at[index, const_util.FARM_REPORT_PERFORMANCE_HEADER[0]] = \
-                col_year_month
+            # 周回報告個人概要データフレームの更新
+            farm_report_individual_summary_df.at[
+                index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[0]] = col_year_month
             if should_update == True:
-                __update_farm_report_performance_data_frame(
+                __update_farm_report_individual_summary_data_frame(
                         farm_report_list_file_path,
                         user_id,
-                        farm_report_performance_df,
+                        farm_report_individual_summary_df,
                         index
                     )
         
-        # 周回報告実績ファイルパスの生成
-        farm_report_performance_file_path: str = \
-            const_util.FARM_REPORT_PERFORMANCE_FILE_PATH.format(col_year, user_id)
+        # 周回報告個人概要ファイルパスの生成
+        farm_report_individual_summary_file_path: str = \
+            const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH.format(col_year, user_id)
         
-        # 周回報告実績データフレームの保存
-        lg.info(f'周回報告実績：\n{farm_report_performance_df}')
-        pandas_util.save_farm_report_performance_data_frame(
-            farm_report_performance_df, farm_report_performance_file_path)
+        # 周回報告個人概要データフレームの保存
+        lg.info(f'周回報告個人概要：\n{farm_report_individual_summary_df}')
+        pandas_util.save_farm_report_individual_summary_data_frame(
+            farm_report_individual_summary_df, farm_report_individual_summary_file_path)
         
-        lg.info(f'周回報告実績生成を終了します。')
+        lg.info(f'周回報告個人概要生成を終了します。')
     except Exception as e:
         raise(e)
     
     return None
 
 
-def __update_farm_report_performance_data_frame(
+def __update_farm_report_individual_summary_data_frame(
         farm_report_list_file_path: str,
         user_id: str,
-        farm_report_performance_df: pd.DataFrame,
+        farm_report_individual_summary_df: pd.DataFrame,
         index: int
     ) -> None:
     
-    '''周回報告実績データフレーム更新'''
+    '''周回報告個人概要データフレーム更新'''
     
     lg: Optional[Logger] = None
     
@@ -113,11 +114,14 @@ def __update_farm_report_performance_data_frame(
                 f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[2]}")')
         
         # 周回数の更新
-        farm_report_performance_df.at[index, const_util.FARM_REPORT_PERFORMANCE_HEADER[1]] = \
+        farm_report_individual_summary_df.at[
+            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
             df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
-        farm_report_performance_df.at[index, const_util.FARM_REPORT_PERFORMANCE_HEADER[2]] = \
+        farm_report_individual_summary_df.at[
+            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]] = \
             df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
-        farm_report_performance_df.at[index, const_util.FARM_REPORT_PERFORMANCE_HEADER[3]] = \
+        farm_report_individual_summary_df.at[
+            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]] = \
             df_by_user_id[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
     except Exception as e:
         raise(e)

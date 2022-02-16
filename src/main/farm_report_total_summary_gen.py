@@ -18,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告概要ファイルを生成する。
+        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告全体概要ファイルを生成する。
     
     Args:
         -
@@ -36,7 +36,7 @@ def main() -> int:
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
-        周回報告概要ファイル: ./dest/farm_report_summary/farm_report_summary_[収集年月]_[クエスト種別]_[最低周回数].csv
+        周回報告全体概要ファイル: ./dest/farm_report_total_summary/farm_report_total_summary_[収集年月]_[クエスト種別]_[最低周回数].csv
     '''
     
     lg: Optional[Logger] = None
@@ -60,23 +60,23 @@ def main() -> int:
                     args.col_year_month
                 )
         
-        # 周回報告概要生成ロジックの実行
+        # 周回報告全体概要生成ロジックの実行
         if args.min_num_of_all_quest is not None:
-            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
+            mylib.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_all_quest),
                     const_util.QUEST_KINDS[0],
                     args.should_output_user_name
                 )
         elif args.min_num_of_normal_quest is not None:
-            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
+            mylib.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_normal_quest),
                     const_util.QUEST_KINDS[1],
                     args.should_output_user_name
                 )
         elif args.min_num_of_event_quest is not None:
-            mylib.measure_proc_time(farm_report_summary_gen.do_logic)(
+            mylib.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_event_quest),
                     const_util.QUEST_KINDS[2],

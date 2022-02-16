@@ -6,7 +6,7 @@ from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as mylib
-from src.logic import farm_report_performance_gen
+from src.logic import farm_report_individual_summary_gen
 from src.util import *
 
 
@@ -18,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告実績ファイルを生成する。
+        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告個人概要ファイルを生成する。
     
     Args:
         -
@@ -33,7 +33,7 @@ def main() -> int:
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
-        周回報告実績ファイル: ./dest/farm_report_performance/farm_report_performance_[収集年]_[ユーザID].csv
+        周回報告個人概要ファイル: ./dest/farm_report_individual_summary/farm_report_individual_summary_[収集年]_[ユーザID].csv
     '''
     
     lg: Optional[Logger] = None
@@ -51,8 +51,8 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告実績生成ロジックの実行
-        mylib.measure_proc_time(farm_report_performance_gen.do_logic)(
+        # 周回報告個人概要生成ロジックの実行
+        mylib.measure_proc_time(farm_report_individual_summary_gen.do_logic)(
                 args.col_year,
                 args.user_id,
                 bool(args.should_generate_list)

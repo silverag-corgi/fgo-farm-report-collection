@@ -13,10 +13,10 @@
             ]
         },
         {
-            "name": "Python: farm_report_summary_gen",
+            "name": "Python: farm_report_total_summary_gen",
             "type": "python",
             "request": "launch",
-            "module": "src.main.farm_report_summary_gen",
+            "module": "src.main.farm_report_total_summary_gen",
             "args": [
                 "2022-01",
                 "-a", "100",
