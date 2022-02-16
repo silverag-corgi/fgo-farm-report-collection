@@ -38,9 +38,11 @@ FGOの周回報告をWebスクレイピングにより収集・集計し、csv�
 - 周回報告一覧生成
   - 周回報告一覧ファイルを生成する
 - 周回報告概要生成
-  - 周回報告一覧ファイル、周回報告概要ファイルを生成する
+  - 周回報告一覧ファイルを基に周回報告概要ファイルを生成する
+  - 任意で周回報告一覧ファイルを生成する
 - 周回報告実績生成
-  - 周回報告一覧ファイル、周回報告実績ファイルを生成する
+  - 周回報告一覧ファイルを基に周回報告実績ファイルを生成する
+  - 任意で周回報告一覧ファイルを生成する
 
 
 ## 2.2. 実行結果
@@ -111,33 +113,6 @@ C:/Git/python/twitter-lib-for-me/.venv
 ```cmd
 > cd fgo-farm-report-collection
 > pipenv run list-gen -m 2022-01
-[2022-02-14 08:23:03.211][INF][farm_report_list_gen:0045][main] 実行コマンド：['farm_report_list_gen.py', '-m', '2022-01']
-[2022-02-14 08:23:03.215][INF][farm_report_list_gen:0056][do_logic_by_col_year_month] 周回報告一覧生成(年月指定)を開始します。
-[2022-02-14 08:23:03.216][INF][farm_report_list_gen:0094][do_logic_by_col_year_month] 周回報告一覧を生成します。(2022-01-01～2022-01-31)
-[2022-02-14 08:23:03.217][INF][farm_report_list_gen:0098][do_logic_by_col_year_month] 周回報告一覧ファイル：./dest/farm_report_list/farm_report_list_2022-01.csv
-[2022-02-14 08:23:03.219][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-01.html
-[2022-02-14 08:23:03.583][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-02.html
-[2022-02-14 08:23:03.951][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-03.html
-...
-[2022-02-14 08:23:16.905][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-29.html
-[2022-02-14 08:23:17.149][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-30.html
-[2022-02-14 08:23:17.411][INF][farm_report_list_gen:0198][__generate_farm_report_list_file] https://fgojunks.max747.org/harvest/contents/date/2022-01-31.html
-[2022-02-14 08:23:17.626][INF][farm_report_list_gen:0250][__generate_farm_report_list_file] 周回報告一覧(追加分先頭n行)：
-     quest_kind         posting_date          user_id                 quest_place num_of_farms                                                         material
-0      通常クエ  2022-01-01 23:55:18       xxxxxxxxxx              殺の修練場初級          100  歯車: 4, ランタン: 5, 塵: 12, 牙: 13, 殺輝: 145, 殺モ: 5, ...  
-1      通常クエ  2022-01-01 23:50:23       xxxxxxxxxx          バビロニアエリドゥ           50              牙: 36, 騎魔: 10, 騎輝: 24, 騎猛火: 7              
-2      通常クエ  2022-01-01 23:43:56       xxxxxxxxxx            ロンドンサザーク          100  ホム: 34, 骨: 28, 槍魔: 14, 弓輝: 23, 槍輝: 40, 槍灯火: 17...  
-3      通常クエ  2022-01-01 23:42:00       xxxxxxxxxx          キャメロット大神殿          120  スカラベ: 16, 鎖: 55, 術秘: 10, 殺輝: 9, 狂輝: 17, 術業火: 2...
-4      通常クエ  2022-01-01 23:41:17       xxxxxxxxxx              殺の修練場極級          100  脂: 19, ランタン: 27, 種: 38, 塵: 25, 牙: 32, 鎖: 23, 殺...    
-[2022-02-14 08:23:17.633][INF][farm_report_list_gen:0251][__generate_farm_report_list_file] 周回報告一覧(追加分末尾n行)：
-     quest_kind         posting_date          user_id                 quest_place num_of_farms                                                        material
-2260   通常クエ  2022-01-31 04:00:10       xxxxxxxxxx        オケアノス隠された島           25              貝殻: 4, 剣魔: 1, 剣輝: 13, 剣猛火: 1             
-2261   通常クエ  2022-01-31 02:04:40       xxxxxxxxxx          セプテムエトナ火山          200                             ランタン: 22, 殺輝: 77             
-2262   通常クエ  2022-01-31 00:19:18       xxxxxxxxxx              下総国荒川の原          350  胆石: 51, 勾玉: 75, 塵: 105, 狂秘: 11, 剣魔: 117, 剣猛火: ... 
-2263   通常クエ  2022-01-31 00:15:54       xxxxxxxxxx      キャメロット砂嵐の砂漠          160  スカラベ: 15, 骨: 119, 術秘: 5, 剣輝: 19, 弓輝: 19, 槍輝: 1...
-2264   通常クエ  2022-01-31 00:00:01       xxxxxxxxxx  アナスタシアヤガ・モスクワ          100                     結氷: 47, 殺魔: 49, 殺猛火: 37             
-[2022-02-14 08:23:17.649][INF][farm_report_list_gen:0105][do_logic_by_col_year_month] 周回報告一覧生成(年月指定)を終了します。
-[2022-02-14 08:23:17.650][INF][proc_time:0046][wrapper] do_logic_by_col_year_month：14.43554秒
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -145,7 +120,6 @@ C:/Git/python/twitter-lib-for-me/.venv
 実行例：
 ```cmd
 > pipenv run list-gen -h
-[2022-02-14 08:32:29.774][INF][farm_report_list_gen:0045][main] 実行コマンド：['farm_report_list_gen.py', '-h']
 usage: farm_report_list_gen.py [-h] (-y COL_YEAR | -m COL_YEAR_MONTH)
 
 options:
@@ -184,31 +158,6 @@ options:
 ```cmd
 > cd fgo-farm-report-collection
 > pipenv run sum-gen 2022-01 -a 100
-[2022-02-14 08:36:23.492][INF][farm_report_summary_gen:0049][main] 実行コマンド：['farm_report_summary_gen.py', '2022-01', '-a', '100']
-[2022-02-14 08:36:23.497][INF][farm_report_list_gen:0056][do_logic_by_col_year_month] 周回報告一覧生成(年月指定)を開始します。
-[2022-02-14 08:36:23.520][INF][farm_report_list_gen:0087][do_logic_by_col_year_month] 周回報告一覧は最新です。(2022-01)
-[2022-02-14 08:36:23.520][INF][farm_report_list_gen:0105][do_logic_by_col_year_month] 周回報告一覧生成(年月指定)を終了します。
-[2022-02-14 08:36:23.520][INF][proc_time:0046][wrapper] do_logic_by_col_year_month：0.02373秒
-[2022-02-14 08:36:23.522][INF][farm_report_summary_gen:0028][do_logic] 周回報告概要生成を開始します。
-[2022-02-14 08:36:23.522][INF][farm_report_summary_gen:0052][do_logic] 周回報告概要ファイル：./dest/farm_report_summary/farm_report_summary_2022-01_全て_100周以上.csv
-[2022-02-14 08:36:23.548][INF][farm_report_summary_gen:0128][__generate_farm_report_summary_file] 周回報告概要(先頭n行)：
-                user_name  num_of_farms
-user_id
-xxxxxxxxxx              -         19171
-xxxxxxxxxx              -         10184
-xxxxxxxxxx              -          9902
-xxxxxxxxxx              -          8025
-xxxxxxxxxx              -          6390
-[2022-02-14 08:36:23.552][INF][farm_report_summary_gen:0129][__generate_farm_report_summary_file] 周回報告概要(末尾n行)：
-                user_name  num_of_farms
-user_id
-xxxxxxxxxx              -           100
-xxxxxxxxxx              -           100
-xxxxxxxxxx              -           100
-xxxxxxxxxx              -           100
-xxxxxxxxxx              -           100
-[2022-02-14 08:36:23.555][INF][farm_report_summary_gen:0061][do_logic] 周回報告概要生成を終了します。
-[2022-02-14 08:36:23.555][INF][proc_time:0046][wrapper] do_logic：0.03389秒
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -216,8 +165,7 @@ xxxxxxxxxx              -           100
 実行例：
 ```cmd
 > pipenv run sum-gen -h
-[2022-02-14 08:40:28.545][INF][farm_report_summary_gen:0049][main] 実行コマンド：['farm_report_summary_gen.py', '-h']
-usage: farm_report_summary_gen.py [-h] (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST) [-u] col_year_month
+usage: farm_report_summary_gen.py [-h] (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST) [-l] [-u] col_year_month
 
 positional arguments:
   col_year_month        収集年月(yyyy-mm形式)
@@ -233,6 +181,9 @@ options:
   -e MIN_NUM_OF_EVENT_QUEST, --min_num_of_event_quest MIN_NUM_OF_EVENT_QUEST
                         最低周回数(イベクエ)
                         グループで1つのみ必須
+  -l, --should_generate_list
+                        周回報告一覧生成要否
+                        指定した場合は一覧を生成するが、指定しなかった場合は生成せずに既存の一覧のみを使用する。
   -u, --should_output_user_name
                         ユーザ名出力要否
 ```
@@ -263,24 +214,6 @@ options:
 ```cmd
 > cd fgo-farm-report-collection
 > pipenv run per-gen 2022 silverag_corgi
-[2022-02-14 08:39:29.230][INF][farm_report_performance_gen:0047][main] 実行コマンド：['farm_report_performance_gen.py', '2022', 'silverag_corgi']
-[2022-02-14 08:39:29.235][INF][farm_report_performance_gen:0024][do_logic] 周回報告実績生成を開始します。
-[2022-02-14 08:39:29.274][INF][farm_report_performance_gen:0074][do_logic] 周回報告実績：
-   posting_month  num_of_farms_for_normal  num_of_farms_for_event  num_of_farms_for_all
-0        2022-01                     1200                     650                  1850
-1        2022-02                      100                       0                   100
-2        2022-03                        0                       0                     0
-3        2022-04                        0                       0                     0
-4        2022-05                        0                       0                     0
-5        2022-06                        0                       0                     0
-6        2022-07                        0                       0                     0
-7        2022-08                        0                       0                     0
-8        2022-09                        0                       0                     0
-9        2022-10                        0                       0                     0
-10       2022-11                        0                       0                     0
-11       2022-12                        0                       0                     0
-[2022-02-14 08:39:29.278][INF][farm_report_performance_gen:0078][do_logic] 周回報告実績生成を終了します。
-[2022-02-14 08:39:29.279][INF][proc_time:0046][wrapper] do_logic：0.04470秒
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -288,7 +221,6 @@ options:
 実行例：
 ```cmd
 > pipenv run per-gen -h
-[2022-02-14 08:40:34.923][INF][farm_report_performance_gen:0047][main] 実行コマンド：['farm_report_performance_gen.py', '-h']
 usage: farm_report_performance_gen.py [-h] [-l] col_year user_id
 
 positional arguments:
