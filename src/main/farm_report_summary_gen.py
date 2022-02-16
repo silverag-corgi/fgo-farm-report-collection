@@ -28,6 +28,7 @@ def main() -> int:
         min_num_of_all_quest (int)      : [いずれかが必須] 最低周回数(全て)
         min_num_of_normal_quest (int)   : [いずれかが必須] 最低周回数(通常クエ)
         min_num_of_event_quest (int)    : [いずれかが必須] 最低周回数(イベクエ)
+        should_generate_list (bool)     : [任意] 周回報告一覧生成要否
         should_output_user_name (bool)  : [任意] ユーザ名出力要否(概要ファイルにユーザ名を出力するか)
     
     Returns:
@@ -54,9 +55,10 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
-                args.col_year_month
-            )
+        if bool(args.should_generate_list) == True:
+            mylib.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
+                    args.col_year_month
+                )
         
         # 周回報告概要生成ロジックの実行
         if args.min_num_of_all_quest is not None:
@@ -115,6 +117,9 @@ def __get_args() -> argparse.Namespace:
             '-e', '--min_num_of_event_quest', type=int, help=help_msg.format('イベクエ'))
         
         # 任意の引数
+        help_msg = '周回報告一覧生成要否\n' + \
+            '指定した場合は一覧を生成するが、指定しなかった場合は生成せずに既存の一覧のみを使用する。'
+        parser.add_argument('-l', '--should_generate_list', help=help_msg, action='store_true')
         help_msg = 'ユーザ名出力要否'
         parser.add_argument('-u', '--should_output_user_name', help=help_msg, action='store_true')
         

@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from logging import Logger
+import os
 from typing import Optional
 
 import pandas as pd
@@ -31,6 +32,7 @@ def do_logic(
         pd.set_option('display.unicode.east_asian_width', True)
         
         # 実行要否の判定
+        should_execute: bool = True
         today: date = datetime.today().date()
         col_first_date: date = datetime.strptime(col_year_month + '-01', '%Y-%m-%d').date()
         first_date_of_this_month: date = mylib.get_first_date_of_this_month(today)
@@ -48,15 +50,23 @@ def do_logic(
                 const_util.FARM_REPORT_SUMMARY_FILE_PATH.format(
                     col_year_month, quest_kind, f'{min_num_of_farms}周以上')
             
+            # 周回報告概要生成要否の判定
+            should_generate: bool = True
+            if os.path.isfile(farm_report_list_file_path) == False:
+                lg.info(f'周回報告一覧ファイルが存在しません。' +
+                        f'(farm_report_list_file_path:{farm_report_list_file_path})')
+                should_generate = False
+            
             # 周回報告概要ファイルの生成
-            lg.info(f'周回報告概要ファイル：{farm_report_summary_file_path}')
-            __generate_farm_report_summary_file(
-                    farm_report_list_file_path,
-                    quest_kind,
-                    min_num_of_farms,
-                    farm_report_summary_file_path,
-                    should_output_user_name
-                )
+            if should_generate == True:
+                lg.info(f'周回報告概要ファイル：{farm_report_summary_file_path}')
+                __generate_farm_report_summary_file(
+                        farm_report_list_file_path,
+                        quest_kind,
+                        min_num_of_farms,
+                        farm_report_summary_file_path,
+                        should_output_user_name
+                    )
         
         lg.info(f'周回報告概要生成を終了します。')
     except Exception as e:

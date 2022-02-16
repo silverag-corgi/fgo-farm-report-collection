@@ -59,6 +59,7 @@ def do_logic_by_col_year_month(
         pd.set_option('display.unicode.east_asian_width', True)
         
         # 実行要否の判定
+        should_execute: bool = True
         today: date = datetime.today().date()
         col_first_date: date = datetime.strptime(col_year_month + '-01', '%Y-%m-%d').date()
         first_date_of_this_month: date = mylib.get_first_date_of_this_month(today)
@@ -82,6 +83,7 @@ def do_logic_by_col_year_month(
                 list_gen_start_date, col_first_date, first_date_of_this_month, today)
             
             # 周回報告一覧生成要否の判定
+            should_generate: bool = True
             if list_gen_start_date is None or list_gen_end_date is None:
                 should_generate = False
                 lg.info(f'周回報告一覧は最新です。({col_year_month})')
