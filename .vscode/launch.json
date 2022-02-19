@@ -9,7 +9,7 @@
             "request": "launch",
             "module": "src.main.farm_report_list_gen",
             "args": [
-                "2022-01",
+                "-m", "2022-01",
             ]
         },
         {
