@@ -18,7 +18,9 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、周回報告一覧ファイルと周回報告個人概要ファイルを生成する。
+        引数を検証して問題ない場合、周回報告一覧ファイルを基に周回報告個人概要ファイルを生成する。
+        
+        任意で周回報告一覧ファイルを生成する。
     
     Args:
         -
@@ -83,8 +85,9 @@ def __get_args() -> argparse.Namespace:
         parser.add_argument('user_id', help=help_msg)
         
         # 任意の引数
-        help_msg = '周回報告一覧生成要否\n' + \
-            '指定した場合は一覧を生成するが、指定しなかった場合は生成せずに既存の一覧のみを使用する。'
+        help_msg =  '周回報告一覧生成要否\n' + \
+                    '指定した場合は一覧を生成する。\n' + \
+                    '指定しなかった場合は生成せずに既存の一覧のみを使用する。'
         parser.add_argument('-l', '--should_generate_list', help=help_msg, action='store_true')
         
         args: argparse.Namespace = parser.parse_args()
