@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "fgo-farm-report-collection"
+version = "0.1.0"
+description = "FGO farm report collection"
+authors = ["Rem_"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    {include = "fgo_farm_report_collection", from = "src"}
+]
+
+[tool.poetry.build]
+generate-setup-file = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.27.1"
+pandas = "^1.4.0"
+beautifulsoup4 = "^4.10.0"
+html5lib = "^1.1"
+lxml = "^4.7.1"
+python-lib-for-me = {path = "../python-lib-for-me", develop = true}
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+list-gen = "fgo_farm_report_collection.main.farm_report_list_gen:main"
+tot-gen  = "fgo_farm_report_collection.main.farm_report_total_summary_gen:main"
+ind-gen  = "fgo_farm_report_collection.main.farm_report_individual_summary_gen:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

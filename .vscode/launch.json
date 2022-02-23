@@ -7,7 +7,7 @@
             "name": "Python: farm_report_list_gen",
             "type": "python",
             "request": "launch",
-            "module": "src.main.farm_report_list_gen",
+            "module": "fgo_farm_report_collection.main.farm_report_list_gen",
             "args": [
                 "-m", "2022-01",
             ]
@@ -16,7 +16,7 @@
             "name": "Python: farm_report_total_summary_gen",
             "type": "python",
             "request": "launch",
-            "module": "src.main.farm_report_total_summary_gen",
+            "module": "fgo_farm_report_collection.main.farm_report_total_summary_gen",
             "args": [
                 "2022-01",
                 "-a", "100",
