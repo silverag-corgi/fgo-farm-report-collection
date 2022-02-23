@@ -1,6 +1,5 @@
 import pandas as pd
-
-from src.util import const_util
+from fgo_farm_report_collection.util import const_util
 
 
 def read_farm_report_list_file(

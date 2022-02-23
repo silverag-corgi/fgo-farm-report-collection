@@ -6,8 +6,8 @@ from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as mylib
-from src.logic import farm_report_individual_summary_gen
-from src.util import *
+from fgo_farm_report_collection.logic import *
+from fgo_farm_report_collection.util import *
 
 
 def main() -> int:

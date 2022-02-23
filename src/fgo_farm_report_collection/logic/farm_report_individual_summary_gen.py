@@ -4,8 +4,8 @@ from typing import Optional
 
 import pandas as pd
 import python_lib_for_me as mylib
-from src.logic import farm_report_list_gen
-from src.util import const_util, pandas_util
+from fgo_farm_report_collection.logic import farm_report_list_gen
+from fgo_farm_report_collection.util import const_util, pandas_util
 
 
 def do_logic(
