@@ -2,7 +2,7 @@ import os
 import re
 from datetime import date, datetime, timedelta
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional
 
 import pandas as pd
 import python_lib_for_me as mylib
@@ -133,9 +133,10 @@ def __generate_list_gen_start_date(
             farm_report_list_df: pd.DataFrame = \
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
             
-            posting_date_of_last_line_timestamp: pd.Timestamp = pd.Timestamp(
-                farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item())
-            posting_date_of_last_line: date = posting_date_of_last_line_timestamp.date()
+            posting_date_of_last_line_datetime: Any = \
+                farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item()
+            posting_date_of_last_line: date = \
+                pd.Timestamp(posting_date_of_last_line_datetime).date()
             
             if posting_date_of_last_line != \
                 mylib.get_last_date_of_this_month(posting_date_of_last_line):
