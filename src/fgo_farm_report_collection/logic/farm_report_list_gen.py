@@ -5,12 +5,13 @@ from logging import Logger
 from typing import Any, Optional
 
 import pandas as pd
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
-from fgo_farm_report_collection.util import const_util, pandas_util
 from requests.models import Response
+
+from fgo_farm_report_collection.util import const_util, pandas_util
 
 
 def do_logic_by_col_year(
@@ -23,8 +24,8 @@ def do_logic_by_col_year(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告一覧生成(年指定)を開始します。')
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告一覧生成(年指定)を開始します。')
         
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
@@ -35,7 +36,7 @@ def do_logic_by_col_year(
                     col_year_month
                 )
         
-        lg.info(f'周回報告一覧生成(年指定)を終了します。')
+        pyl.log_inf(lg, f'周回報告一覧生成(年指定)を終了します。')
     except Exception as e:
         raise(e)
     
@@ -52,24 +53,19 @@ def do_logic_by_col_year_month(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告一覧生成(年月指定)を開始します。')
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
-        # 実行要否の判定
-        should_execute: bool = True
+        # 収集年月が未来の場合
         today: date = datetime.today().date()
         col_first_date: date = datetime.strptime(col_year_month + '-01', '%Y-%m-%d').date()
-        first_date_of_this_month: date = mylib.get_first_date_of_this_month(today)
-        if col_first_date <= first_date_of_this_month:
-            should_execute = True
+        first_date_of_this_month: date = pyl.get_first_date_of_this_month(today)
+        if col_first_date > first_date_of_this_month:
+            pyl.log_inf(lg, f'収集年月が未来です。(col_year_month:{col_year_month})')
         else:
-            should_execute = False
-            lg.info(f'収集年月が未来です。(col_year_month:{col_year_month})')
-        
-        if should_execute == True:
             # 周回報告一覧ファイルパスの生成
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
@@ -86,25 +82,25 @@ def do_logic_by_col_year_month(
             should_generate: bool = True
             if list_gen_start_date is None or list_gen_end_date is None:
                 should_generate = False
-                lg.info(f'周回報告一覧は最新です。({col_year_month})')
+                pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
             else:
                 if list_gen_start_date > list_gen_end_date:
                     should_generate = False
-                    lg.info(f'周回報告一覧は最新です。({col_year_month})')
+                    pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
                 else:
                     should_generate = True
-                    lg.info(f'周回報告一覧を生成します。({list_gen_start_date}～{list_gen_end_date})')
+                    pyl.log_inf(lg, f'周回報告一覧を生成します。({list_gen_start_date}～{list_gen_end_date})')
             
             # 周回報告一覧ファイルの生成
             if should_generate == True:
-                lg.info(f'周回報告一覧ファイル：{farm_report_list_file_path}')
+                pyl.log_inf(lg, f'周回報告一覧ファイル：{farm_report_list_file_path}')
                 __generate_farm_report_list_file(
                         list_gen_start_date,
                         list_gen_end_date,
                         farm_report_list_file_path
                     )
         
-        lg.info(f'周回報告一覧生成(年月指定)を終了します。')
+        pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を終了します。')
     except Exception as e:
         raise(e)
     
@@ -122,7 +118,7 @@ def __generate_list_gen_start_date(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 収集年月の周回報告一覧ファイルの存在有無チェック
         has_farm_report_list: bool = os.path.isfile(farm_report_list_file_path)
@@ -139,7 +135,7 @@ def __generate_list_gen_start_date(
                 pd.Timestamp(posting_date_of_last_line_datetime).date()
             
             if posting_date_of_last_line != \
-                mylib.get_last_date_of_this_month(posting_date_of_last_line):
+                pyl.get_last_date_of_this_month(posting_date_of_last_line):
                 list_gen_start_date = posting_date_of_last_line + timedelta(days=1)
             else:
                 list_gen_start_date = None
@@ -162,12 +158,12 @@ def __generate_list_gen_end_date(
     
     try:
         list_gen_end_date: Optional[date] = None
-        if list_gen_start_date != None \
+        if list_gen_start_date is not None \
             and col_first_date == first_date_of_this_month:
             list_gen_end_date = today + timedelta(days=-1)
-        elif list_gen_start_date != None \
+        elif list_gen_start_date is not None \
             and col_first_date != first_date_of_this_month:
-            list_gen_end_date = mylib.get_last_date_of_this_month(list_gen_start_date)
+            list_gen_end_date = pyl.get_last_date_of_this_month(list_gen_start_date)
     except Exception as e:
         raise(e)
     
@@ -186,7 +182,7 @@ def __generate_farm_report_list_file(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの初期化
         farm_report_list_df: pd.DataFrame = \
@@ -195,21 +191,22 @@ def __generate_farm_report_list_file(
         # 開始日付から終了日付までの繰り返し
         if list_gen_start_date is not None and list_gen_end_date is not None:
             list_gen_date: Optional[date] = None
-            for list_gen_date in mylib.gen_date_range(list_gen_start_date, list_gen_end_date):
+            for list_gen_date in pyl.gen_date_range(list_gen_start_date, list_gen_end_date):
                 # 周回報告サイトURLの生成
                 farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
-                lg.info(farm_report_site_url)
+                pyl.log_inf(lg, farm_report_site_url)
                 
                 # 周回報告サイトからの応答の取得(周回報告サイトへの要求)
                 response_from_farm_report_site: Response = requests.get(farm_report_site_url)
                 if response_from_farm_report_site.status_code != requests.codes['ok']:
-                    lg.warning(f'周回報告サイトへのアクセスに失敗しました。' +
-                                f'(farm_report_site_url:{farm_report_site_url}, ' +
-                                f'status_code:{response_from_farm_report_site.status_code})')
+                    pyl.log_war(lg, f'周回報告サイトへのアクセスに失敗しました。' +
+                                    f'(farm_report_site_url:{farm_report_site_url}, ' +
+                                    f'status_code:{response_from_farm_report_site.status_code})')
                     return None
                 
                 # クエスト種別ごとの周回報告数の取得
-                bs: BeautifulSoup = BeautifulSoup(response_from_farm_report_site.content, 'html.parser')
+                bs: BeautifulSoup = \
+                    BeautifulSoup(response_from_farm_report_site.content, 'html.parser')
                 num_of_farm_reports_list: ResultSet = bs.find_all(class_='subtitle')
                 num_of_farm_reports_of_event_quest: int = \
                     __get_num_of_farm_reports(num_of_farm_reports_list[0].get_text())
@@ -257,10 +254,9 @@ def __generate_farm_report_list_file(
                         )
         
         # 周回報告一覧データフレームの保存
-        lg.info(f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
-        lg.info(f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
-        pandas_util.save_farm_report_list_data_frame(
-            farm_report_list_df, farm_report_list_file_path)
+        pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
+        pyl.log_inf(lg, f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
+        pandas_util.save_farm_report_list_df(farm_report_list_df, farm_report_list_file_path)
     except Exception as e:
         raise(e)
     
@@ -274,12 +270,11 @@ def __get_num_of_farm_reports(sub_title: str) -> int:
         matched_result_of_event_quest = re.match('イベント \\((.*)\\)', sub_title)
         matched_result_of_normal_quest = re.match('恒常フリークエスト \\((.*)\\)', sub_title)
         
+        num_of_farm_reports: int = 0
         if matched_result_of_event_quest is not None:
-            num_of_farm_reports: int = int(matched_result_of_event_quest.group(1))
+            num_of_farm_reports = int(matched_result_of_event_quest.group(1))
         elif matched_result_of_normal_quest is not None:
-            num_of_farm_reports: int = int(matched_result_of_normal_quest.group(1))
-        else:
-            num_of_farm_reports: int = 0
+            num_of_farm_reports = int(matched_result_of_normal_quest.group(1))
     except Exception as e:
         raise(e)
     
