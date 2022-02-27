@@ -3,7 +3,8 @@ from logging import Logger
 from typing import Optional
 
 import pandas as pd
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
+
 from fgo_farm_report_collection.logic import farm_report_list_gen
 from fgo_farm_report_collection.util import const_util, pandas_util
 
@@ -20,18 +21,18 @@ def do_logic(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告個人概要生成を開始します。')
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告個人概要生成を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
         # 周回報告個人概要データフレームの初期化
-        farm_report_individual_summary_df: pd.DataFrame = pd.DataFrame(
+        farm_report_ind_sum_df: pd.DataFrame = pd.DataFrame(
                 index=range(const_util.NUM_OF_MONTHS),
                 columns=const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER
             )
-        farm_report_individual_summary_df.fillna(0, inplace=True)
+        farm_report_ind_sum_df.fillna(0, inplace=True)
         
         # 指定したユーザの周回数の集計
         for index in range(const_util.NUM_OF_MONTHS):
@@ -47,7 +48,7 @@ def do_logic(
             if os.path.isfile(farm_report_list_file_path) == False:
                 if should_generate_list == True:
                     # 周回報告一覧生成ロジックの実行
-                    mylib.measure_proc_time(
+                    pyl.measure_proc_time(
                         farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
                     
                     # 周回報告一覧ファイルの存在有無チェック
@@ -57,36 +58,36 @@ def do_logic(
                     should_update = False
             
             # 周回報告個人概要データフレームの更新
-            farm_report_individual_summary_df.at[
+            farm_report_ind_sum_df.at[
                 index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[0]] = col_year_month
             if should_update == True:
-                __update_farm_report_individual_summary_data_frame(
+                __update_farm_report_ind_sum_df(
                         farm_report_list_file_path,
                         user_id,
-                        farm_report_individual_summary_df,
+                        farm_report_ind_sum_df,
                         index
                     )
         
         # 周回報告個人概要ファイルパスの生成
-        farm_report_individual_summary_file_path: str = \
+        farm_report_ind_sum_file_path: str = \
             const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH.format(col_year, user_id)
         
         # 周回報告個人概要データフレームの保存
-        lg.info(f'周回報告個人概要：\n{farm_report_individual_summary_df}')
-        pandas_util.save_farm_report_individual_summary_data_frame(
-            farm_report_individual_summary_df, farm_report_individual_summary_file_path)
+        pyl.log_inf(lg, f'周回報告個人概要：\n{farm_report_ind_sum_df}')
+        pandas_util.save_farm_report_ind_sum_df(
+            farm_report_ind_sum_df, farm_report_ind_sum_file_path)
         
-        lg.info(f'周回報告個人概要生成を終了します。')
+        pyl.log_inf(lg, f'周回報告個人概要生成を終了します。')
     except Exception as e:
         raise(e)
     
     return None
 
 
-def __update_farm_report_individual_summary_data_frame(
+def __update_farm_report_ind_sum_df(
         farm_report_list_file_path: str,
         user_id: str,
-        farm_report_individual_summary_df: pd.DataFrame,
+        farm_report_ind_sum_df: pd.DataFrame,
         index: int
     ) -> None:
     
@@ -96,7 +97,7 @@ def __update_farm_report_individual_summary_data_frame(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = \
@@ -114,14 +115,11 @@ def __update_farm_report_individual_summary_data_frame(
                 f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[2]}")')
         
         # 周回数の更新
-        farm_report_individual_summary_df.at[
-            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
+        farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
             df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
-        farm_report_individual_summary_df.at[
-            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]] = \
+        farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]] = \
             df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
-        farm_report_individual_summary_df.at[
-            index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]] = \
+        farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]] = \
             df_by_user_id[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
     except Exception as e:
         raise(e)

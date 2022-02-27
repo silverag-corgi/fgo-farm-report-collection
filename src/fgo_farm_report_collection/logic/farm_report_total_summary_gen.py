@@ -4,12 +4,13 @@ from logging import Logger
 from typing import Optional
 
 import pandas as pd
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
-from fgo_farm_report_collection.util import const_util, pandas_util
 from requests.models import Response
+
+from fgo_farm_report_collection.util import const_util, pandas_util
 
 
 def do_logic(
@@ -25,61 +26,53 @@ def do_logic(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
-        lg.info(f'周回報告全体概要生成を開始します。')
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告全体概要生成を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
-        # 実行要否の判定
-        should_execute: bool = True
+        # 収集年月が未来の場合
         today: date = datetime.today().date()
         col_first_date: date = datetime.strptime(col_year_month + '-01', '%Y-%m-%d').date()
-        first_date_of_this_month: date = mylib.get_first_date_of_this_month(today)
-        if col_first_date <= first_date_of_this_month:
-            should_execute = True
+        first_date_of_this_month: date = pyl.get_first_date_of_this_month(today)
+        if col_first_date > first_date_of_this_month:
+            pyl.log_inf(lg, f'収集年月が未来です。(col_year_month:{col_year_month})')
         else:
-            should_execute = False
-            lg.info(f'収集年月が未来です。(col_year_month:{col_year_month})')
-        
-        if should_execute == True:
             # 周回報告一覧ファイルパス、周回報告全体概要ファイルパスの生成
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
-            farm_report_total_summary_file_path: str = \
+            farm_report_tot_sum_file_path: str = \
                 const_util.FARM_REPORT_TOTAL_SUMMARY_FILE_PATH.format(
                     col_year_month, quest_kind, f'{min_num_of_farms}周以上')
             
-            # 周回報告全体概要生成要否の判定
-            should_generate: bool = True
+            # 周回報告一覧ファイルが存在しない場合
             if os.path.isfile(farm_report_list_file_path) == False:
-                lg.info(f'周回報告一覧ファイルが存在しません。' +
-                        f'(farm_report_list_file_path:{farm_report_list_file_path})')
-                should_generate = False
-            
-            # 周回報告全体概要ファイルの生成
-            if should_generate == True:
-                lg.info(f'周回報告全体概要ファイル：{farm_report_total_summary_file_path}')
-                __generate_farm_report_total_summary_file(
+                pyl.log_inf(lg, f'周回報告一覧ファイルが存在しません。' +
+                                f'(farm_report_list_file_path:{farm_report_list_file_path})')
+            else:
+                # 周回報告全体概要ファイルの生成
+                pyl.log_inf(lg, f'周回報告全体概要ファイル：{farm_report_tot_sum_file_path}')
+                __generate_farm_report_tot_sum_file(
                         farm_report_list_file_path,
                         quest_kind,
                         min_num_of_farms,
-                        farm_report_total_summary_file_path,
+                        farm_report_tot_sum_file_path,
                         should_output_user_name
                     )
         
-        lg.info(f'周回報告全体概要生成を終了します。')
+        pyl.log_inf(lg, f'周回報告全体概要生成を終了します。')
     except Exception as e:
         raise(e)
     
     return None
 
 
-def __generate_farm_report_total_summary_file(
+def __generate_farm_report_tot_sum_file(
         farm_report_list_file_path: str,
         quest_kind: str,
         min_num_of_farms: int,
-        farm_report_total_summary_file_path: str,
+        farm_report_tot_sum_file_path: str,
         should_output_user_name: bool
     ) -> None:
     
@@ -89,7 +82,7 @@ def __generate_farm_report_total_summary_file(
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = \
@@ -97,50 +90,51 @@ def __generate_farm_report_total_summary_file(
         
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
+            farm_report_tot_sum_df: pd.DataFrame
             if quest_kind in const_util.QUEST_KINDS[1:3]:
-                farm_report_total_summary_df: pd.DataFrame = farm_report_list_df.query(
+                farm_report_tot_sum_df = farm_report_list_df.query(
                     f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
             else:
-                farm_report_total_summary_df: pd.DataFrame = farm_report_list_df
+                farm_report_tot_sum_df = farm_report_list_df
         
             # 投稿者による集計
-            farm_report_total_summary_df = farm_report_total_summary_df.groupby(
+            farm_report_tot_sum_df = farm_report_tot_sum_df.groupby(
                 const_util.FARM_REPORT_LIST_HEADER[2]).sum()
             
             # 周回数による降順ソート
-            farm_report_total_summary_df.sort_values(
+            farm_report_tot_sum_df.sort_values(
                 const_util.FARM_REPORT_LIST_HEADER[4], ascending=False, inplace=True)
             
             # 周回数による抽出
-            farm_report_total_summary_df.query(
+            farm_report_tot_sum_df.query(
                 f'{const_util.FARM_REPORT_LIST_HEADER[4]} >= {min_num_of_farms}', inplace=True)
             
             # 列(ユーザ名)の追加
-            farm_report_total_summary_df.insert(
+            farm_report_tot_sum_df.insert(
                 0, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1], '-')
             
             # ユーザ名の設定
             if should_output_user_name == True:
-                lg.info(f'時間がかかるため気長にお待ちください。')
-                for index, _ in farm_report_total_summary_df.iterrows():
+                pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+                for index, _ in farm_report_tot_sum_df.iterrows():
                     try:
                         user_site_info_url: str = const_util.USER_INFO_SITE_URL.format(index)
                         response_for_bs: Response = requests.get(user_site_info_url)
                         bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
                         user_name_list: ResultSet = bs.find_all(class_='name')
-                        farm_report_total_summary_df.at[
+                        farm_report_tot_sum_df.at[
                             index, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1]] = \
                                 user_name_list[0].get_text()
-                        lg.debug(f'ユーザ名の設定に成功しました。(user_id:{index})')
+                        pyl.log_deb(lg, f'ユーザ名の設定に成功しました。(user_id:{index})')
                     except Exception as e:
-                        lg.warning(f'ユーザ名の設定に失敗しました。' +
-                                    f'アカウントが削除されている可能性があります。(user_id:{index})')
+                        pyl.log_war(lg, f'ユーザ名の設定に失敗しました。' +
+                                        f'アカウントが削除されている可能性があります。(user_id:{index})')
             
             # 周回報告全体概要データフレームの保存
-            lg.info(f'周回報告全体概要(先頭n行)：\n{farm_report_total_summary_df.head(5)}')
-            lg.info(f'周回報告全体概要(末尾n行)：\n{farm_report_total_summary_df.tail(5)}')
-            pandas_util.save_farm_report_total_summary_data_frame(
-                farm_report_total_summary_df, farm_report_total_summary_file_path)
+            pyl.log_inf(lg, f'周回報告全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')
+            pyl.log_inf(lg, f'周回報告全体概要(末尾n行)：\n{farm_report_tot_sum_df.tail(5)}')
+            pandas_util.save_farm_report_tot_sum_df(
+                farm_report_tot_sum_df, farm_report_tot_sum_file_path)
     except Exception as e:
         raise(e)
     

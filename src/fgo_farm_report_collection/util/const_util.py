@@ -1,8 +1,11 @@
 from typing import Final
 
-FARM_REPORT_LIST_FILE_PATH:                 Final[str] = './dest/farm_report_list/farm_report_list_{0}.csv'
-FARM_REPORT_TOTAL_SUMMARY_FILE_PATH:        Final[str] = './dest/farm_report_total_summary/farm_report_total_summary_{0}_{1}_{2}.csv'
-FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH:   Final[str] = './dest/farm_report_individual_summary/farm_report_individual_summary_{0}_{1}.csv'
+FARM_REPORT_LIST_FILE_PATH:                 Final[str] = \
+    './dest/farm_report_list/farm_report_list_{0}.csv'
+FARM_REPORT_TOTAL_SUMMARY_FILE_PATH:        Final[str] = \
+    './dest/farm_report_total_summary/farm_report_total_summary_{0}_{1}_{2}.csv'
+FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH:   Final[str] = \
+    './dest/farm_report_individual_summary/farm_report_individual_summary_{0}_{1}.csv'
 
 FARM_REPORT_SITE_URL: Final[str] = 'https://fgojunks.max747.org/harvest/contents/date/{0}.html'
 USER_INFO_SITE_URL:   Final[str] = 'https://twpro.jp/{0}'

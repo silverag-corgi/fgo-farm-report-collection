@@ -5,9 +5,9 @@ from datetime import datetime
 from logging import Logger
 from typing import Optional
 
-import python_lib_for_me as mylib
-from fgo_farm_report_collection.logic import *
-from fgo_farm_report_collection.util import *
+import python_lib_for_me as pyl
+
+from fgo_farm_report_collection.logic import farm_report_individual_summary_gen
 
 
 def main() -> int:
@@ -36,17 +36,17 @@ def main() -> int:
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
         周回報告個人概要ファイル: ./dest/farm_report_individual_summary/farm_report_individual_summary_[収集年]_[ユーザID].csv
-    '''
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 実行コマンド表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        lg.info(f'実行コマンド：{sys.argv}')
+        pyl.log_inf(lg, f'実行コマンド：{sys.argv}')
         
         # 引数取得＆検証
         args: argparse.Namespace = __get_args()
@@ -54,14 +54,14 @@ def main() -> int:
             return 1
         
         # 周回報告個人概要生成ロジックの実行
-        mylib.measure_proc_time(farm_report_individual_summary_gen.do_logic)(
+        pyl.measure_proc_time(farm_report_individual_summary_gen.do_logic)(
                 args.col_year,
                 args.user_id,
                 bool(args.should_generate_list)
             )
     except Exception as e:
         if lg is not None:
-            lg.exception('', exc_info=True)
+            pyl.log_exc(lg, '')
         return 1
     
     return 0
@@ -104,13 +104,13 @@ def __validate_args(args: argparse.Namespace) -> bool:
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 検証：収集年が年(yyyy形式)であること
         try:
             datetime.strptime(args.col_year, '%Y')
         except ValueError:
-            lg.info(f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+            pyl.log_inf(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
             return False
     except Exception as e:
         raise(e)

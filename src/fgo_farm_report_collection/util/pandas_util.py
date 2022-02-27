@@ -1,4 +1,5 @@
 import pandas as pd
+
 from fgo_farm_report_collection.util import const_util
 
 
@@ -20,7 +21,7 @@ def read_farm_report_list_file(
     return farm_report_list_df
 
 
-def save_farm_report_list_data_frame(
+def save_farm_report_list_df(
         farm_report_list_df: pd.DataFrame,
         farm_report_list_file_path: str
     ) -> None:
@@ -38,15 +39,15 @@ def save_farm_report_list_data_frame(
     return None
 
 
-def save_farm_report_individual_summary_data_frame(
-        farm_report_individual_summary_df: pd.DataFrame,
-        farm_report_individual_summary_file_path: str
+def save_farm_report_ind_sum_df(
+        farm_report_ind_sum_df: pd.DataFrame,
+        farm_report_ind_sum_file_path: str
     ) -> None:
     
     '''周回報告個人概要データフレーム保存'''
     
-    farm_report_individual_summary_df.to_csv(
-            farm_report_individual_summary_file_path,
+    farm_report_ind_sum_df.to_csv(
+            farm_report_ind_sum_file_path,
             header=True,
             index=False,
             mode='w',
@@ -56,15 +57,15 @@ def save_farm_report_individual_summary_data_frame(
     return None
 
 
-def save_farm_report_total_summary_data_frame(
-        farm_report_total_summary_df: pd.DataFrame,
-        farm_report_total_summary_file_path: str
+def save_farm_report_tot_sum_df(
+        farm_report_tot_sum_df: pd.DataFrame,
+        farm_report_tot_sum_file_path: str
     ) -> None:
     
     '''周回報告全体概要データフレーム保存'''
     
-    farm_report_total_summary_df.to_csv(
-            farm_report_total_summary_file_path,
+    farm_report_tot_sum_df.to_csv(
+            farm_report_tot_sum_file_path,
             header=False,
             index=True,
             mode='w',
