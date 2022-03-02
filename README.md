@@ -125,7 +125,7 @@ C:\Git\python\fgo-farm-report-collection\.venv
 
 ```cmd
 > poetry run list-gen -h
-usage: farm_report_list_gen.py [-h] (-y COL_YEAR | -m COL_YEAR_MONTH)
+usage: list-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH)
 
 options:
   -h, --help            show this help message and exit
@@ -169,7 +169,7 @@ options:
 
 ```cmd
 > poetry run tot-gen -h
-usage: farm_report_total_summary_gen.py [-h] (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST) [-l] [-u] col_year_month
+usage: tot-gen [-h] (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST) [-l] [-u] col_year_month
 
 positional arguments:
   col_year_month        収集年月(yyyy-mm形式)
@@ -185,11 +185,10 @@ options:
   -e MIN_NUM_OF_EVENT_QUEST, --min_num_of_event_quest MIN_NUM_OF_EVENT_QUEST
                         最低周回数(イベクエ)
                         グループで1つのみ必須
-  -l, --should_generate_list
-                        周回報告一覧生成要否
+  -l, --generate_list   周回報告一覧生成要否
                         指定した場合は一覧を生成する。
                         指定しなかった場合は生成せずに既存の一覧のみを使用する。
-  -u, --should_output_user_name
+  -u, --output_user_name
                         ユーザ名出力要否
                         指定した場合は周回報告概要ファイルにユーザ名を出力する。
 ```
@@ -226,18 +225,17 @@ options:
 
 ```cmd
 > poetry run ind-gen -h
-usage: farm_report_individual_summary_gen.py [-h] [-l] col_year user_id
+usage: ind-gen [-h] [-l] col_year user_id
 
 positional arguments:
-  col_year              収集年(yyyy形式)
-  user_id               ユーザID(Twitter)
+  col_year             収集年(yyyy形式)
+  user_id              ユーザID(Twitter)
 
 options:
-  -h, --help            show this help message and exit
-  -l, --should_generate_list
-                        周回報告一覧生成要否
-                        指定した場合は一覧を生成する。
-                        指定しなかった場合は生成せずに既存の一覧のみを使用する。
+  -h, --help           show this help message and exit
+  -l, --generate_list  周回報告一覧生成要否
+                       指定した場合は一覧を生成する。
+                       指定しなかった場合は生成せずに既存の一覧のみを使用する。
 ```
 
 
