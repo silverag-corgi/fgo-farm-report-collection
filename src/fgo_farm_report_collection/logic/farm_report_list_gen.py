@@ -82,14 +82,15 @@ def do_logic_by_col_year_month(
             generate_list: bool = True
             if list_gen_start_date is None or list_gen_end_date is None:
                 generate_list = False
-                pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
+                pyl.log_inf(lg, f'周回報告一覧は最新です。(col_year_month:{col_year_month})')
             else:
                 if list_gen_start_date > list_gen_end_date:
                     generate_list = False
-                    pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
+                    pyl.log_inf(lg, f'周回報告一覧は最新です。(col_year_month:{col_year_month})')
                 else:
                     generate_list = True
-                    pyl.log_inf(lg, f'周回報告一覧を生成します。({list_gen_start_date}～{list_gen_end_date})')
+                    pyl.log_inf(lg, f'周回報告一覧を生成します。' +
+                                    f'(col_year_month:{list_gen_start_date}～{list_gen_end_date})')
             
             # 周回報告一覧ファイルの生成
             if generate_list == True:
