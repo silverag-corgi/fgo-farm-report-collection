@@ -17,7 +17,7 @@ def do_logic(
         col_year_month: str,
         min_num_of_farms: int,
         quest_kind: str,
-        should_output_user_name: bool
+        output_user_name: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -58,7 +58,7 @@ def do_logic(
                         quest_kind,
                         min_num_of_farms,
                         farm_report_tot_sum_file_path,
-                        should_output_user_name
+                        output_user_name
                     )
         
         pyl.log_inf(lg, f'周回報告全体概要生成を終了します。')
@@ -73,7 +73,7 @@ def __generate_farm_report_tot_sum_file(
         quest_kind: str,
         min_num_of_farms: int,
         farm_report_tot_sum_file_path: str,
-        should_output_user_name: bool
+        output_user_name: bool
     ) -> None:
     
     '''周回報告全体概要ファイル生成'''
@@ -114,7 +114,7 @@ def __generate_farm_report_tot_sum_file(
                 0, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1], '-')
             
             # ユーザ名の設定
-            if should_output_user_name == True:
+            if output_user_name == True:
                 pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
                 for index, _ in farm_report_tot_sum_df.iterrows():
                     try:

@@ -79,20 +79,20 @@ def do_logic_by_col_year_month(
                 list_gen_start_date, col_first_date, first_date_of_this_month, today)
             
             # 周回報告一覧生成要否の判定
-            should_generate: bool = True
+            generate_list: bool = True
             if list_gen_start_date is None or list_gen_end_date is None:
-                should_generate = False
+                generate_list = False
                 pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
             else:
                 if list_gen_start_date > list_gen_end_date:
-                    should_generate = False
+                    generate_list = False
                     pyl.log_inf(lg, f'周回報告一覧は最新です。({col_year_month})')
                 else:
-                    should_generate = True
+                    generate_list = True
                     pyl.log_inf(lg, f'周回報告一覧を生成します。({list_gen_start_date}～{list_gen_end_date})')
             
             # 周回報告一覧ファイルの生成
-            if should_generate == True:
+            if generate_list == True:
                 pyl.log_inf(lg, f'周回報告一覧ファイル：{farm_report_list_file_path}')
                 __generate_farm_report_list_file(
                         list_gen_start_date,

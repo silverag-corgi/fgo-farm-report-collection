@@ -26,9 +26,9 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year (str)               : [必須] 収集年(yyyy形式)
-        user_id (str)                : [必須] ユーザID(Twitter)
-        should_generate_list (bool)  : [任意] 周回報告一覧生成要否
+        col_year (str)          : [必須] 収集年(yyyy形式)
+        user_id (str)           : [必須] ユーザID(Twitter)
+        generate_list (bool)    : [任意] 周回報告一覧生成要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -57,7 +57,7 @@ def main() -> int:
         pyl.measure_proc_time(farm_report_individual_summary_gen.do_logic)(
                 args.col_year,
                 args.user_id,
-                bool(args.should_generate_list)
+                bool(args.generate_list)
             )
     except Exception as e:
         if lg is not None:
@@ -88,7 +88,7 @@ def __get_args() -> argparse.Namespace:
         help_msg =  '周回報告一覧生成要否\n' + \
                     '指定した場合は一覧を生成する。\n' + \
                     '指定しなかった場合は生成せずに既存の一覧のみを使用する。'
-        parser.add_argument('-l', '--should_generate_list', help=help_msg, action='store_true')
+        parser.add_argument('-l', '--generate_list', help=help_msg, action='store_true')
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
