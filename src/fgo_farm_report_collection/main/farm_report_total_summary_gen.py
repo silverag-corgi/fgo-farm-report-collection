@@ -31,8 +31,8 @@ def main() -> int:
         min_num_of_all_quest (int)      : [いずれかが必須] 最低周回数(全て)
         min_num_of_normal_quest (int)   : [いずれかが必須] 最低周回数(通常クエ)
         min_num_of_event_quest (int)    : [いずれかが必須] 最低周回数(イベクエ)
-        should_generate_list (bool)     : [任意] 周回報告一覧生成要否
-        should_output_user_name (bool)  : [任意] ユーザ名出力要否
+        generate_list (bool)            : [任意] 周回報告一覧生成要否
+        output_user_name (bool)         : [任意] ユーザ名出力要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -58,7 +58,7 @@ def main() -> int:
             return 1
         
         # 周回報告一覧生成ロジックの実行
-        if bool(args.should_generate_list) == True:
+        if bool(args.generate_list) == True:
             pyl.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
                     args.col_year_month
                 )
@@ -69,21 +69,21 @@ def main() -> int:
                     args.col_year_month,
                     int(args.min_num_of_all_quest),
                     const_util.QUEST_KINDS[0],
-                    args.should_output_user_name
+                    args.output_user_name
                 )
         elif args.min_num_of_normal_quest is not None:
             pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_normal_quest),
                     const_util.QUEST_KINDS[1],
-                    args.should_output_user_name
+                    args.output_user_name
                 )
         elif args.min_num_of_event_quest is not None:
             pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
                     int(args.min_num_of_event_quest),
                     const_util.QUEST_KINDS[2],
-                    args.should_output_user_name
+                    args.output_user_name
                 )
     except Exception as e:
         if lg is not None:
@@ -123,10 +123,10 @@ def __get_args() -> argparse.Namespace:
         help_msg =  '周回報告一覧生成要否\n' + \
                     '指定した場合は一覧を生成する。\n' + \
                     '指定しなかった場合は生成せずに既存の一覧のみを使用する。'
-        parser.add_argument('-l', '--should_generate_list', help=help_msg, action='store_true')
+        parser.add_argument('-l', '--generate_list', help=help_msg, action='store_true')
         help_msg =  'ユーザ名出力要否\n' + \
                     '指定した場合は周回報告概要ファイルにユーザ名を出力する。'
-        parser.add_argument('-u', '--should_output_user_name', help=help_msg, action='store_true')
+        parser.add_argument('-u', '--output_user_name', help=help_msg, action='store_true')
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:

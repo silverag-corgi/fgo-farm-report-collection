@@ -12,7 +12,7 @@ from fgo_farm_report_collection.util import const_util, pandas_util
 def do_logic(
         col_year: str,
         user_id: str,
-        should_generate_list: bool
+        generate_list: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -43,24 +43,24 @@ def do_logic(
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
             
-            # 周回報告個人概要更新要否の判定
-            should_update: bool = True
+            # 周回報告個人概要更新の判定
+            update_ind_sum: bool = True
             if os.path.isfile(farm_report_list_file_path) == False:
-                if should_generate_list == True:
+                if generate_list == True:
                     # 周回報告一覧生成ロジックの実行
                     pyl.measure_proc_time(
                         farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
                     
                     # 周回報告一覧ファイルの存在有無チェック
                     if os.path.isfile(farm_report_list_file_path) == False:
-                        should_update = False
+                        update_ind_sum = False
                 else:
-                    should_update = False
+                    update_ind_sum = False
             
             # 周回報告個人概要データフレームの更新
             farm_report_ind_sum_df.at[
                 index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[0]] = col_year_month
-            if should_update == True:
+            if update_ind_sum == True:
                 __update_farm_report_ind_sum_df(
                         farm_report_list_file_path,
                         user_id,
