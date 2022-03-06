@@ -110,7 +110,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         try:
             datetime.strptime(args.col_year, '%Y')
         except ValueError:
-            pyl.log_inf(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+            pyl.log_war(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+            return False
+        
+        # 検証：ユーザIDが4文字以上であること
+        if len(args.user_id) < 4:
+            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
             return False
     except Exception as e:
         raise(e)
