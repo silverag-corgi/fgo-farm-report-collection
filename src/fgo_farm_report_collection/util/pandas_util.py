@@ -14,6 +14,7 @@ def read_farm_report_list_file(
             header=None,
             names=const_util.FARM_REPORT_LIST_HEADER,
             index_col=None,
+            skiprows=1,
             parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
             encoding=const_util.ENCODING
         )
@@ -23,14 +24,15 @@ def read_farm_report_list_file(
 
 def save_farm_report_list_df(
         farm_report_list_df: pd.DataFrame,
-        farm_report_list_file_path: str
+        farm_report_list_file_path: str,
+        has_farm_report_list: bool
     ) -> None:
     
     '''周回報告一覧データフレーム保存'''
     
     farm_report_list_df.to_csv(
             farm_report_list_file_path,
-            header=False,
+            header=(has_farm_report_list == False),
             index=False,
             mode='a',
             encoding=const_util.ENCODING
@@ -66,7 +68,7 @@ def save_farm_report_tot_sum_df(
     
     farm_report_tot_sum_df.to_csv(
             farm_report_tot_sum_file_path,
-            header=False,
+            header=True,
             index=True,
             mode='w',
             encoding=const_util.ENCODING

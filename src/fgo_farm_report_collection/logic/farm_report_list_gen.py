@@ -70,9 +70,12 @@ def do_logic_by_col_year_month(
             farm_report_list_file_path: str = \
                 const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
             
+            # 周回報告一覧ファイルの存在有無チェック
+            has_farm_report_list: bool = os.path.isfile(farm_report_list_file_path)
+            
             # 周回報告一覧生成開始日付の設定
             list_gen_start_date: Optional[date] = __generate_list_gen_start_date(
-                farm_report_list_file_path, col_first_date)
+                has_farm_report_list, farm_report_list_file_path, col_first_date)
             
             # 周回報告一覧生成終了日付の設定
             list_gen_end_date: Optional[date] = __generate_list_gen_end_date(
@@ -98,7 +101,8 @@ def do_logic_by_col_year_month(
                 __generate_farm_report_list_file(
                         list_gen_start_date,
                         list_gen_end_date,
-                        farm_report_list_file_path
+                        farm_report_list_file_path,
+                        has_farm_report_list
                     )
         
         pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を終了します。')
@@ -109,6 +113,7 @@ def do_logic_by_col_year_month(
 
 
 def __generate_list_gen_start_date(
+        has_farm_report_list: bool,
         farm_report_list_file_path: str,
         col_first_date: date
     ) -> Optional[date]:
@@ -118,13 +123,6 @@ def __generate_list_gen_start_date(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
-        lg = pyl.get_logger(__name__)
-        
-        # 収集年月の周回報告一覧ファイルの存在有無チェック
-        has_farm_report_list: bool = os.path.isfile(farm_report_list_file_path)
-        
-        # 周回報告一覧生成開始日付の生成
         list_gen_start_date: Optional[date] = None
         if has_farm_report_list == True:
             farm_report_list_df: pd.DataFrame = \
@@ -174,7 +172,8 @@ def __generate_list_gen_end_date(
 def __generate_farm_report_list_file(
         list_gen_start_date: Optional[date],
         list_gen_end_date: Optional[date],
-        farm_report_list_file_path: str
+        farm_report_list_file_path: str,
+        has_farm_report_list: bool
     ) -> None:
     
     '''周回報告一覧ファイル生成'''
@@ -257,7 +256,8 @@ def __generate_farm_report_list_file(
         # 周回報告一覧データフレームの保存
         pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
         pyl.log_inf(lg, f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
-        pandas_util.save_farm_report_list_df(farm_report_list_df, farm_report_list_file_path)
+        pandas_util.save_farm_report_list_df(
+            farm_report_list_df, farm_report_list_file_path, has_farm_report_list)
     except Exception as e:
         raise(e)
     
