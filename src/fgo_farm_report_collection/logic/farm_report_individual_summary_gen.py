@@ -20,7 +20,7 @@ def do_logic(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告個人概要生成を開始します。')
         
@@ -95,7 +95,7 @@ def __update_farm_report_ind_sum_df(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)

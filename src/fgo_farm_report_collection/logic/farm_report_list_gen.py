@@ -23,7 +23,7 @@ def do_logic_by_col_year(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告一覧生成(年指定)を開始します。')
         
@@ -52,7 +52,7 @@ def do_logic_by_col_year_month(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を開始します。')
         
@@ -181,7 +181,7 @@ def __generate_farm_report_list_file(
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの初期化
