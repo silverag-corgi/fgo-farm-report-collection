@@ -45,25 +45,25 @@ def main() -> int:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 実行コマンド表示
+        # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
         pyl.log_inf(lg, f'実行コマンド：{sys.argv}')
         
-        # 引数取得＆検証
+        # 引数の取得・検証
         args: argparse.Namespace = __get_args()
         if __validate_args(args) == False:
             return 1
         
-        # 周回報告一覧生成ロジックの実行
+        # ロジック(周回報告一覧生成)の実行
         if bool(args.generate_list) == True:
             pyl.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
                     args.col_year_month
                 )
         
-        # 周回報告全体概要生成ロジックの実行
+        # ロジック(周回報告全体概要生成)の実行
         if args.min_num_of_all_quest is not None:
             pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
                     args.col_year_month,
@@ -141,7 +141,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
         # 検証：収集年月が年月(yyyy-mm形式)であること
