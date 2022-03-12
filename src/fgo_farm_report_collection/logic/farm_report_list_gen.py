@@ -128,14 +128,14 @@ def __generate_list_gen_start_date(
             farm_report_list_df: pd.DataFrame = \
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
             
-            posting_date_of_last_line_datetime: Any = \
+            post_date_of_last_line_datetime: Any = \
                 farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item()
-            posting_date_of_last_line: date = \
-                pd.Timestamp(posting_date_of_last_line_datetime).date()
+            post_date_of_last_line: date = \
+                pd.Timestamp(post_date_of_last_line_datetime).date()
             
-            if posting_date_of_last_line != \
-                pyl.get_last_date_of_this_month(posting_date_of_last_line):
-                list_gen_start_date = posting_date_of_last_line + timedelta(days=1)
+            if post_date_of_last_line != \
+                pyl.get_last_date_of_this_month(post_date_of_last_line):
+                list_gen_start_date = post_date_of_last_line + timedelta(days=1)
             else:
                 list_gen_start_date = None
         else:
