@@ -24,8 +24,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year (str)          : [いずれかが必須] 収集年(yyyy形式)
-        col_year_month (str)    : [いずれかが必須] 収集年月(yyyy-mm形式)
+        col_year (str)          : [グループAで1つのみ必須] 収集年(yyyy形式)
+        col_year_month (str)    : [グループAで1つのみ必須] 収集年月(yyyy-mm形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -70,20 +70,24 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='周回報告一覧生成\n' +
+                            '周回報告一覧ファイルを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
         
         help_msg: str = ''
         
-        # グループで1つのみ必須の引数
-        group: argparse._MutuallyExclusiveGroup = \
-            parser.add_mutually_exclusive_group(required=True)
-        help_msg = '{0}\nグループで1つのみ必須'
-        group.add_argument(
+        # グループAの引数
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'options in this group', '収集する年月を指定します')
+        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
+            arg_group_a.add_mutually_exclusive_group(required=True)
+        help_msg = '[1つのみ必須] {0}'
+        mutually_exclusive_group_a.add_argument(
             '-y', '--col_year', type=str, help=help_msg.format('収集年(yyyy形式)'))
-        group.add_argument(
+        mutually_exclusive_group_a.add_argument(
             '-m', '--col_year_month', type=str, help=help_msg.format('収集年月(yyyy-mm形式)'))
         
         args: argparse.Namespace = parser.parse_args()

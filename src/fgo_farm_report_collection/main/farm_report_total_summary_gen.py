@@ -28,9 +28,9 @@ def main() -> int:
     
     Args on cmd line:
         col_year_month (str)            : [必須] 収集年月(yyyy-mm形式)
-        min_num_of_all_quest (int)      : [いずれかが必須] 最低周回数(全て)
-        min_num_of_normal_quest (int)   : [いずれかが必須] 最低周回数(通常クエ)
-        min_num_of_event_quest (int)    : [いずれかが必須] 最低周回数(イベクエ)
+        min_num_of_all_quest (int)      : [グループAで1つのみ必須] 最低周回数(全て)
+        min_num_of_normal_quest (int)   : [グループAで1つのみ必須] 最低周回数(通常クエ)
+        min_num_of_event_quest (int)    : [グループAで1つのみ必須] 最低周回数(イベクエ)
         generate_list (bool)            : [任意] 周回報告一覧生成要否
         output_user_name (bool)         : [任意] ユーザ名出力要否
     
@@ -97,7 +97,10 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='周回報告全体概要生成\n' +
+                            '周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します\n' +
+                            '任意で周回報告一覧ファイルを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -105,28 +108,30 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 必須の引数
-        help_msg = '収集年月(yyyy-mm形式)'
+        help_msg = '[必須] 収集年月(yyyy-mm形式)'
         parser.add_argument('col_year_month', help=help_msg)
         
-        # グループで1つのみ必須の引数
-        group: argparse._MutuallyExclusiveGroup = \
-            parser.add_mutually_exclusive_group(required=True)
-        help_msg = '最低周回数({0})\nグループで1つのみ必須'
-        group.add_argument(
+        # グループAの引数
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'options in this group', '収集する最低周回数を指定します')
+        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
+            arg_group_a.add_mutually_exclusive_group(required=True)
+        help_msg = '[1つのみ必須] 最低周回数({0})'
+        mutually_exclusive_group_a.add_argument(
             '-a', '--min_num_of_all_quest', type=int, help=help_msg.format('全て'))
-        group.add_argument(
+        mutually_exclusive_group_a.add_argument(
             '-n', '--min_num_of_normal_quest', type=int, help=help_msg.format('通常クエ'))
-        group.add_argument(
+        mutually_exclusive_group_a.add_argument(
             '-e', '--min_num_of_event_quest', type=int, help=help_msg.format('イベクエ'))
         
         # 任意の引数
-        help_msg =  '周回報告一覧生成要否\n' + \
-                    '指定した場合は一覧を生成する。\n' + \
-                    '指定しなかった場合は生成せずに既存の一覧のみを使用する。'
-        parser.add_argument('-l', '--generate_list', help=help_msg, action='store_true')
-        help_msg =  'ユーザ名出力要否\n' + \
-                    '指定した場合は周回報告概要ファイルにユーザ名を出力する。'
-        parser.add_argument('-u', '--output_user_name', help=help_msg, action='store_true')
+        help_msg =  '[任意] 周回報告一覧生成要否\n' + \
+                    '指定した場合は一覧を生成します\n' + \
+                    '指定しない場合は生成せずに既存の一覧のみを使用します'
+        parser.add_argument('-l', '--generate_list', action='store_true', help=help_msg)
+        help_msg =  '[任意] ユーザ名出力要否\n' + \
+                    '指定した場合は周回報告概要ファイルにユーザ名を出力します'
+        parser.add_argument('-u', '--output_user_name', action='store_true', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
