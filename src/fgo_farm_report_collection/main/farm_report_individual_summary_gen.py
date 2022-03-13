@@ -71,7 +71,10 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='周回報告個人概要生成\n' +
+                            '周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します\n' +
+                            '任意で周回報告一覧ファイルを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -79,15 +82,15 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 必須の引数
-        help_msg = '収集年(yyyy形式)'
+        help_msg = '[必須] 収集年(yyyy形式)'
         parser.add_argument('col_year', help=help_msg)
-        help_msg = 'ユーザID(Twitter)'
+        help_msg = '[必須] ユーザID(Twitter)'
         parser.add_argument('user_id', help=help_msg)
         
         # 任意の引数
-        help_msg =  '周回報告一覧生成要否\n' + \
-                    '指定した場合は一覧を生成する。\n' + \
-                    '指定しなかった場合は生成せずに既存の一覧のみを使用する。'
+        help_msg =  '[任意] 周回報告一覧生成要否\n' + \
+                    '指定した場合は一覧を生成します\n' + \
+                    '指定しない場合は生成せずに既存の一覧のみを使用します'
         parser.add_argument('-l', '--generate_list', help=help_msg, action='store_true')
         
         args: argparse.Namespace = parser.parse_args()
