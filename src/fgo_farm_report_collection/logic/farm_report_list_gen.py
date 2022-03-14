@@ -14,11 +14,11 @@ from requests.models import Response
 from fgo_farm_report_collection.util import const_util, pandas_util
 
 
-def do_logic_by_col_year(
+def do_logic_that_generate_list_by_col_year(
         col_year: str
     ) -> None:
     
-    '''ロジック(年指定)実行'''
+    '''ロジック(周回報告一覧生成(年指定))実行'''
     
     lg: Optional[Logger] = None
     
@@ -32,7 +32,7 @@ def do_logic_by_col_year(
             col_year_month: str = f'{col_year:02}-{(index+1):02}'
             
             # 周回報告一覧生成ロジックの実行
-            do_logic_by_col_year_month(
+            do_logic_that_generate_list_by_col_year_month(
                     col_year_month
                 )
         
@@ -43,11 +43,11 @@ def do_logic_by_col_year(
     return None
 
 
-def do_logic_by_col_year_month(
+def do_logic_that_generate_list_by_col_year_month(
         col_year_month: str
     ) -> None:
     
-    '''ロジック(年月指定)実行'''
+    '''ロジック(周回報告一覧生成(年月指定))実行'''
     
     lg: Optional[Logger] = None
     
