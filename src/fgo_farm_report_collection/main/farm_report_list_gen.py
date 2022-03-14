@@ -51,13 +51,15 @@ def main() -> int:
         
         # ロジック(周回報告一覧生成)の実行
         if args.col_year is not None:
-            pyl.measure_proc_time(farm_report_list_gen.do_logic_by_col_year)(
-                    args.col_year
-                )
+            pyl.measure_proc_time(
+                farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
+                        args.col_year
+                    )
         elif args.col_year_month is not None:
-            pyl.measure_proc_time(farm_report_list_gen.do_logic_by_col_year_month)(
-                    args.col_year_month
-                )
+            pyl.measure_proc_time(
+                farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
+                        args.col_year_month
+                    )
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

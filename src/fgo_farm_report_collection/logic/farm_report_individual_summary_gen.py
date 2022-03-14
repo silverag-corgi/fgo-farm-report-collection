@@ -48,7 +48,8 @@ def do_logic(
             if generate_list == True:
                 # 周回報告一覧生成ロジックの実行
                 pyl.measure_proc_time(
-                    farm_report_list_gen.do_logic_by_col_year_month)(col_year_month)
+                    farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
+                        col_year_month)
                 
                 # 周回報告一覧ファイルの存在有無チェック
                 if os.path.isfile(farm_report_list_file_path) == False:
