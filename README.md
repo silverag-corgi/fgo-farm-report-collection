@@ -188,9 +188,9 @@ options:
   -l, --generate_list   [任意] 周回報告一覧生成要否
                         指定した場合は一覧を生成します
                         指定しない場合は生成せずに既存の一覧のみを使用します
-  -u, --output_user_name
-                        [任意] ユーザ名出力要否
-                        指定した場合は周回報告概要ファイルにユーザ名を出力します
+  -u, --output_twitter_user_name
+                        [任意] Twitterユーザ名出力要否
+                        指定した場合は周回報告概要ファイルにTwitterユーザ名を出力します
 
 options in this group:
   収集する最低周回数を指定します
@@ -235,7 +235,7 @@ options in this group:
 
 ```cmd
 > poetry run ind-gen -h
-usage: ind-gen [-h] [-l] col_year user_id
+usage: ind-gen [-h] [-l] col_year twitter_user_id
 
 周回報告個人概要生成
 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します
@@ -243,7 +243,7 @@ usage: ind-gen [-h] [-l] col_year user_id
 
 positional arguments:
   col_year             [必須] 収集年(yyyy形式)
-  user_id              [必須] ユーザID(Twitter)
+  twitter_user_id      [必須] TwitterユーザID
 
 options:
   -h, --help           show this help message and exit
