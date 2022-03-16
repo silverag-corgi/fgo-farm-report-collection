@@ -27,7 +27,7 @@ def main() -> int:
     
     Args on cmd line:
         col_year (str)          : [必須] 収集年(yyyy形式)
-        user_id (str)           : [必須] ユーザID(Twitter)
+        twitter_user_id (str)   : [必須] TwitterユーザID
         generate_list (bool)    : [任意] 周回報告一覧生成要否
     
     Returns:
@@ -35,7 +35,7 @@ def main() -> int:
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
-        周回報告個人概要ファイル: ./dest/farm_report_individual_summary/farm_report_individual_summary_[収集年]_[ユーザID].csv
+        周回報告個人概要ファイル: ./dest/farm_report_individual_summary/farm_report_individual_summary_[収集年]_[TwitterユーザID].csv
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -56,7 +56,7 @@ def main() -> int:
         # ロジック(周回報告個人概要生成)の実行
         pyl.measure_proc_time(farm_report_individual_summary_gen.do_logic)(
                 args.col_year,
-                args.user_id,
+                args.twitter_user_id,
                 bool(args.generate_list)
             )
     except Exception as e:
@@ -84,8 +84,8 @@ def __get_args() -> argparse.Namespace:
         # 必須の引数
         help_msg = '[必須] 収集年(yyyy形式)'
         parser.add_argument('col_year', help=help_msg)
-        help_msg = '[必須] ユーザID(Twitter)'
-        parser.add_argument('user_id', help=help_msg)
+        help_msg = '[必須] TwitterユーザID'
+        parser.add_argument('twitter_user_id', help=help_msg)
         
         # 任意の引数
         help_msg =  '[任意] 周回報告一覧生成要否\n' + \
@@ -116,9 +116,10 @@ def __validate_args(args: argparse.Namespace) -> bool:
             pyl.log_war(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
             return False
         
-        # 検証：ユーザIDが4文字以上であること
-        if len(args.user_id) < 4:
-            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
+        # 検証：TwitterユーザIDが4文字以上であること
+        if len(args.twitter_user_id) < 4:
+            pyl.log_war(lg, f'TwitterユーザIDが4文字以上ではありません。' +
+                            f'(twitter_user_id:{args.twitter_user_id})')
             return False
     except Exception as e:
         raise(e)
