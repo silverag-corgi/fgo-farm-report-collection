@@ -16,7 +16,7 @@ FARM_REPORT_LIST_HEADER: Final[list[str]] = \
     [
         'quest_kind',
         'post_date',
-        'twitter_user_id',
+        'user_id',
         'quest_place',
         'num_of_farms',
         'material'
@@ -25,8 +25,8 @@ FARM_REPORT_LIST_HEADER_RAW: Final[list[str]] = \
     FARM_REPORT_LIST_HEADER[1:6]
 FARM_REPORT_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
-        'twitter_user_id',
-        'twitter_user_name',
+        'user_id',
+        'user_name',
         'num_of_farms'
     ]
 FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER: Final[list[str]] = \

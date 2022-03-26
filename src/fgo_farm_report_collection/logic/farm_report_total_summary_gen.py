@@ -17,7 +17,7 @@ def do_logic(
         col_year_month: str,
         min_num_of_farms: int,
         quest_kind: str,
-        output_twitter_user_name: bool
+        output_user_name: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -58,7 +58,7 @@ def do_logic(
                         quest_kind,
                         min_num_of_farms,
                         farm_report_tot_sum_file_path,
-                        output_twitter_user_name
+                        output_user_name
                     )
         
         pyl.log_inf(lg, f'周回報告全体概要生成を終了します。')
@@ -73,7 +73,7 @@ def __generate_farm_report_tot_sum_file(
         quest_kind: str,
         min_num_of_farms: int,
         farm_report_tot_sum_file_path: str,
-        output_twitter_user_name: bool
+        output_user_name: bool
     ) -> None:
     
     '''周回報告全体概要ファイル生成'''
@@ -109,27 +109,27 @@ def __generate_farm_report_tot_sum_file(
             farm_report_tot_sum_df.query(
                 f'{const_util.FARM_REPORT_LIST_HEADER[4]} >= {min_num_of_farms}', inplace=True)
             
-            # 列(Twitterユーザ名)の追加
+            # 列(ユーザ名)の追加
             farm_report_tot_sum_df.insert(
                 0, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1], '-')
             
-            # Twitterユーザ名の設定
-            if output_twitter_user_name == True:
+            # ユーザ名の設定
+            if output_user_name == True:
                 pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
                 for index, _ in farm_report_tot_sum_df.iterrows():
                     try:
                         user_site_info_url: str = const_util.USER_INFO_SITE_URL.format(index)
                         response_for_bs: Response = requests.get(user_site_info_url)
                         bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
-                        twitter_user_name_list: ResultSet = bs.find_all(class_='name')
+                        user_name_list: ResultSet = bs.find_all(class_='name')
                         farm_report_tot_sum_df.at[
                             index, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1]] = \
-                                twitter_user_name_list[0].get_text()
-                        pyl.log_deb(lg, f'Twitterユーザ名の設定に成功しました。(twitter_user_id:{index})')
+                                user_name_list[0].get_text()
+                        pyl.log_deb(lg, f'ユーザ名の設定に成功しました。(user_id:{index})')
                     except Exception as e:
-                        pyl.log_war(lg, f'Twitterユーザ名の設定に失敗しました。' +
+                        pyl.log_war(lg, f'ユーザ名の設定に失敗しました。' +
                                         f'アカウントが削除されている可能性があります。' +
-                                        f'(twitter_user_id:{index})')
+                                        f'(user_id:{index})')
             
             # 周回報告全体概要データフレームの保存
             pyl.log_inf(lg, f'周回報告全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')

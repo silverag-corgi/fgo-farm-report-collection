@@ -11,7 +11,7 @@ from fgo_farm_report_collection.util import const_util, pandas_util
 
 def do_logic(
         col_year: str,
-        twitter_user_id: str,
+        user_id: str,
         generate_list: bool
     ) -> None:
     
@@ -34,7 +34,7 @@ def do_logic(
             )
         farm_report_ind_sum_df.fillna(0, inplace=True)
         
-        # 指定したTwitterユーザの周回数の集計
+        # 指定したユーザの周回数の集計
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
             col_year_month: str = f'{col_year:02}-{(index+1):02}'
@@ -63,14 +63,14 @@ def do_logic(
             if update_ind_sum == True:
                 __update_farm_report_ind_sum_df(
                         farm_report_list_file_path,
-                        twitter_user_id,
+                        user_id,
                         farm_report_ind_sum_df,
                         index
                     )
         
         # 周回報告個人概要ファイルパスの生成
         farm_report_ind_sum_file_path: str = \
-            const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH.format(col_year, twitter_user_id)
+            const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH.format(col_year, user_id)
         
         # 周回報告個人概要データフレームの保存
         pyl.log_inf(lg, f'周回報告個人概要：\n{farm_report_ind_sum_df}')
@@ -86,7 +86,7 @@ def do_logic(
 
 def __update_farm_report_ind_sum_df(
         farm_report_list_file_path: str,
-        twitter_user_id: str,
+        user_id: str,
         farm_report_ind_sum_df: pd.DataFrame,
         index: int
     ) -> None:
@@ -103,24 +103,24 @@ def __update_farm_report_ind_sum_df(
         farm_report_list_df: pd.DataFrame = \
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
         
-        # TwitterユーザID、クエスト種別による抽出
-        df_by_twitter_user_id: pd.DataFrame = \
+        # ユーザID、クエスト種別による抽出
+        df_by_user_id: pd.DataFrame = \
             farm_report_list_df.query(
-                f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("^{twitter_user_id}$")')
-        df_by_twitter_user_id_and_normal_quest: pd.DataFrame = \
-            df_by_twitter_user_id.query(
+                f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("^{user_id}$")')
+        df_by_user_id_and_normal_quest: pd.DataFrame = \
+            df_by_user_id.query(
                 f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[1]}")')
-        df_by_twitter_user_id_and_event_quest: pd.DataFrame = \
-            df_by_twitter_user_id.query(
+        df_by_user_id_and_event_quest: pd.DataFrame = \
+            df_by_user_id.query(
                 f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[2]}")')
         
         # 周回数の更新
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
-            df_by_twitter_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]] = \
-            df_by_twitter_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]] = \
-            df_by_twitter_user_id[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
     except Exception as e:
         raise(e)
     
