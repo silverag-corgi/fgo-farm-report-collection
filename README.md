@@ -21,8 +21,9 @@
   - [5.3. 周回報告個人概要生成](#53-周回報告個人概要生成)
     - [5.3.1. 実行コマンド](#531-実行コマンド)
     - [5.3.2. 実行結果](#532-実行結果)
-- [6. 連絡先](#6-連絡先)
-- [7. ライセンス](#7-ライセンス)
+- [6. 実行コマンド一覧](#6-実行コマンド一覧)
+- [7. 連絡先](#7-連絡先)
+- [8. ライセンス](#8-ライセンス)
 
 
 # 1. 概要
@@ -188,9 +189,9 @@ options:
   -l, --generate_list   [任意] 周回報告一覧生成要否
                         指定した場合は一覧を生成します
                         指定しない場合は生成せずに既存の一覧のみを使用します
-  -u, --output_twitter_user_name
-                        [任意] Twitterユーザ名出力要否
-                        指定した場合は周回報告概要ファイルにTwitterユーザ名を出力します
+  -u, --output_user_name
+                        [任意] ユーザ名出力要否
+                        指定した場合は周回報告概要ファイルにユーザ名を出力します
 
 options in this group:
   収集する最低周回数を指定します
@@ -235,7 +236,7 @@ options in this group:
 
 ```cmd
 > poetry run ind-gen -h
-usage: ind-gen [-h] [-l] col_year twitter_user_id
+usage: ind-gen [-h] [-l] col_year user_id
 
 周回報告個人概要生成
 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します
@@ -243,7 +244,7 @@ usage: ind-gen [-h] [-l] col_year twitter_user_id
 
 positional arguments:
   col_year             [必須] 収集年(yyyy形式)
-  twitter_user_id      [必須] TwitterユーザID
+  user_id              [必須] ユーザID
 
 options:
   -h, --help           show this help message and exit
@@ -267,12 +268,21 @@ options:
 ![farm_report_individual_summary](./pic/farm_report_individual_summary.JPG)
 
 
-# 6. 連絡先
+# 6. 実行コマンド一覧
+
+```cmd
+> poetry run list-gen -h
+> poetry run tot-gen -h
+> poetry run ind-gen -h
+```
+
+
+# 7. 連絡先
 
 [Twitter(@silverag_corgi)](https://twitter.com/silverag_corgi)
 
 
-# 7. ライセンス
+# 8. ライセンス
 
 MITライセンスの下で公開している。
 詳細はLICENSEを確認すること。
