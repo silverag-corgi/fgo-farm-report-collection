@@ -60,6 +60,9 @@ def main() -> int:
                 farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
                         args.col_year_month
                     )
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

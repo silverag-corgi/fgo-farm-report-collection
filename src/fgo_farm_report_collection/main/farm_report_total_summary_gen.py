@@ -86,6 +86,9 @@ def main() -> int:
                     const_util.QUEST_KINDS[2],
                     args.output_user_name
                 )
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')
