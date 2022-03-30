@@ -24,14 +24,14 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year (str)          : [グループAで1つのみ必須] 収集年(yyyy形式)
-        col_year_month (str)    : [グループAで1つのみ必須] 収集年月(yyyy-mm形式)
+        col_year (str)          : [グループB][1つのみ必須] 収集年(yyyy形式)
+        col_year_month (str)    : [グループB][1つのみ必須] 収集年月(yyyy-mm形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
-        周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
+        周回報告一覧ファイル: ./dest/farm_report_list/[収集年月].csv
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -82,18 +82,18 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # グループAの引数
-        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '収集する年月を指定します')
-        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
-            arg_group_a.add_mutually_exclusive_group(required=True)
-        help_msg = '[1つのみ必須] {0}'
-        mutually_exclusive_group_a.add_argument(
-            '-y', '--col_year', type=str, help=help_msg.format('収集年(yyyy形式)'))
-        mutually_exclusive_group_a.add_argument(
-            '-m', '--col_year_month', type=str, help=help_msg.format('収集年月(yyyy-mm形式)'))
+        # グループBの引数(1つのみ必須な引数)
+        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B - only one required arguments',
+            '1つのみ必須な引数\n収集する年月を指定します')
+        mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
+            arg_group_b.add_mutually_exclusive_group(required=True)
+        help_ = '収集年(yyyy形式)'
+        mutually_exclusive_group_b.add_argument('-y', '--col_year', type=str, help=help_)
+        help_ = '収集年月(yyyy-mm形式)'
+        mutually_exclusive_group_b.add_argument('-m', '--col_year_month', type=str, help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
