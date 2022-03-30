@@ -120,9 +120,8 @@ def __validate_args(args: argparse.Namespace) -> bool:
             return False
         
         # 検証：ユーザIDが4文字以上であること
-        if len(args.user_id) < 4:
-            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。' +
-                            f'(user_id:{args.user_id})')
+        if not (len(args.user_id) >= 4):
+            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
             return False
     except Exception as e:
         raise(e)
