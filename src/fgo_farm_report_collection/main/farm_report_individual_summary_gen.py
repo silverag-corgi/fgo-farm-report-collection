@@ -26,16 +26,16 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year (str)          : [必須] 収集年(yyyy形式)
-        user_id (str)           : [必須] ユーザID
-        generate_list (bool)    : [任意] 周回報告一覧生成要否
+        col_year (str)          : [グループA][必須] 収集年(yyyy形式)
+        user_id (str)           : [グループA][必須] ユーザID
+        generate_list (bool)    : [グループC][任意] 周回報告一覧生成要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
-        周回報告一覧ファイル: ./dest/farm_report_list/farm_report_list_[収集年月].csv
-        周回報告個人概要ファイル: ./dest/farm_report_individual_summary/farm_report_individual_summary_[収集年]_[ユーザID].csv
+        周回報告一覧ファイル: ./dest/farm_report_list/[収集年月].csv
+        周回報告個人概要ファイル: ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -82,19 +82,23 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # 必須の引数
-        help_msg = '[必須] 収集年(yyyy形式)'
-        parser.add_argument('col_year', help=help_msg)
-        help_msg = '[必須] ユーザID'
-        parser.add_argument('user_id', help=help_msg)
+        # グループAの引数(全て必須な引数)
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group A - all required arguments', '全て必須な引数')
+        help_ = '収集年(yyyy形式)'
+        arg_group_a.add_argument('col_year', help=help_)
+        help_ = 'ユーザID'
+        arg_group_a.add_argument('user_id', help=help_)
         
-        # 任意の引数
-        help_msg =  '[任意] 周回報告一覧生成要否\n' + \
-                    '指定した場合は一覧を生成します\n' + \
-                    '指定しない場合は生成せずに既存の一覧のみを使用します'
-        parser.add_argument('-l', '--generate_list', help=help_msg, action='store_true')
+        # グループCの引数(任意の引数)
+        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group C - optional arguments', '任意の引数')
+        help_ = '周回報告一覧生成要否\n' + \
+                '指定した場合は一覧を生成します\n' + \
+                '指定しない場合は生成せずに既存の一覧のみを使用します'
+        arg_group_c.add_argument('-l', '--generate_list', help=help_, action='store_true')
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
