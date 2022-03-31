@@ -86,19 +86,21 @@ def __generate_farm_report_tot_sum_file(
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = \
             pandas_util.read_farm_report_list_file(farm_report_list_file_path)
+            
+        pyl.log_inf(lg, f'farm_report_list_df:\n{farm_report_list_df}')
         
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
             farm_report_tot_sum_df: pd.DataFrame
             if quest_kind in const_util.QUEST_KINDS[1:3]:
                 farm_report_tot_sum_df = farm_report_list_df.query(
-                    f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{quest_kind}")')
+                    f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("{quest_kind}")')
             else:
                 farm_report_tot_sum_df = farm_report_list_df
         
             # 投稿者による集計
             farm_report_tot_sum_df = farm_report_tot_sum_df.groupby(
-                const_util.FARM_REPORT_LIST_HEADER[2]).sum()
+                const_util.FARM_REPORT_LIST_HEADER[1]).sum()
             
             # 周回数による降順ソート
             farm_report_tot_sum_df.sort_values(
@@ -115,20 +117,21 @@ def __generate_farm_report_tot_sum_file(
             # ユーザ名の設定
             if output_user_name == True:
                 pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-                for index, _ in farm_report_tot_sum_df.iterrows():
+                for user_id, _ in farm_report_tot_sum_df.iterrows():
                     try:
-                        user_site_info_url: str = const_util.USER_INFO_SITE_URL.format(index)
+                        user_site_info_url: str = \
+                            const_util.USER_INFO_SITE_URL.format(str(user_id).strip())
                         response_for_bs: Response = requests.get(user_site_info_url)
                         bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
                         user_name_list: ResultSet = bs.find_all(class_='name')
                         farm_report_tot_sum_df.at[
-                            index, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1]] = \
+                            user_id, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1]] = \
                                 user_name_list[0].get_text()
-                        pyl.log_deb(lg, f'ユーザ名の設定に成功しました。(user_id:{index})')
+                        pyl.log_deb(lg, f'ユーザ名の設定に成功しました。(user_id:{user_id})')
                     except Exception as e:
                         pyl.log_war(lg, f'ユーザ名の設定に失敗しました。' +
                                         f'アカウントが削除されている可能性があります。' +
-                                        f'(user_id:{index})')
+                                        f'(user_id:{user_id})')
             
             # 周回報告全体概要データフレームの保存
             pyl.log_inf(lg, f'周回報告全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')

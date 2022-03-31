@@ -15,7 +15,7 @@ def read_farm_report_list_file(
             names=const_util.FARM_REPORT_LIST_HEADER,
             index_col=None,
             skiprows=1,
-            parse_dates=[const_util.FARM_REPORT_LIST_HEADER[1]],
+            parse_dates=[const_util.FARM_REPORT_LIST_HEADER[0]],
             encoding=const_util.ENCODING
         )
     

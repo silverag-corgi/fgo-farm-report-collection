@@ -37,7 +37,7 @@ def do_logic(
         # 指定したユーザの周回数の集計
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
-            col_year_month: str = f'{col_year:02}-{(index+1):02}'
+            col_year_month: str = f'{col_year:04}-{(index+1):02}'
             
             # 周回報告一覧ファイルパスの生成
             farm_report_list_file_path: str = \
@@ -105,15 +105,13 @@ def __update_farm_report_ind_sum_df(
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
         
         # ユーザID、クエスト種別による抽出
-        df_by_user_id: pd.DataFrame = \
-            farm_report_list_df.query(
-                f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("^{user_id}$")')
-        df_by_user_id_and_normal_quest: pd.DataFrame = \
-            df_by_user_id.query(
-                f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[1]}")')
-        df_by_user_id_and_event_quest: pd.DataFrame = \
-            df_by_user_id.query(
-                f'{const_util.FARM_REPORT_LIST_HEADER[0]}.str.match("{const_util.QUEST_KINDS[2]}")')
+        user_id = f'{user_id: <15}'
+        df_by_user_id: pd.DataFrame = farm_report_list_df.query(
+            f'{const_util.FARM_REPORT_LIST_HEADER[1]}.str.match("^{user_id}$")')
+        df_by_user_id_and_normal_quest: pd.DataFrame = df_by_user_id.query(
+            f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("{const_util.QUEST_KINDS[1]}")')
+        df_by_user_id_and_event_quest: pd.DataFrame = df_by_user_id.query(
+            f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("{const_util.QUEST_KINDS[2]}")')
         
         # 周回数の更新
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
