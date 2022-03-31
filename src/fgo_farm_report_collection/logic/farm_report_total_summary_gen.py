@@ -52,7 +52,6 @@ def do_logic(
                                 f'(farm_report_list_file_path:{farm_report_list_file_path})')
             else:
                 # 周回報告全体概要ファイルの生成
-                pyl.log_inf(lg, f'周回報告全体概要ファイル：{farm_report_tot_sum_file_path}')
                 __generate_farm_report_tot_sum_file(
                         farm_report_list_file_path,
                         quest_kind,
@@ -134,6 +133,7 @@ def __generate_farm_report_tot_sum_file(
             # 周回報告全体概要データフレームの保存
             pyl.log_inf(lg, f'周回報告全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')
             pyl.log_inf(lg, f'周回報告全体概要(末尾n行)：\n{farm_report_tot_sum_df.tail(5)}')
+            pyl.log_inf(lg, f'周回報告全体概要ファイルパス：{farm_report_tot_sum_file_path}')
             pandas_util.save_farm_report_tot_sum_df(
                 farm_report_tot_sum_df, farm_report_tot_sum_file_path)
     except Exception as e:
