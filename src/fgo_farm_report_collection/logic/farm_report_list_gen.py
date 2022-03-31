@@ -94,7 +94,6 @@ def do_logic_that_generate_list_by_col_year_month(
             
             # 周回報告一覧ファイルの生成
             if generate_list == True:
-                pyl.log_inf(lg, f'周回報告一覧ファイル：{farm_report_list_file_path}')
                 __generate_farm_report_list_file(
                         list_gen_start_date,
                         list_gen_end_date,
@@ -117,22 +116,20 @@ def __generate_list_gen_start_date(
     
     '''周回報告一覧生成開始日付生成'''
     
-    lg: Optional[Logger] = None
-    
     try:
         list_gen_start_date: Optional[date] = None
         if has_farm_report_list == True:
             farm_report_list_df: pd.DataFrame = \
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
             
-            post_date_of_last_line_datetime: Any = \
+            post_date_of_last_line_timestamp: pd.Timestamp = \
                 farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item()
-            post_date_of_last_line: date = \
-                pd.Timestamp(post_date_of_last_line_datetime).date()
+            post_date_of_last_line_date: date = \
+                pd.to_datetime(post_date_of_last_line_timestamp).date()
             
-            if post_date_of_last_line != \
-                pyl.get_last_date_of_this_month(post_date_of_last_line):
-                list_gen_start_date = post_date_of_last_line + timedelta(days=1)
+            if post_date_of_last_line_date != \
+                pyl.get_last_date_of_this_month(post_date_of_last_line_date):
+                list_gen_start_date = post_date_of_last_line_date + timedelta(days=1)
             else:
                 list_gen_start_date = None
         else:
@@ -219,6 +216,7 @@ def __generate_farm_report_list_file(
         # 周回報告一覧データフレームの保存
         pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
         pyl.log_inf(lg, f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
+        pyl.log_inf(lg, f'周回報告一覧ファイルパス：{farm_report_list_file_path}')
         pandas_util.save_farm_report_list_df(
             farm_report_list_df, farm_report_list_file_path, has_farm_report_list)
     except Exception as e:

@@ -74,6 +74,7 @@ def do_logic(
         
         # 周回報告個人概要データフレームの保存
         pyl.log_inf(lg, f'周回報告個人概要：\n{farm_report_ind_sum_df}')
+        pyl.log_inf(lg, f'周回報告個人概要ファイルパス：{farm_report_ind_sum_file_path}')
         pandas_util.save_farm_report_ind_sum_df(
             farm_report_ind_sum_df, farm_report_ind_sum_file_path)
         
