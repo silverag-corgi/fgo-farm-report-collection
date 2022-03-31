@@ -14,9 +14,9 @@ USER_INFO_SITE_URL: Final[str] = \
 
 FARM_REPORT_LIST_HEADER: Final[list[str]] = \
     [
-        'quest_kind',
-        'post_date',
+        'post_datetime',
         'user_id',
+        'quest_kind',
         'quest_place',
         'num_of_farms',
         'materials'

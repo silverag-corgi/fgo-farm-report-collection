@@ -122,14 +122,14 @@ def __generate_list_gen_start_date(
             farm_report_list_df: pd.DataFrame = \
                 pandas_util.read_farm_report_list_file(farm_report_list_file_path)
             
-            post_date_of_last_line_timestamp: pd.Timestamp = \
-                farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[1]].tail(1).item()
-            post_date_of_last_line_date: date = \
-                pd.to_datetime(post_date_of_last_line_timestamp).date()
+            post_datetime_of_last_line_timestamp: pd.Timestamp = \
+                farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[0]].tail(1).item()
+            post_datetime_of_last_line_date: date = \
+                pd.to_datetime(post_datetime_of_last_line_timestamp).date()
             
-            if post_date_of_last_line_date != \
-                pyl.get_last_date_of_this_month(post_date_of_last_line_date):
-                list_gen_start_date = post_date_of_last_line_date + timedelta(days=1)
+            if post_datetime_of_last_line_date != \
+                pyl.get_last_date_of_this_month(post_datetime_of_last_line_date):
+                list_gen_start_date = post_datetime_of_last_line_date + timedelta(days=1)
             else:
                 list_gen_start_date = None
         else:
@@ -197,12 +197,12 @@ def __generate_farm_report_list_file(
                 for farm_report in farm_reports:
                     farm_report_df = pd.DataFrame(
                             [[
+                                pyl.convert_timestamp_to_jst(
+                                    farm_report['timestamp'], '%Y-%m-%dT%H:%M:%S%z'),
+                                f'{farm_report["reporter"]: <15}',
                                 (const_util.QUEST_KINDS[1]
                                     if bool(farm_report['freequest']) == True
                                     else const_util.QUEST_KINDS[2]),
-                                pyl.convert_timestamp_to_jst(
-                                    farm_report['timestamp'], '%Y-%m-%dT%H:%M:%S%z'),
-                                farm_report['reporter'],
                                 farm_report['chapter'] + ' ' + farm_report['place'],
                                 farm_report['runcount'],
                                 ', '.join(['{0}: {1}'.format(key, value)
@@ -212,6 +212,10 @@ def __generate_farm_report_list_file(
                         )
                     farm_report_list_df = \
                         pd.concat([farm_report_list_df, farm_report_df], ignore_index=True)
+            
+            # 投稿日による昇順ソート
+            farm_report_list_df.sort_values(
+                const_util.FARM_REPORT_LIST_HEADER[0], ascending=True, inplace=True)
         
         # 周回報告一覧データフレームの保存
         pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
