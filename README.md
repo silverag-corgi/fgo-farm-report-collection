@@ -50,7 +50,7 @@ FGOの周回報告をWebスクレイピングにより収集・集計し、csv�
 
 ## 2.2. 実行結果
 
-下記画像が実行結果の例である。また、エディタ`editcsv`で開いている。
+下記画像が実行結果の例である。また、`VSCode Excel Viewer`で開いている。
 
 - 周回報告一覧ファイル
   - 指定した年月の周回報告の一覧
@@ -154,7 +154,7 @@ Group B - only one required arguments:
 | フォーマット | ./dest/farm_report_list/[収集年月].csv |
 | 例           | ./dest/farm_report_list/2022-01.csv    |
 
-また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
+また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
 ![farm_report_list](./pic/farm_report_list.JPG)
 
@@ -222,7 +222,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/farm_report_total_summary/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
 | 例           | ./dest/farm_report_total_summary/2022-01_全て_100周以上.csv                   |
 
-また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
+また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
 ![farm_report_total_summary](./pic/farm_report_total_summary.JPG)
 
@@ -277,7 +277,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/farm_report_individual_summary/[収集年]\_[ユーザID(Twitter)].csv |
 | 例           | ./dest/farm_report_individual_summary/2022_silverag_corgi.csv           |
 
-また、下記画像は実行結果の例である。エディタ`editcsv`で開いている。
+また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
 ![farm_report_individual_summary](./pic/farm_report_individual_summary.JPG)
 
