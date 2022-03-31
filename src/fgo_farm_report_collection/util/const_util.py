@@ -8,7 +8,7 @@ FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH: Final[str] = \
     './dest/farm_report_individual_summary/{0}_{1}.csv'
 
 FARM_REPORT_SITE_URL: Final[str] = \
-    'https://fgojunks.max747.org/harvest/contents/date/{0}.html'
+    'https://fgojunks.max747.org/harvest/contents/date/{0}.json'
 USER_INFO_SITE_URL: Final[str] = \
     'https://twpro.jp/{0}'
 
@@ -19,10 +19,8 @@ FARM_REPORT_LIST_HEADER: Final[list[str]] = \
         'user_id',
         'quest_place',
         'num_of_farms',
-        'material'
+        'materials'
     ]
-FARM_REPORT_LIST_HEADER_RAW: Final[list[str]] = \
-    FARM_REPORT_LIST_HEADER[1:6]
 FARM_REPORT_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
         'user_id',

@@ -1,5 +1,5 @@
+import json
 import os
-import re
 from datetime import date, datetime, timedelta
 from logging import Logger
 from typing import Any, Optional
@@ -7,9 +7,6 @@ from typing import Any, Optional
 import pandas as pd
 import python_lib_for_me as pyl
 import requests
-from bs4 import BeautifulSoup
-from bs4.element import ResultSet
-from requests.models import Response
 
 from fgo_farm_report_collection.util import const_util, pandas_util
 
@@ -29,7 +26,7 @@ def do_logic_that_generate_list_by_col_year(
         
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
-            col_year_month: str = f'{col_year:02}-{(index+1):02}'
+            col_year_month: str = f'{col_year:04}-{(index+1):02}'
             
             # 周回報告一覧生成ロジックの実行
             do_logic_that_generate_list_by_col_year_month(
@@ -185,73 +182,39 @@ def __generate_farm_report_list_file(
         lg = pyl.get_logger(__name__)
         
         # 周回報告一覧データフレームの初期化
-        farm_report_list_df: pd.DataFrame = \
-            pd.DataFrame(columns=const_util.FARM_REPORT_LIST_HEADER)
+        farm_report_list_df: pd.DataFrame = pd.DataFrame(columns=const_util.FARM_REPORT_LIST_HEADER)
         
-        # 開始日付から終了日付までの繰り返し
+        # 周回報告一覧データフレームへの格納
         if list_gen_start_date is not None and list_gen_end_date is not None:
             list_gen_date: Optional[date] = None
             for list_gen_date in pyl.gen_date_range(list_gen_start_date, list_gen_end_date):
                 # 周回報告サイトURLの生成
                 farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
-                pyl.log_inf(lg, farm_report_site_url)
+                pyl.log_inf(lg, f'周回報告サイトURL：{farm_report_site_url}')
                 
-                # 周回報告サイトからの応答の取得(周回報告サイトへの要求)
-                response_from_farm_report_site: Response = requests.get(farm_report_site_url)
-                if response_from_farm_report_site.status_code != requests.codes['ok']:
-                    pyl.log_war(lg, f'周回報告サイトへのアクセスに失敗しました。' +
-                                    f'(farm_report_site_url:{farm_report_site_url}, ' +
-                                    f'status_code:{response_from_farm_report_site.status_code})')
-                    return None
+                # 周回報告サイトからの周回報告の取得
+                farm_report_site_response = requests.get(farm_report_site_url)
+                farm_reports: dict[Any, Any] = json.loads(farm_report_site_response.text)
                 
-                # クエスト種別ごとの周回報告数の取得
-                bs: BeautifulSoup = \
-                    BeautifulSoup(response_from_farm_report_site.content, 'html.parser')
-                num_of_farm_reports_list: ResultSet = bs.find_all(class_='subtitle')
-                num_of_farm_reports_of_event_quest: int = \
-                    __get_num_of_farm_reports(num_of_farm_reports_list[0].get_text())
-                num_of_farm_reports_of_normal_quest: int = \
-                    __get_num_of_farm_reports(num_of_farm_reports_list[1].get_text())
-                
-                # 周回報告一覧データフレームの取得(周回報告サイトの読み込み)
-                farm_report_list_dfs_by_html: list[pd.DataFrame] = pd.read_html(
-                        farm_report_site_url,
-                        index_col=None,
-                        parse_dates=[0]
-                    )
-                
-                # 周回報告一覧(イベクエ)の取得
-                if num_of_farm_reports_of_event_quest > 0:
-                    farm_report_list_dfs_by_html[0].set_axis(
-                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_dfs_by_html[0].insert(
-                        0, const_util.FARM_REPORT_LIST_HEADER[0], 'イベクエ')
-                    farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[0]],
-                            ignore_index=True
+                # 周回報告データフレームの格納
+                for farm_report in farm_reports:
+                    farm_report_df = pd.DataFrame(
+                            [[
+                                (const_util.QUEST_KINDS[1]
+                                    if bool(farm_report['freequest']) == True
+                                    else const_util.QUEST_KINDS[2]),
+                                pyl.convert_timestamp_to_jst(
+                                    farm_report['timestamp'], '%Y-%m-%dT%H:%M:%S%z'),
+                                farm_report['reporter'],
+                                farm_report['chapter'] + ' ' + farm_report['place'],
+                                farm_report['runcount'],
+                                ', '.join(['{0}: {1}'.format(key, value)
+                                            for key, value in farm_report['items'].items()]),
+                            ]],
+                            columns=const_util.FARM_REPORT_LIST_HEADER
                         )
-                
-                # 周回報告一覧(通常クエ)の取得
-                if num_of_farm_reports_of_event_quest == 0 \
-                    and num_of_farm_reports_of_normal_quest > 0:
-                    farm_report_list_dfs_by_html[0].set_axis(
-                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_dfs_by_html[0].insert(
-                        0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
-                    farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[0]],
-                            ignore_index=True
-                        )
-                elif num_of_farm_reports_of_event_quest > 0 \
-                    and num_of_farm_reports_of_normal_quest > 0:
-                    farm_report_list_dfs_by_html[1].set_axis(
-                        const_util.FARM_REPORT_LIST_HEADER_RAW, axis='columns', inplace=True)
-                    farm_report_list_dfs_by_html[1].insert(
-                        0, const_util.FARM_REPORT_LIST_HEADER[0], '通常クエ')
-                    farm_report_list_df = pd.concat(
-                            [farm_report_list_df, farm_report_list_dfs_by_html[1]],
-                            ignore_index=True
-                        )
+                    farm_report_list_df = \
+                        pd.concat([farm_report_list_df, farm_report_df], ignore_index=True)
         
         # 周回報告一覧データフレームの保存
         pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
@@ -262,21 +225,3 @@ def __generate_farm_report_list_file(
         raise(e)
     
     return None
-
-
-def __get_num_of_farm_reports(sub_title: str) -> int:
-    '''周回報告数取得'''
-    
-    try:
-        matched_result_of_event_quest = re.match('イベント \\((.*)\\)', sub_title)
-        matched_result_of_normal_quest = re.match('恒常フリークエスト \\((.*)\\)', sub_title)
-        
-        num_of_farm_reports: int = 0
-        if matched_result_of_event_quest is not None:
-            num_of_farm_reports = int(matched_result_of_event_quest.group(1))
-        elif matched_result_of_normal_quest is not None:
-            num_of_farm_reports = int(matched_result_of_normal_quest.group(1))
-    except Exception as e:
-        raise(e)
-    
-    return num_of_farm_reports
