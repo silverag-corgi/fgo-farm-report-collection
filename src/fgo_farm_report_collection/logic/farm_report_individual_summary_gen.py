@@ -46,7 +46,7 @@ def do_logic(
             # 周回報告個人概要更新の判定
             update_ind_sum: bool = True
             if generate_list == True:
-                # 周回報告一覧生成ロジックの実行
+                # ロジック(周回報告一覧生成)の実行
                 pyl.measure_proc_time(
                     farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
                         col_year_month)
@@ -55,7 +55,8 @@ def do_logic(
                 if os.path.isfile(farm_report_list_file_path) == False:
                     update_ind_sum = False
             else:
-                update_ind_sum = False
+                if os.path.isfile(farm_report_list_file_path) == False:
+                    update_ind_sum = False
             
             # 周回報告個人概要データフレームの更新
             farm_report_ind_sum_df.at[
