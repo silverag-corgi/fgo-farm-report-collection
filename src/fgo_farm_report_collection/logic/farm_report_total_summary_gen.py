@@ -1,13 +1,16 @@
+import math
 import os
 from datetime import date, datetime
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional, cast
 
+import numpy as np
 import pandas as pd
 import python_lib_for_me as pyl
 import requests
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet
+from pandas.core.groupby.generic import DataFrameGroupBy
 from requests.models import Response
 
 from fgo_farm_report_collection.util import const_util, pandas_util
@@ -86,29 +89,47 @@ def __generate_farm_report_tot_sum_file(
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = \
             pandas_util.read_farm_report_list_file(farm_report_list_file_path)
-            
-        pyl.log_inf(lg, f'farm_report_list_df:\n{farm_report_list_df}')
         
         if quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
-            farm_report_tot_sum_df: pd.DataFrame
+            farm_report_list_df_by_quest_kind: pd.DataFrame
             if quest_kind in const_util.QUEST_KINDS[1:3]:
-                farm_report_tot_sum_df = farm_report_list_df.query(
+                farm_report_list_df_by_quest_kind = farm_report_list_df.query(
                     f'{const_util.FARM_REPORT_LIST_HEADER[2]}.str.match("{quest_kind}")')
             else:
-                farm_report_tot_sum_df = farm_report_list_df
-        
-            # 投稿者による集計
-            farm_report_tot_sum_df = farm_report_tot_sum_df.groupby(
-                const_util.FARM_REPORT_LIST_HEADER[1]).sum()
+                farm_report_list_df_by_quest_kind = farm_report_list_df
+            
+            # 投稿者によるグループ化
+            farm_report_list_df_group: DataFrameGroupBy = \
+                farm_report_list_df_by_quest_kind.groupby(const_util.FARM_REPORT_LIST_HEADER[1])
+            
+            # 周回数と報告数の集計
+            farm_report_tot_sum_series: pd.Series = \
+                farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[4]].aggregate(
+                    cast(Any, [np.sum, np.count_nonzero]))
+            farm_report_tot_sum_df: pd.DataFrame = \
+                pd.DataFrame(farm_report_tot_sum_series).rename(
+                    columns={
+                        'sum': const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[2],
+                        'count_nonzero': const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[3]
+                    })
             
             # 周回数による降順ソート
             farm_report_tot_sum_df.sort_values(
-                const_util.FARM_REPORT_LIST_HEADER[4], ascending=False, inplace=True)
+                const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[2], ascending=False, inplace=True)
             
             # 周回数による抽出
             farm_report_tot_sum_df.query(
-                f'{const_util.FARM_REPORT_LIST_HEADER[4]} >= {min_num_of_farms}', inplace=True)
+                f'{const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[2]} >= {min_num_of_farms}',
+                inplace=True)
+            
+            # 報告ごとの周回数の算出(切り捨て)
+            farm_report_tot_sum_df[const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[4]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[2]] / \
+                    farm_report_tot_sum_df[const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[3]]
+            farm_report_tot_sum_df[const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[4]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[4]].apply(
+                    lambda data: math.floor(data))
             
             # 列(ユーザ名)の追加
             farm_report_tot_sum_df.insert(
@@ -119,14 +140,17 @@ def __generate_farm_report_tot_sum_file(
                 pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
                 for user_id, _ in farm_report_tot_sum_df.iterrows():
                     try:
-                        user_site_info_url: str = \
+                        user_info_site_url: str = \
                             const_util.USER_INFO_SITE_URL.format(str(user_id).strip())
-                        response_for_bs: Response = requests.get(user_site_info_url)
-                        bs: BeautifulSoup = BeautifulSoup(response_for_bs.content, 'html.parser')
-                        user_name_list: ResultSet = bs.find_all(class_='name')
+                        user_info_site_response: Response = requests.get(user_info_site_url)
+                        user_info_site_bs: BeautifulSoup = BeautifulSoup(
+                            user_info_site_response.content,
+                            'lxml',
+                            from_encoding=const_util.ENCODING)
+                        user_name_rs: ResultSet = user_info_site_bs.find_all(class_='name')
                         farm_report_tot_sum_df.at[
                             user_id, const_util.FARM_REPORT_TOTAL_SUMMARY_HEADER[1]] = \
-                                user_name_list[0].get_text()
+                                user_name_rs[0].get_text()
                         pyl.log_deb(lg, f'ユーザ名の設定に成功しました。(user_id:{user_id})')
                     except Exception as e:
                         pyl.log_war(lg, f'ユーザ名の設定に失敗しました。' +
