@@ -17,7 +17,8 @@ FARM_REPORT_LIST_HEADER: Final[list[str]] = \
         'post_datetime',
         'user_id',
         'quest_kind',
-        'quest_place',
+        'chapter_name',
+        'coordinate_name',
         'num_of_farms',
         'materials'
     ]

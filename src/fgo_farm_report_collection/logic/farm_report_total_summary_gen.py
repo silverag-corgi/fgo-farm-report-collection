@@ -105,7 +105,7 @@ def __generate_farm_report_tot_sum_file(
             
             # 周回数と報告数の集計
             farm_report_tot_sum_series: pd.Series = \
-                farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[4]].aggregate(
+                farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[5]].aggregate(
                     cast(Any, [np.sum, np.count_nonzero]))
             farm_report_tot_sum_df: pd.DataFrame = \
                 pd.DataFrame(farm_report_tot_sum_series).rename(

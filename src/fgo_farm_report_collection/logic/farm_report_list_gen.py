@@ -203,7 +203,8 @@ def __generate_farm_report_list_file(
                                 (const_util.QUEST_KINDS[1]
                                     if bool(farm_report['freequest']) == True
                                     else const_util.QUEST_KINDS[2]),
-                                farm_report['chapter'] + ' ' + farm_report['place'],
+                                farm_report['chapter'],
+                                farm_report['place'],
                                 farm_report['runcount'],
                                 ', '.join(['{0}: {1}'.format(key, value)
                                             for key, value in farm_report['items'].items()]),
