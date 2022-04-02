@@ -25,7 +25,9 @@ FARM_REPORT_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
         'user_id',
         'user_name',
-        'num_of_farms'
+        'num_of_farms',
+        'num_of_reports',
+        'num_of_farms_per_report'
     ]
 FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER: Final[list[str]] = \
     [
