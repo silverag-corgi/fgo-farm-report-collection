@@ -116,11 +116,11 @@ def __update_farm_report_ind_sum_df(
         
         # 周回数の更新
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]] = \
-            df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[5]].sum()
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]] = \
-            df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[5]].sum()
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]] = \
-            df_by_user_id[const_util.FARM_REPORT_LIST_HEADER[4]].sum()
+            df_by_user_id[const_util.FARM_REPORT_LIST_HEADER[5]].sum()
     except Exception as e:
         raise(e)
     
