@@ -16,36 +16,36 @@ USER_INFO_SITE_URL: Final[str] = \
 
 FARM_REPORT_LIST_HEADER: Final[list[str]] = \
     [
-        'post_datetime',
-        'user_id',
-        'quest_kind',
-        'chapter_name',
-        'coordinate_name',
-        'num_of_farms',
-        'materials'
+        '投稿日時',
+        'ユーザID',
+        'クエスト種別',
+        '章名',
+        '座標名',
+        '周回数',
+        '素材'
     ]
 FARM_REPORT_USER_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
-        'user_id',
-        'user_name',
-        'num_of_farms',
-        'num_of_reports',
-        'num_of_farms_per_report'
+        'ユーザID',
+        'ユーザ名',
+        '周回数',
+        '報告数',
+        '周回数／報告'
     ]
 FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
-        'chapter_name',
-        'coordinate_name',
-        'num_of_farms',
-        'num_of_reports',
-        'num_of_farms_per_report'
+        '章名',
+        '座標名',
+        '周回数',
+        '報告数',
+        '周回数／報告'
     ]
 FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER: Final[list[str]] = \
     [
-        'post_month',
-        'num_of_farms_for_normal',
-        'num_of_farms_for_event',
-        'num_of_farms_for_all'
+        '投稿月',
+        '周回数(通常)',
+        '周回数(イベント)',
+        '周回数(全て)'
     ]
 
 ENCODING: Final[str] = 'utf8'
