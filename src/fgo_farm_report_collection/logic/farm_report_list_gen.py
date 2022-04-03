@@ -219,9 +219,6 @@ def __generate_farm_report_list_file(
                 const_util.FARM_REPORT_LIST_HEADER[0], ascending=True, inplace=True)
         
         # 周回報告一覧データフレームの保存
-        pyl.log_inf(lg, f'周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}')
-        pyl.log_inf(lg, f'周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}')
-        pyl.log_inf(lg, f'周回報告一覧ファイルパス：{farm_report_list_file_path}')
         pandas_util.save_farm_report_list_df(
             farm_report_list_df, farm_report_list_file_path, has_farm_report_list)
     except Exception as e:
