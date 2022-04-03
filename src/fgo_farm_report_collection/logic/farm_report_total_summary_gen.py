@@ -181,10 +181,7 @@ def __generate_farm_report_user_tot_sum_file(
                                         f'(user_id:{user_id})')
             
             # 周回報告ユーザ全体概要データフレームの保存
-            pyl.log_inf(lg, f'周回報告ユーザ全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')
-            pyl.log_inf(lg, f'周回報告ユーザ全体概要(末尾n行)：\n{farm_report_tot_sum_df.tail(5)}')
-            pyl.log_inf(lg, f'周回報告ユーザ全体概要ファイルパス：{farm_report_tot_sum_file_path}')
-            pandas_util.save_farm_report_tot_sum_df(
+            pandas_util.save_farm_report_usr_tot_sum_df(
                 farm_report_tot_sum_df, farm_report_tot_sum_file_path)
     except Exception as e:
         raise(e)
@@ -256,10 +253,7 @@ def __generate_farm_report_quest_tot_sum_file(
                     lambda data: math.floor(data))
             
             # 周回報告クエスト全体概要データフレームの保存
-            pyl.log_inf(lg, f'周回報告クエスト全体概要(先頭n行)：\n{farm_report_tot_sum_df.head(5)}')
-            pyl.log_inf(lg, f'周回報告クエスト全体概要(末尾n行)：\n{farm_report_tot_sum_df.tail(5)}')
-            pyl.log_inf(lg, f'周回報告クエスト全体概要ファイルパス：{farm_report_tot_sum_file_path}')
-            pandas_util.save_farm_report_tot_sum_df(
+            pandas_util.save_farm_report_qst_tot_sum_df(
                 farm_report_tot_sum_df, farm_report_tot_sum_file_path)
     except Exception as e:
         raise(e)
