@@ -27,19 +27,22 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year_month (str)            : [グループA][必須] 収集年月(yyyy-mm形式)
-        min_num_of_all_quest (int)      : [グループB][1つのみ必須] 最低周回数(全て)
-        min_num_of_normal_quest (int)   : [グループB][1つのみ必須] 最低周回数(通常クエ)
-        min_num_of_event_quest (int)    : [グループB][1つのみ必須] 最低周回数(イベクエ)
-        generate_list (bool)            : [グループC][任意] 周回報告一覧生成要否
-        output_user_name (bool)         : [グループC][任意] ユーザ名出力要否
+        col_year_month (str)                : [グループA][必須] 収集年月(yyyy-mm形式)
+        generate_user_total_summary (bool)  : [グループB1][1つのみ必須] 周回報告ユーザ全体概要生成要否
+        generate_quest_total_summary (bool) : [グループB1][1つのみ必須] 周回報告クエスト全体概要生成要否
+        min_num_of_all_quest (int)          : [グループB2][1つのみ必須] 最低周回数(全て)
+        min_num_of_normal_quest (int)       : [グループB2][1つのみ必須] 最低周回数(通常クエ)
+        min_num_of_event_quest (int)        : [グループB2][1つのみ必須] 最低周回数(イベクエ)
+        generate_list (bool)                : [グループC][任意] 周回報告一覧生成要否
+        output_user_name (bool)             : [グループC][任意] ユーザ名出力要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/[収集年月].csv
-        周回報告全体概要ファイル: ./dest/farm_report_total_summary/[収集年月]_[クエスト種別]_[最低周回数].csv
+        周回報告ユーザ全体概要ファイル: ./dest/farm_report_total_summary/user/[収集年月]_[クエスト種別]_[最低周回数].csv
+        周回報告クエスト全体概要ファイル: ./dest/farm_report_total_summary/quest/[収集年月]_[クエスト種別]_[最低周回数].csv
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -64,28 +67,61 @@ def main() -> int:
                         args.col_year_month
                     )
         
-        # ロジック(周回報告全体概要生成)の実行
-        if args.min_num_of_all_quest is not None:
-            pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
-                    args.col_year_month,
-                    int(args.min_num_of_all_quest),
-                    const_util.QUEST_KINDS[0],
-                    args.output_user_name
-                )
-        elif args.min_num_of_normal_quest is not None:
-            pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
-                    args.col_year_month,
-                    int(args.min_num_of_normal_quest),
-                    const_util.QUEST_KINDS[1],
-                    args.output_user_name
-                )
-        elif args.min_num_of_event_quest is not None:
-            pyl.measure_proc_time(farm_report_total_summary_gen.do_logic)(
-                    args.col_year_month,
-                    int(args.min_num_of_event_quest),
-                    const_util.QUEST_KINDS[2],
-                    args.output_user_name
-                )
+        # ロジック(周回報告ユーザ全体概要生成)の実行
+        if bool(args.generate_user_total_summary) == True:
+            if args.min_num_of_all_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
+                            int(args.min_num_of_all_quest),
+                            const_util.QUEST_KINDS[0],
+                            args.output_user_name
+                        )
+            elif args.min_num_of_normal_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
+                            int(args.min_num_of_normal_quest),
+                            const_util.QUEST_KINDS[1],
+                            args.output_user_name
+                        )
+            elif args.min_num_of_event_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
+                            int(args.min_num_of_event_quest),
+                            const_util.QUEST_KINDS[2],
+                            args.output_user_name
+                        )
+        # ロジック(周回報告クエスト全体概要生成)の実行
+        else:
+            if args.min_num_of_all_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
+                            int(args.min_num_of_all_quest),
+                            const_util.QUEST_KINDS[0]
+                        )
+            elif args.min_num_of_normal_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
+                            int(args.min_num_of_normal_quest),
+                            const_util.QUEST_KINDS[1]
+                        )
+            elif args.min_num_of_event_quest is not None:
+                pyl.measure_proc_time(
+                    farm_report_total_summary_gen.do_logic)(
+                            args.col_year_month,
+                            farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
+                            int(args.min_num_of_event_quest),
+                            const_util.QUEST_KINDS[2]
+                        )
     except KeyboardInterrupt as e:
         if lg is not None:
             pyl.log_inf(lg, f'処理を中断しました。')
@@ -117,18 +153,31 @@ def __get_args() -> argparse.Namespace:
         help_ = '収集年月(yyyy-mm形式)'
         arg_group_a.add_argument('col_year_month', help=help_)
         
-        # グループBの引数(1つのみ必須な引数)
-        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            'Group B - only one required arguments',
+        # グループB1の引数(1つのみ必須な引数)
+        arg_group_b1: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B1 - only one required arguments',
+            '1つのみ必須な引数\n処理を指定します')
+        mutually_exclusive_group_b1: argparse._MutuallyExclusiveGroup = \
+            arg_group_b1.add_mutually_exclusive_group(required=True)
+        help_ = '周回報告{0}全体概要生成要否\n' + \
+                '周回報告{0}全体概要を生成します'
+        mutually_exclusive_group_b1.add_argument(
+            '-u', '--generate_user_total_summary', action='store_true', help=help_.format('ユーザ'))
+        mutually_exclusive_group_b1.add_argument(
+            '-q', '--generate_quest_total_summary', action='store_true', help=help_.format('クエスト'))
+        
+        # グループB2の引数(1つのみ必須な引数)
+        arg_group_b2: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B2 - only one required arguments',
             '1つのみ必須な引数\n収集する最低周回数を指定します')
-        mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
-            arg_group_b.add_mutually_exclusive_group(required=True)
+        mutually_exclusive_group_b2: argparse._MutuallyExclusiveGroup = \
+            arg_group_b2.add_mutually_exclusive_group(required=True)
         help_ = '最低周回数({0})'
-        mutually_exclusive_group_b.add_argument(
+        mutually_exclusive_group_b2.add_argument(
             '-a', '--min_num_of_all_quest', type=int, help=help_.format('全て'))
-        mutually_exclusive_group_b.add_argument(
+        mutually_exclusive_group_b2.add_argument(
             '-n', '--min_num_of_normal_quest', type=int, help=help_.format('通常クエ'))
-        mutually_exclusive_group_b.add_argument(
+        mutually_exclusive_group_b2.add_argument(
             '-e', '--min_num_of_event_quest', type=int, help=help_.format('イベクエ'))
         
         # グループCの引数(任意の引数)
@@ -139,8 +188,8 @@ def __get_args() -> argparse.Namespace:
                 '指定しない場合は生成せずに既存の一覧のみを使用します'
         arg_group_c.add_argument('-l', '--generate_list', action='store_true', help=help_)
         help_ = 'ユーザ名出力要否\n' + \
-                '指定した場合は周回報告概要ファイルにユーザ名を出力します'
-        arg_group_c.add_argument('-u', '--output_user_name', action='store_true', help=help_)
+                '指定した場合は周回報告ユーザ全体概要ファイルにユーザ名を出力します'
+        arg_group_c.add_argument('-un', '--output_user_name', action='store_true', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
