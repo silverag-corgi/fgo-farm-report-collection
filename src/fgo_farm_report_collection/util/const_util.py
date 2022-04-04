@@ -9,6 +9,15 @@ FARM_REPORT_QUEST_TOTAL_SUMMARY_FILE_PATH: Final[str] = \
 FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH: Final[str] = \
     './dest/farm_report_individual_summary/{0}_{1}.csv'
 
+FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告一覧.xlsx'
+FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告ユーザ全体概要.xlsx'
+FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告クエスト全体概要.xlsx'
+FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告個人概要.xlsx'
+
 FARM_REPORT_SITE_URL: Final[str] = \
     'https://fgojunks.max747.org/harvest/contents/date/{0}.json'
 USER_INFO_SITE_URL: Final[str] = \
@@ -58,3 +67,6 @@ QUEST_KINDS: Final[list[str]] = \
     ]
 
 NUM_OF_MONTHS: Final[int] = 12
+
+FONT_NAME: Final[str] = 'Meiryo UI'
+FONT_SIZE: Final[int] = 10
