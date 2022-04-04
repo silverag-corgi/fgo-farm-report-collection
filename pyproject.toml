@@ -23,6 +23,8 @@ beautifulsoup4 = "^4.10.0"
 html5lib = "^1.1"
 lxml = "^4.7.1"
 tzdata = "^2021.5"
+openpyxl = "^3.0.9"
+styleframe = "^4.0.0"
 python-lib-for-me = {path = "../python-lib-for-me", develop = true}
 
 [tool.poetry.dev-dependencies]
@@ -32,9 +34,10 @@ mypy = "^0.931"
 types-requests = "^2.27.11"
 
 [tool.poetry.scripts]
-list-gen = "fgo_farm_report_collection.main.farm_report_list_gen:main"
-tot-gen  = "fgo_farm_report_collection.main.farm_report_total_summary_gen:main"
-ind-gen  = "fgo_farm_report_collection.main.farm_report_individual_summary_gen:main"
+list-gen    = "fgo_farm_report_collection.main.farm_report_list_gen:main"
+tot-gen     = "fgo_farm_report_collection.main.farm_report_total_summary_gen:main"
+ind-gen     = "fgo_farm_report_collection.main.farm_report_individual_summary_gen:main"
+merge       = "fgo_farm_report_collection.main.farm_report_gen_files_merge:main"
 
 ####################################################################################################
 # build system
@@ -98,7 +101,6 @@ disallow_untyped_decorators = true
 # None and Optional handling
 strict_optional = true
 # Configuring warnings
-warn_unused_ignores = true
 warn_no_return = true
 warn_return_any = true
 warn_unreachable = true
