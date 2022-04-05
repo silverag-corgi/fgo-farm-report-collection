@@ -1,4 +1,3 @@
-import os
 from logging import Logger
 from typing import Optional
 
@@ -268,21 +267,45 @@ def read_farm_report_ind_sum_file(
 
 
 def save_gen_result_sf(
+        sheet_description_sfs: list[StyleFrame],
         gen_result_sf: StyleFrame,
         excel_writer: Optional[pd.ExcelWriter],
-        gen_result_file_path: str,
+        sheet_name: str,
         row_to_add_filters: int = 0,
-        columns_and_rows_to_freeze: str = 'B2'
+        columns_and_rows_to_freeze: Optional[str] = None
     ) -> None:
     
     '''生成結果スタイルフレーム保存'''
     
-    gen_result_sf.to_excel(
-            excel_writer,  # type: ignore
-            sheet_name=os.path.splitext(os.path.basename(gen_result_file_path))[0],
-            row_to_add_filters=row_to_add_filters,
-            columns_and_rows_to_freeze=columns_and_rows_to_freeze,
-            index=False
-        )
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        
+        # シート説明スタイルフレームの保存
+        col_num: int = 0
+        for sheet_description_sf in sheet_description_sfs:
+            sheet_description_sf.to_excel(
+                    excel_writer,  # type: ignore
+                    sheet_name=sheet_name,
+                    header=False,
+                    index=False,
+                    startcol=col_num,
+                    startrow=0
+                )
+            col_num = col_num + len(sheet_description_sf.columns)
+        
+        # 周回報告スタイルフレームの保存
+        gen_result_sf.to_excel(
+                excel_writer,  # type: ignore
+                sheet_name=sheet_name,
+                row_to_add_filters=row_to_add_filters,
+                columns_and_rows_to_freeze=columns_and_rows_to_freeze,
+                index=False,
+                startrow=len(sheet_description_sfs[0])
+            )
+    except Exception as e:
+        raise(e)
     
     return None
