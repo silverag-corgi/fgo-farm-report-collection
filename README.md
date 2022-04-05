@@ -217,7 +217,7 @@ Group B - only one required arguments:
 
 ```cmd
 > poetry run tot-gen -h
-usage: tot-gen [-h] (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST) [-l] [-un] col_year_month
+usage: tot-gen [-h] (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-un] col_year_month
 
 周回報告全体概要生成
 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
@@ -252,6 +252,8 @@ Group B2 - only one required arguments:
                         最低周回数(通常クエ)
   -e MIN_NUM_OF_EVENT_QUEST, --min_num_of_event_quest MIN_NUM_OF_EVENT_QUEST
                         最低周回数(イベクエ)
+  -b MIN_NUM_OF_QUEST_BY_BATCH, --min_num_of_quest_by_batch MIN_NUM_OF_QUEST_BY_BATCH
+                        最低周回数(3種類一括)
 
 Group C - optional arguments:
   任意の引数
