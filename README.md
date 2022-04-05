@@ -29,7 +29,7 @@
     - [5.3.1. 実行コマンド](#531-実行コマンド)
     - [5.3.2. 実行結果](#532-実行結果)
       - [5.3.2.1. 周回報告個人概要ファイル](#5321-周回報告個人概要ファイル)
-  - [5.4. 周回報告生成ファイルマージ](#54-周回報告生成ファイルマージ)
+  - [5.4. 周回報告生成結果マージ](#54-周回報告生成結果マージ)
     - [5.4.1. 実行コマンド](#541-実行コマンド)
     - [5.4.2. 実行結果](#542-実行結果)
       - [5.4.2.1. 周回報告一覧マージ結果ファイル](#5421-周回報告一覧マージ結果ファイル)
@@ -63,9 +63,8 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 - 周回報告個人概要生成
   - 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成する
   - 任意で周回報告一覧ファイルを生成する
-- 周回報告生成ファイルマージ
-  - 上記で生成されたファイルをExcelファイルにマージする
-  - マージ結果ファイルを生成する
+- 周回報告生成結果マージ
+  - 上記で生成されたファイルをExcelファイルにマージし、マージ結果ファイルを生成する
 
 
 ## 2.2. 実行結果
@@ -360,7 +359,7 @@ Group C - optional arguments:
 ![farm_report_individual_summary](./pic/farm_report_individual_summary.JPG)
 
 
-## 5.4. 周回報告生成ファイルマージ
+## 5.4. 周回報告生成結果マージ
 
 
 ### 5.4.1. 実行コマンド
@@ -379,8 +378,8 @@ Group C - optional arguments:
 > poetry run merge -h
 usage: merge [-h] (-l | -u | -q | -i) [-a]
 
-周回報告生成ファイルマージ
-生成されたファイルをExcelファイルにマージします
+周回報告生成結果マージ
+生成結果をExcelファイルにマージします
 
 options:
   -h, --help            show this help message and exit
@@ -389,22 +388,21 @@ Group B - only one required arguments:
   1つのみ必須な引数
   処理を指定します
 
-  -l, --merge_list_files
-                        周回報告一覧ファイルマージ要否
-  -u, --merge_user_total_summary_files
-                        周回報告ユーザ全体概要ファイルマージ要否
-  -q, --merge_quest_total_summary_files
-                        周回報告クエスト全体概要ファイルマージ要否
-  -i, --merge_individual_summary_files
-                        周回報告個人概要ファイルマージ要否
+  -l, --merge_list      周回報告一覧マージ要否
+  -u, --merge_user_total_summary
+                        周回報告ユーザ全体概要マージ要否
+  -q, --merge_quest_total_summary
+                        周回報告クエスト全体概要マージ要否
+  -i, --merge_individual_summary
+                        周回報告個人概要マージ要否
 
 Group C - optional arguments:
   任意の引数
 
-  -a, --append_generated_file
-                        生成ファイル追記要否
-                        指定した場合は生成ファイルをシート単位で追記します
-                        指定しない場合は生成ファイルを上書きします
+  -a, --append_gen_result
+                        生成結果追記要否
+                        指定した場合は生成結果をシート単位で追記します
+                        指定しない場合は生成結果をシート単位で上書きします
 ```
 
 
