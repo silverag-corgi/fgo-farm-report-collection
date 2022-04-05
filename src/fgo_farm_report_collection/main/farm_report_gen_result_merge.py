@@ -6,7 +6,7 @@ from typing import Optional
 
 import python_lib_for_me as pyl
 
-from fgo_farm_report_collection.logic import farm_report_gen_files_merge
+from fgo_farm_report_collection.logic import farm_report_gen_result_merge
 
 
 def main() -> int:
@@ -17,17 +17,17 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、生成されたファイルをExcelファイルにマージする。
+        引数を検証して問題ない場合、生成結果をExcelファイル(マージ結果ファイル)にマージする。
     
     Args:
         -
     
     Args on cmd line:
-        merge_list_files (bool)                 : [グループB1][1つのみ必須] 周回報告一覧ファイルマージ要否
-        merge_user_total_summary_files (bool)   : [グループB1][1つのみ必須] 周回報告ユーザ全体概要ファイルマージ要否
-        merge_quest_total_summary_files (bool)  : [グループB1][1つのみ必須] 周回報告クエスト全体概要ファイルマージ要否
-        merge_individual_summary_files (bool)   : [グループB1][1つのみ必須] 周回報告個人概要ファイルマージ要否
-        append_generated_file (bool)            : [グループC][任意] マージ結果追記要否
+        merge_list (bool)                   : [グループB1][1つのみ必須] 周回報告一覧マージ要否
+        merge_user_total_summary (bool)     : [グループB1][1つのみ必須] 周回報告ユーザ全体概要マージ要否
+        merge_quest_total_summary (bool)    : [グループB1][1つのみ必須] 周回報告クエスト全体概要マージ要否
+        merge_individual_summary (bool)     : [グループB1][1つのみ必須] 周回報告個人概要マージ要否
+        append_gen_result (bool)            : [グループC][任意] 生成結果追記要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -54,22 +54,22 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # ロジック(周回報告生成ファイルマージ)の実行
-        if bool(args.merge_list_files) == True:
-            farm_report_gen_files_merge.do_logic_that_merge_farm_report_list_files(
-                    args.append_generated_file
+        # ロジック(周回報告生成結果マージ)の実行
+        if bool(args.merge_list) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_list(
+                    args.append_gen_result
                 )
-        elif bool(args.merge_user_total_summary_files) == True:
-            farm_report_gen_files_merge.do_logic_that_merge_farm_report_usr_tot_sum_files(
-                    args.append_generated_file
+        elif bool(args.merge_user_total_summary) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_usr_tot_sum(
+                    args.append_gen_result
                 )
-        elif bool(args.merge_quest_total_summary_files) == True:
-            farm_report_gen_files_merge.do_logic_that_merge_farm_report_qst_tot_sum_files(
-                    args.append_generated_file
+        elif bool(args.merge_quest_total_summary) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_qst_tot_sum(
+                    args.append_gen_result
                 )
-        elif bool(args.merge_individual_summary_files) == True:
-            farm_report_gen_files_merge.do_logic_that_merge_farm_report_ind_sum_files(
-                    args.append_generated_file
+        elif bool(args.merge_individual_summary) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_ind_sum(
+                    args.append_gen_result
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -87,8 +87,8 @@ def __get_args() -> argparse.Namespace:
     
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
-                description='周回報告生成ファイルマージ\n' +
-                            '生成されたファイルをExcelファイルにマージします',
+                description='周回報告生成結果マージ\n' +
+                            '生成結果をExcelファイルにマージします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -101,26 +101,26 @@ def __get_args() -> argparse.Namespace:
             '1つのみ必須な引数\n処理を指定します')
         mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
-        help_ = '周回報告一覧ファイルマージ要否'
+        help_ = '周回報告一覧マージ要否'
         mutually_exclusive_group_b.add_argument(
-            '-l', '--merge_list_files', action='store_true', help=help_)
-        help_ = '周回報告ユーザ全体概要ファイルマージ要否'
+            '-l', '--merge_list', action='store_true', help=help_)
+        help_ = '周回報告ユーザ全体概要マージ要否'
         mutually_exclusive_group_b.add_argument(
-            '-u', '--merge_user_total_summary_files', action='store_true', help=help_)
-        help_ = '周回報告クエスト全体概要ファイルマージ要否'
+            '-u', '--merge_user_total_summary', action='store_true', help=help_)
+        help_ = '周回報告クエスト全体概要マージ要否'
         mutually_exclusive_group_b.add_argument(
-            '-q', '--merge_quest_total_summary_files', action='store_true', help=help_)
-        help_ = '周回報告個人概要ファイルマージ要否'
+            '-q', '--merge_quest_total_summary', action='store_true', help=help_)
+        help_ = '周回報告個人概要マージ要否'
         mutually_exclusive_group_b.add_argument(
-            '-i', '--merge_individual_summary_files', action='store_true', help=help_)
+            '-i', '--merge_individual_summary', action='store_true', help=help_)
         
         # グループCの引数(任意の引数)
         arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
             'Group C - optional arguments', '任意の引数')
-        help_ = '生成ファイル追記要否\n' + \
-                '指定した場合は生成ファイルをシート単位で追記します\n' + \
-                '指定しない場合は生成ファイルを上書きします'
-        arg_group_c.add_argument('-a', '--append_generated_file', action='store_true', help=help_)
+        help_ = '生成結果追記要否\n' + \
+                '指定した場合は生成結果をシート単位で追記します\n' + \
+                '指定しない場合は生成結果をシート単位で上書きします'
+        arg_group_c.add_argument('-a', '--append_gen_result', action='store_true', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
