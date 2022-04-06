@@ -79,6 +79,7 @@ def do_logic_that_merge_list(
                             gen_result_sf,
                             excel_writer,
                             sheet_name,
+                            columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
                 pyl.log_err(lg, f'周回報告一覧マージ結果ファイルへの出力に失敗しました。')
@@ -90,7 +91,7 @@ def do_logic_that_merge_list(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH,
-                ['A1:G1', 'A2:G2', 'H1:H2']
+                ['A1:G1', 'A2:G2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -167,6 +168,7 @@ def do_logic_that_merge_usr_tot_sum(
                             gen_result_sf,
                             excel_writer,
                             sheet_name,
+                            columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
                 pyl.log_err(lg, f'周回報告ユーザ全体概要マージ結果ファイルへの出力に失敗しました。')
@@ -178,7 +180,7 @@ def do_logic_that_merge_usr_tot_sum(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
-                ['A1:E1', 'A2:E2', 'F1:F2']
+                ['A1:E1', 'A2:E2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -255,6 +257,7 @@ def do_logic_that_merge_qst_tot_sum(
                             gen_result_sf,
                             excel_writer,
                             sheet_name,
+                            columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
                 pyl.log_err(lg, f'周回報告クエスト全体概要マージ結果ファイルへの出力に失敗しました。')
@@ -266,7 +269,7 @@ def do_logic_that_merge_qst_tot_sum(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
-                ['A1:E1', 'A2:E2', 'F1:F2']
+                ['A1:E1', 'A2:E2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -342,6 +345,7 @@ def do_logic_that_merge_ind_sum(
                             gen_result_sf,
                             excel_writer,
                             sheet_name,
+                            columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
                 pyl.log_err(lg, f'周回報告個人概要ファイルの書き込みに失敗しました。')
@@ -353,7 +357,7 @@ def do_logic_that_merge_ind_sum(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH,
-                ['A1:D1', 'A2:D2', 'E1:E2']
+                ['A1:D1', 'A2:D2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -476,7 +480,7 @@ def __apply_formatting_of_sheet_description(
             horizontal_alignment=(utils.horizontal_alignments.general
                                     if is_update_datetime_col == False
                                     else utils.horizontal_alignments.right),
-            wrap_text=False if is_update_datetime_col == False else True,
+            wrap_text=False,
             shrink_to_fit=False if is_update_datetime_col == False else True,
             date_time_format=DATETIME_FORMAT,
         )
@@ -503,10 +507,11 @@ def __generate_sheet_description_sfs(
     '''シート説明スタイルフレーム生成'''
     
     sheet_description_sfs: list[StyleFrame] = []
-    sheet_description_col_num: int = 0
     
     # シート説明01データフレームの生成
-    sheet_description_01_df: pd.DataFrame = pd.DataFrame({'col_0': [sheet_description, sheet_name]})
+    sheet_description_col_num: int = 0
+    sheet_description_01_df: pd.DataFrame = \
+        pd.DataFrame({f'col_{sheet_description_col_num}': [sheet_description, sheet_name]})
     for _ in range(len(gen_result_header) - 1):
         sheet_description_col_num = sheet_description_col_num + 1
         sheet_description_01_df[f'col_{sheet_description_col_num}'] = ''
@@ -515,12 +520,15 @@ def __generate_sheet_description_sfs(
     sheet_description_01_sf: StyleFrame = __apply_formatting_of_sheet_description(
         sheet_description_01_df, is_update_datetime_col=False)
     
+    # 更新日時の取得
+    update_datetime: datetime = datetime.now()
+    update_date: str = update_datetime.strftime('%Y-%m-%d')
+    update_time: str = update_datetime.strftime('%H:%M:%S')
+    
     # シート説明02データフレームの生成
-    sheet_description_02_df: pd.DataFrame = pd.DataFrame({'col_0': [sheet_description, sheet_name]})
-    for _ in range(0):
-        sheet_description_col_num = sheet_description_col_num + 1
-        sheet_description_02_df[f'col_{sheet_description_col_num}'] = ''
-    sheet_description_02_df.iat[0, 0] = datetime.now()
+    sheet_description_col_num = sheet_description_col_num + 1
+    sheet_description_02_df: pd.DataFrame = \
+        pd.DataFrame({f'col_{sheet_description_col_num}': [update_date, update_time]})
     
     # シート説明02の書式設定の適用
     sheet_description_02_sf: StyleFrame = __apply_formatting_of_sheet_description(
