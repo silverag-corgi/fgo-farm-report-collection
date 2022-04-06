@@ -22,7 +22,44 @@ class EnumOfProc(IntEnum):
     GENERATE_QUEST_TOTAL_SUMMARY = auto()
 
 
-def do_logic(
+def do_logic_that_generate_tot_sum_by_col_year(
+        col_year: str,
+        enum_of_proc: EnumOfProc,
+        min_num_of_farms: int,
+        quest_kind: str,
+        output_user_name: bool = False
+    ) -> None:
+    
+    '''ロジック(周回報告全体概要生成(年指定))実行'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告全体概要生成(年指定)を開始します。')
+        
+        for index in range(const_util.NUM_OF_MONTHS):
+            # 収集年月の生成
+            col_year_month: str = f'{col_year:04}-{(index+1):02}'
+            
+            # ロジック(周回報告全体概要生成(年月指定))の実行
+            do_logic_that_generate_tot_sum_by_col_year_month(
+                    col_year_month,
+                    enum_of_proc,
+                    min_num_of_farms,
+                    quest_kind,
+                    output_user_name
+                )
+        
+        pyl.log_inf(lg, f'周回報告全体概要生成(年指定)を終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
+
+
+def do_logic_that_generate_tot_sum_by_col_year_month(
         col_year_month: str,
         enum_of_proc: EnumOfProc,
         min_num_of_farms: int,
@@ -30,14 +67,14 @@ def do_logic(
         output_user_name: bool = False
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(周回報告全体概要生成(年月指定))実行'''
     
     lg: Optional[Logger] = None
     
     try:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'周回報告全体概要生成を開始します。')
+        pyl.log_inf(lg, f'周回報告全体概要生成(年月指定)を開始します。')
         
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
@@ -86,7 +123,7 @@ def do_logic(
                             farm_report_tot_sum_file_path
                         )
         
-        pyl.log_inf(lg, f'周回報告全体概要生成を終了します。')
+        pyl.log_inf(lg, f'周回報告全体概要生成(年月指定)を終了します。')
     except Exception as e:
         raise(e)
     

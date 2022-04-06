@@ -3,7 +3,7 @@ import os
 import sys
 from datetime import datetime
 from logging import Logger
-from typing import Optional
+from typing import Callable, Optional
 
 import python_lib_for_me as pyl
 
@@ -27,13 +27,14 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year_month (str)                : [グループA][必須] 収集年月(yyyy-mm形式)
-        generate_user_total_summary (bool)  : [グループB1][1つのみ必須] 周回報告ユーザ全体概要生成要否
-        generate_quest_total_summary (bool) : [グループB1][1つのみ必須] 周回報告クエスト全体概要生成要否
-        min_num_of_all_quest (int)          : [グループB2][1つのみ必須] 最低周回数(全て)
-        min_num_of_normal_quest (int)       : [グループB2][1つのみ必須] 最低周回数(通常クエ)
-        min_num_of_event_quest (int)        : [グループB2][1つのみ必須] 最低周回数(イベクエ)
-        min_num_of_quest_by_batch (int)     : [グループB2][1つのみ必須] 最低周回数(3種類一括)
+        col_year (str)                      : [グループB1][1つのみ必須] 収集年(yyyy形式)
+        col_year_month (str)                : [グループB1][1つのみ必須] 収集年月(yyyy-mm形式)
+        generate_user_total_summary (bool)  : [グループB2][1つのみ必須] 周回報告ユーザ全体概要生成要否
+        generate_quest_total_summary (bool) : [グループB2][1つのみ必須] 周回報告クエスト全体概要生成要否
+        min_num_of_all_quest (int)          : [グループB3][1つのみ必須] 最低周回数(全て)
+        min_num_of_normal_quest (int)       : [グループB3][1つのみ必須] 最低周回数(通常クエ)
+        min_num_of_event_quest (int)        : [グループB3][1つのみ必須] 最低周回数(イベクエ)
+        min_num_of_quest_by_batch (int)     : [グループB3][1つのみ必須] 最低周回数(3種類一括)
         generate_list (bool)                : [グループC][任意] 周回報告一覧生成要否
         output_user_name (bool)             : [グループC][任意] ユーザ名出力要否
     
@@ -63,65 +64,43 @@ def main() -> int:
         
         # ロジック(周回報告一覧生成)の実行
         if bool(args.generate_list) == True:
-            pyl.measure_proc_time(
-                farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
-                        args.col_year_month
-                    )
+            if args.col_year is not None:
+                pyl.measure_proc_time(
+                    farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
+                            args.col_year
+                        )
+            elif args.col_year_month is not None:
+                pyl.measure_proc_time(
+                    farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
+                            args.col_year_month
+                        )
         
         # ロジック(周回報告全体概要生成)の実行
-        if args.min_num_of_quest_by_batch is None:
-            pyl.measure_proc_time(
-                farm_report_total_summary_gen.do_logic)(
-                        args.col_year_month,
-                        (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                            if bool(args.generate_user_total_summary) == True
-                            else farm_report_total_summary_gen.
-                                    EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-                        (int(args.min_num_of_all_quest)
-                            if args.min_num_of_all_quest is not None
-                            else int(args.min_num_of_normal_quest)
-                            if args.min_num_of_normal_quest is not None
-                            else int(args.min_num_of_event_quest)),
-                        (const_util.QUEST_KINDS[0]
-                            if args.min_num_of_all_quest is not None
-                            else const_util.QUEST_KINDS[1]
-                            if args.min_num_of_normal_quest is not None
-                            else const_util.QUEST_KINDS[2]),
-                        bool(args.output_user_name)
+        if args.col_year is not None:
+            if args.min_num_of_quest_by_batch is None:
+                __do_individual_processing(
+                        (farm_report_total_summary_gen.
+                            do_logic_that_generate_tot_sum_by_col_year),
+                        args
                     )
-        else:
-            pyl.measure_proc_time(
-                farm_report_total_summary_gen.do_logic)(
-                        args.col_year_month,
-                        (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                            if bool(args.generate_user_total_summary) == True
-                            else farm_report_total_summary_gen.
-                                    EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-                        int(args.min_num_of_quest_by_batch),
-                        const_util.QUEST_KINDS[0],
-                        bool(args.output_user_name)
+            else:
+                __do_batch_processing(
+                        (farm_report_total_summary_gen.
+                            do_logic_that_generate_tot_sum_by_col_year),
+                        args
                     )
-            pyl.measure_proc_time(
-                farm_report_total_summary_gen.do_logic)(
-                        args.col_year_month,
-                        (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                            if bool(args.generate_user_total_summary) == True
-                            else farm_report_total_summary_gen.
-                                    EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-                        int(args.min_num_of_quest_by_batch),
-                        const_util.QUEST_KINDS[1],
-                        args.output_user_name
+        elif args.col_year_month is not None:
+            if args.min_num_of_quest_by_batch is None:
+                __do_individual_processing(
+                        (farm_report_total_summary_gen.
+                            do_logic_that_generate_tot_sum_by_col_year_month),
+                        args
                     )
-            pyl.measure_proc_time(
-                farm_report_total_summary_gen.do_logic)(
-                        args.col_year_month,
-                        (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                            if bool(args.generate_user_total_summary) == True
-                            else farm_report_total_summary_gen.
-                                    EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-                        int(args.min_num_of_quest_by_batch),
-                        const_util.QUEST_KINDS[2],
-                        args.output_user_name
+            else:
+                __do_batch_processing(
+                        (farm_report_total_summary_gen.
+                            do_logic_that_generate_tot_sum_by_col_year_month),
+                        args
                     )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -132,6 +111,66 @@ def main() -> int:
         return 1
     
     return 0
+
+
+def __do_individual_processing(function_object: Callable, args: argparse.Namespace) -> None:
+    
+    '''個別処理実行'''
+    
+    pyl.measure_proc_time(function_object)(
+            args.col_year if args.col_year is not None else args.col_year_month,
+            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                if bool(args.generate_user_total_summary) == True
+                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+            (int(args.min_num_of_all_quest)
+                if args.min_num_of_all_quest is not None
+                else int(args.min_num_of_normal_quest)
+                if args.min_num_of_normal_quest is not None
+                else int(args.min_num_of_event_quest)),
+            (const_util.QUEST_KINDS[0]
+                if args.min_num_of_all_quest is not None
+                else const_util.QUEST_KINDS[1]
+                if args.min_num_of_normal_quest is not None
+                else const_util.QUEST_KINDS[2]),
+            bool(args.output_user_name)
+        )
+    
+    return None
+
+
+def __do_batch_processing(function_object: Callable, args: argparse.Namespace) -> None:
+    
+    '''一括処理実行'''
+    
+    pyl.measure_proc_time(function_object)(
+            args.col_year if args.col_year is not None else args.col_year_month,
+            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                if bool(args.generate_user_total_summary) == True
+                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+            int(args.min_num_of_quest_by_batch),
+            const_util.QUEST_KINDS[0],
+            bool(args.output_user_name)
+        )
+    pyl.measure_proc_time(function_object)(
+            args.col_year if args.col_year is not None else args.col_year_month,
+            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                if bool(args.generate_user_total_summary) == True
+                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+            int(args.min_num_of_quest_by_batch),
+            const_util.QUEST_KINDS[1],
+            args.output_user_name
+        )
+    pyl.measure_proc_time(function_object)(
+            args.col_year if args.col_year is not None else args.col_year_month,
+            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                if bool(args.generate_user_total_summary) == True
+                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+            int(args.min_num_of_quest_by_batch),
+            const_util.QUEST_KINDS[2],
+            args.output_user_name
+        )
+    
+    return None
 
 
 def __get_args() -> argparse.Namespace:
@@ -148,39 +187,44 @@ def __get_args() -> argparse.Namespace:
         
         help_: str = ''
         
-        # グループAの引数(全て必須な引数)
-        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'Group A - all required arguments', '全て必須な引数')
-        help_ = '収集年月(yyyy-mm形式)'
-        arg_group_a.add_argument('col_year_month', help=help_)
-        
         # グループB1の引数(1つのみ必須な引数)
         arg_group_b1: argparse._ArgumentGroup = parser.add_argument_group(
             'Group B1 - only one required arguments',
-            '1つのみ必須な引数\n処理を指定します')
+            '1つのみ必須な引数\n収集する年月を指定します')
         mutually_exclusive_group_b1: argparse._MutuallyExclusiveGroup = \
             arg_group_b1.add_mutually_exclusive_group(required=True)
-        help_ = '周回報告{0}全体概要生成要否\n' + \
-                '周回報告{0}全体概要を生成します'
-        mutually_exclusive_group_b1.add_argument(
-            '-u', '--generate_user_total_summary', action='store_true', help=help_.format('ユーザ'))
-        mutually_exclusive_group_b1.add_argument(
-            '-q', '--generate_quest_total_summary', action='store_true', help=help_.format('クエスト'))
+        help_ = '収集年(yyyy形式)'
+        mutually_exclusive_group_b1.add_argument('-y', '--col_year', type=str, help=help_)
+        help_ = '収集年月(yyyy-mm形式)'
+        mutually_exclusive_group_b1.add_argument('-m', '--col_year_month', type=str, help=help_)
         
         # グループB2の引数(1つのみ必須な引数)
         arg_group_b2: argparse._ArgumentGroup = parser.add_argument_group(
             'Group B2 - only one required arguments',
-            '1つのみ必須な引数\n収集する最低周回数を指定します')
+            '1つのみ必須な引数\n処理を指定します')
         mutually_exclusive_group_b2: argparse._MutuallyExclusiveGroup = \
             arg_group_b2.add_mutually_exclusive_group(required=True)
+        help_ = '周回報告{0}全体概要生成要否\n' + \
+                '周回報告{0}全体概要を生成します'
+        mutually_exclusive_group_b2.add_argument(
+            '-u', '--generate_user_total_summary', action='store_true', help=help_.format('ユーザ'))
+        mutually_exclusive_group_b2.add_argument(
+            '-q', '--generate_quest_total_summary', action='store_true', help=help_.format('クエスト'))
+        
+        # グループB3の引数(1つのみ必須な引数)
+        arg_group_b3: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B3 - only one required arguments',
+            '1つのみ必須な引数\n収集する最低周回数を指定します')
+        mutually_exclusive_group_b3: argparse._MutuallyExclusiveGroup = \
+            arg_group_b3.add_mutually_exclusive_group(required=True)
         help_ = '最低周回数({0})'
-        mutually_exclusive_group_b2.add_argument(
+        mutually_exclusive_group_b3.add_argument(
             '-a', '--min_num_of_all_quest', type=int, help=help_.format('全て'))
-        mutually_exclusive_group_b2.add_argument(
+        mutually_exclusive_group_b3.add_argument(
             '-n', '--min_num_of_normal_quest', type=int, help=help_.format('通常クエ'))
-        mutually_exclusive_group_b2.add_argument(
+        mutually_exclusive_group_b3.add_argument(
             '-e', '--min_num_of_event_quest', type=int, help=help_.format('イベクエ'))
-        mutually_exclusive_group_b2.add_argument(
+        mutually_exclusive_group_b3.add_argument(
             '-b', '--min_num_of_quest_by_batch', type=int, help=help_.format('3種類一括'))
         
         # グループCの引数(任意の引数)
@@ -210,13 +254,19 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：収集年月が年月(yyyy-mm形式)であること
-        try:
-            datetime.strptime(args.col_year_month, '%Y-%m')
-        except ValueError:
-            pyl.log_war(lg, f'収集年月が年月(yyyy-mm形式)ではありません。' +
-                            f'(col_year_month:{args.col_year_month})')
-            return False
+        # 検証：収集年が年(yyyy形式)であるか、もしくは収集年月が年月(yyyy-mm形式)であること
+        if args.col_year is not None:
+            try:
+                datetime.strptime(args.col_year, '%Y')
+            except ValueError:
+                pyl.log_war(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+                return False
+        elif args.col_year_month is not None:
+            try:
+                datetime.strptime(args.col_year_month, '%Y-%m')
+            except ValueError:
+                pyl.log_war(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
+                return False
         
         # 検証：最低周回数のいずれかが0以上であること
         if args.min_num_of_all_quest is not None \
