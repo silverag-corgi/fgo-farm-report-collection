@@ -37,6 +37,8 @@
       - [5.4.2.3. 周回報告クエスト全体概要マージ結果ファイル](#5423-周回報告クエスト全体概要マージ結果ファイル)
       - [5.4.2.4. 周回報告個人概要マージ結果ファイル](#5424-周回報告個人概要マージ結果ファイル)
 - [6. 実行コマンド一覧](#6-実行コマンド一覧)
+  - [6.1. ヘルプ](#61-ヘルプ)
+  - [6.2. 実行例](#62-実行例)
 - [7. 連絡先](#7-連絡先)
 - [8. ライセンス](#8-ライセンス)
 
@@ -150,16 +152,9 @@ C:\Git\python\fgo-farm-report-collection\.venv
 
 ### 5.1.1. 実行コマンド
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd fgo-farm-report-collection
-> poetry run list-gen -m 2022-01
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run list-gen -h
 usage: list-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH)
@@ -178,6 +173,14 @@ Group B - only one required arguments:
                         収集年(yyyy形式)
   -m COL_YEAR_MONTH, --col_year_month COL_YEAR_MONTH
                         収集年月(yyyy-mm形式)
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd fgo-farm-report-collection
+> poetry run list-gen -m 2022-01
 ```
 
 
@@ -205,17 +208,9 @@ Group B - only one required arguments:
 
 ### 5.2.1. 実行コマンド
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd fgo-farm-report-collection
-> poetry run tot-gen -m 2022-01 -u -a 100
-> poetry run tot-gen -m 2022-01 -q -a 100
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run tot-gen -h
 usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-un]
@@ -271,6 +266,15 @@ Group C - optional arguments:
                         指定した場合は周回報告ユーザ全体概要ファイルにユーザ名を出力します
 ```
 
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd fgo-farm-report-collection
+> poetry run tot-gen -m 2022-01 -u -a 100
+> poetry run tot-gen -m 2022-01 -q -a 100
+```
+
 
 ### 5.2.2. 実行結果
 
@@ -311,16 +315,9 @@ Group C - optional arguments:
 
 ### 5.3.1. 実行コマンド
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd fgo-farm-report-collection
-> poetry run ind-gen 2022 silverag_corgi
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run ind-gen -h
 usage: ind-gen [-h] [-l] col_year user_id
@@ -344,6 +341,14 @@ Group C - optional arguments:
   -l, --generate_list  周回報告一覧生成要否
                        指定した場合は一覧を生成します
                        指定しない場合は生成せずに既存の一覧のみを使用します
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd fgo-farm-report-collection
+> poetry run ind-gen 2022 silverag_corgi
 ```
 
 
@@ -371,16 +376,9 @@ Group C - optional arguments:
 
 ### 5.4.1. 実行コマンド
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd fgo-farm-report-collection
-> poetry run merge -u -a
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run merge -h
 usage: merge [-h] (-l | -u | -q | -i) [-a]
@@ -410,6 +408,14 @@ Group C - optional arguments:
                         生成結果追記要否
                         指定した場合は生成結果をシート単位で追記します
                         指定しない場合は生成結果をシート単位で上書きします
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd fgo-farm-report-collection
+> poetry run merge -u -a
 ```
 
 
@@ -456,11 +462,31 @@ Group C - optional arguments:
 
 # 6. 実行コマンド一覧
 
+
+## 6.1. ヘルプ
+
 ```cmd
 > poetry run list-gen -h
 > poetry run tot-gen -h
 > poetry run ind-gen -h
 > poetry run merge -h
+```
+
+
+## 6.2. 実行例
+
+```cmd
+> poetry run list-gen -y 2021
+
+> poetry run tot-gen -y 2021 -u -b 0
+> poetry run tot-gen -y 2021 -q -b 0
+
+> poetry run ind-gen 2021 silverag_corgi
+
+> poetry run merge -l
+> poetry run merge -u
+> poetry run merge -q
+> poetry run merge -i
 ```
 
 
