@@ -210,14 +210,15 @@ Group B - only one required arguments:
 実行例：
 ```cmd
 > cd fgo-farm-report-collection
-> poetry run tot-gen 2022-01 -u -a 100
+> poetry run tot-gen -m 2022-01 -u -a 100
+> poetry run tot-gen -m 2022-01 -q -a 100
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 ```cmd
 > poetry run tot-gen -h
-usage: tot-gen [-h] (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-un] col_year_month
+usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-un]
 
 周回報告全体概要生成
 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
@@ -226,12 +227,16 @@ usage: tot-gen [-h] (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QU
 options:
   -h, --help            show this help message and exit
 
-Group A - all required arguments:
-  全て必須な引数
-
-  col_year_month        収集年月(yyyy-mm形式)
-
 Group B1 - only one required arguments:
+  1つのみ必須な引数
+  収集する年月を指定します
+
+  -y COL_YEAR, --col_year COL_YEAR
+                        収集年(yyyy形式)
+  -m COL_YEAR_MONTH, --col_year_month COL_YEAR_MONTH
+                        収集年月(yyyy-mm形式)
+
+Group B2 - only one required arguments:
   1つのみ必須な引数
   処理を指定します
 
@@ -242,7 +247,7 @@ Group B1 - only one required arguments:
                         周回報告クエスト全体概要生成要否
                         周回報告クエスト全体概要を生成します
 
-Group B2 - only one required arguments:
+Group B3 - only one required arguments:
   1つのみ必須な引数
   収集する最低周回数を指定します
 
