@@ -78,26 +78,26 @@ def main() -> int:
         # ロジック(周回報告全体概要生成)の実行
         if args.col_year is not None:
             if args.min_num_of_quest_by_batch is None:
-                __do_individual_processing(
+                pyl.measure_proc_time(__do_individual_processing)(
                         (farm_report_total_summary_gen.
                             do_logic_that_generate_tot_sum_by_col_year),
                         args
                     )
             else:
-                __do_batch_processing(
+                pyl.measure_proc_time(__do_batch_processing)(
                         (farm_report_total_summary_gen.
                             do_logic_that_generate_tot_sum_by_col_year),
                         args
                     )
         elif args.col_year_month is not None:
             if args.min_num_of_quest_by_batch is None:
-                __do_individual_processing(
+                pyl.measure_proc_time(__do_individual_processing)(
                         (farm_report_total_summary_gen.
                             do_logic_that_generate_tot_sum_by_col_year_month),
                         args
                     )
             else:
-                __do_batch_processing(
+                pyl.measure_proc_time(__do_batch_processing)(
                         (farm_report_total_summary_gen.
                             do_logic_that_generate_tot_sum_by_col_year_month),
                         args
