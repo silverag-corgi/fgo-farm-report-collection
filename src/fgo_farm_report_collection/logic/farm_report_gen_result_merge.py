@@ -68,7 +68,7 @@ def do_logic_that_merge_list(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '指定した年月の周回報告の一覧',
+                            '月ごとの周回報告一覧',
                             const_util.FARM_REPORT_LIST_HEADER,
                             sheet_name
                         )
@@ -157,7 +157,7 @@ def do_logic_that_merge_usr_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '指定した年月およびクエスト種別のユーザごとの周回数(降順)',
+                            '月およびクエスト種別ごとの周回数ランキング(ユーザ編)',
                             const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER,
                             sheet_name
                         )
@@ -246,7 +246,7 @@ def do_logic_that_merge_qst_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '指定した年月およびクエスト種別のクエストごとの周回数(降順)',
+                            '月およびクエスト種別ごとの周回数ランキング(クエスト編)',
                             const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER,
                             sheet_name
                         )
@@ -334,7 +334,7 @@ def do_logic_that_merge_ind_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '指定した年およびユーザの周回数(降順)',
+                            '年およびユーザごとの周回数',
                             const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER,
                             sheet_name
                         )
