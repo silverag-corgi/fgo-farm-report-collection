@@ -476,12 +476,12 @@ Group C - optional arguments:
 ## 6.2. 実行例
 
 ```cmd
-> poetry run list-gen -y 2021
+> poetry run list-gen -y 2022
 
-> poetry run tot-gen -y 2021 -u -b 0
-> poetry run tot-gen -y 2021 -q -b 0
+> poetry run tot-gen -y 2022 -u -b 0
+> poetry run tot-gen -y 2022 -q -b 0
 
-> poetry run ind-gen 2021 silverag_corgi
+> poetry run ind-gen 2022 silverag_corgi
 
 > poetry run merge -l
 > poetry run merge -u
