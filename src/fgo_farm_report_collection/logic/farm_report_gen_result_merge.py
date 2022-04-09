@@ -157,7 +157,7 @@ def do_logic_that_merge_usr_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '月およびクエスト種別ごとの周回数ランキング(ユーザ編)',
+                            '月およびクエスト種別ごとの周回数(ユーザ編)',
                             const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER,
                             sheet_name
                         )
@@ -246,7 +246,7 @@ def do_logic_that_merge_qst_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '月およびクエスト種別ごとの周回数ランキング(クエスト編)',
+                            '月およびクエスト種別ごとの周回数(クエスト編)',
                             const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER,
                             sheet_name
                         )
