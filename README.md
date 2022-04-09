@@ -78,12 +78,18 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 指定した年月の周回報告の一覧である。
 
+  - 年月：2022-01
+
 ![farm_report_list](./pic/farm_report_list.JPG)
 
 
 ### 2.2.2. 周回報告ユーザ全体概要ファイル
 
 周回報告による、指定した年月およびクエスト種別のユーザ(Twitter)ごとの周回概要である。
+
+  - 年月：2022-01
+  - クエスト種別：全て(通常クエ＋イベクエ)
+  - 最低周回数：100周以上
 
 ![farm_report_total_summary](./pic/farm_report_user_total_summary.JPG)
 
@@ -92,12 +98,19 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 周回報告による、指定した年月およびクエスト種別のクエストごとの周回概要である。
 
+  - 年月：2022-01
+  - クエスト種別：全て(通常クエ＋イベクエ)
+  - 最低周回数：100周以上
+
 ![farm_report_total_summary](./pic/farm_report_quest_total_summary.JPG)
 
 
 ### 2.2.4. 周回報告個人概要ファイル
 
 周回報告による、指定した年およびユーザ(Twitter)の周回概要である。
+
+  - 年：2022
+  - ユーザID：silverag_corgi
 
 ![farm_report_individual_summary](./pic/farm_report_individual_summary.JPG)
 
