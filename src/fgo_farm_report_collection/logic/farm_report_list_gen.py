@@ -7,6 +7,7 @@ from typing import Any, Optional
 import pandas as pd
 import python_lib_for_me as pyl
 import requests
+from requests import Response
 
 from fgo_farm_report_collection.util import const_util, pandas_util
 
@@ -190,7 +191,12 @@ def __generate_farm_report_list_file(
                 pyl.log_inf(lg, f'周回報告サイトURL：{farm_report_site_url}')
                 
                 # 周回報告サイトからの周回報告の取得
-                farm_report_site_response = requests.get(farm_report_site_url)
+                farm_report_site_response: Response = requests.get(farm_report_site_url)
+                if farm_report_site_response.status_code != requests.codes['ok']:
+                    pyl.log_war(lg, f'周回報告サイトへのアクセスに失敗しました。' +
+                                    f'(farm_report_site_url:{farm_report_site_url}, ' +
+                                    f'status_code:{farm_report_site_response.status_code})')
+                    continue
                 farm_reports: dict[Any, Any] = json.loads(farm_report_site_response.text)
                 
                 # 周回報告データフレームの格納
@@ -219,8 +225,9 @@ def __generate_farm_report_list_file(
                 const_util.FARM_REPORT_LIST_HEADER[0], ascending=True, inplace=True)
         
         # 周回報告一覧データフレームの保存
-        pandas_util.save_farm_report_list_df(
-            farm_report_list_df, farm_report_list_file_path, has_farm_report_list)
+        if len(farm_report_list_df) > 0:
+            pandas_util.save_farm_report_list_df(
+                farm_report_list_df, farm_report_list_file_path, has_farm_report_list)
     except Exception as e:
         raise(e)
     
