@@ -1,9 +1,8 @@
-import math
 import os
 from datetime import date, datetime
 from enum import IntEnum, auto
 from logging import Logger
-from typing import Any, Optional, cast
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -166,13 +165,19 @@ def __generate_farm_report_user_tot_sum_file(
             # 周回数と報告数の集計
             farm_report_tot_sum_series: pd.Series = \
                 farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[5]].aggregate(
-                    cast(Any, [np.sum, np.count_nonzero]))
+                    [np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
             farm_report_tot_sum_df: pd.DataFrame = \
                 pd.DataFrame(farm_report_tot_sum_series).rename(
                     columns={
                         'sum': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[2],
-                        'count_nonzero': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[3]
+                        'count_nonzero': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[3],
+                        'min': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4],
+                        'max': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[5],
+                        'median': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[6],
+                        'mean': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[7],
+                        'std': const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[8]
                     })
+            farm_report_tot_sum_df.fillna(0, inplace=True)
             
             # 周回数による降順ソート
             farm_report_tot_sum_df.sort_values(
@@ -183,13 +188,16 @@ def __generate_farm_report_user_tot_sum_file(
                 f'{const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[2]} >= {min_num_of_farms}',
                 inplace=True)
             
-            # 報告ごとの周回数の算出(切り捨て)
-            farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4]] = \
-                farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[2]] / \
-                    farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[3]]
-            farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4]] = \
-                farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4]].apply(
-                    lambda data: math.floor(data))
+            # 周回数の揃え
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[6]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[6]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[7]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[7]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[8]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[8]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
             
             # 列(ユーザ名)の追加
             farm_report_tot_sum_df.insert(
@@ -264,13 +272,19 @@ def __generate_farm_report_quest_tot_sum_file(
             # 周回数と報告数の集計
             farm_report_tot_sum_series: pd.Series = \
                 farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[5]].aggregate(
-                    cast(Any, [np.sum, np.count_nonzero]))
+                    [np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
             farm_report_tot_sum_df: pd.DataFrame = \
                 pd.DataFrame(farm_report_tot_sum_series).rename(
                     columns={
                         'sum': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[2],
-                        'count_nonzero': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[3]
+                        'count_nonzero': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[3],
+                        'min': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4],
+                        'max': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[5],
+                        'median': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[6],
+                        'mean': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[7],
+                        'std': const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[8]
                     })
+            farm_report_tot_sum_df.fillna(0, inplace=True)
             
             # 周回数による降順ソート
             farm_report_tot_sum_df.sort_values(
@@ -281,13 +295,16 @@ def __generate_farm_report_quest_tot_sum_file(
                 f'{const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[2]} >= {min_num_of_farms}',
                 inplace=True)
             
-            # 報告ごとの周回数の算出(切り捨て)
-            farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4]] = \
-                farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[2]] / \
-                    farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[3]]
-            farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4]] = \
-                farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4]].apply(
-                    lambda data: math.floor(data))
+            # 周回数の揃え
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[6]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[6]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[7]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[7]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[8]] = \
+                farm_report_tot_sum_df[const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[8]].apply(
+                    lambda data: pyl.round_half_up(data, 2))
             
             # 周回報告クエスト全体概要データフレームの保存
             pandas_util.save_farm_report_qst_tot_sum_df(
