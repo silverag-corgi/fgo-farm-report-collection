@@ -39,7 +39,11 @@ FARM_REPORT_USER_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
         'ユーザ名',
         '周回数',
         '報告数',
-        '周回数／報告'
+        '周回数_最小',
+        '周回数_最大',
+        '周回数_中央',
+        '周回数_平均',
+        '周回数_標準偏差'
     ]
 FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
     [
@@ -47,7 +51,11 @@ FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER: Final[list[str]] = \
         '座標名',
         '周回数',
         '報告数',
-        '周回数／報告'
+        '周回数_最小',
+        '周回数_最大',
+        '周回数_中央',
+        '周回数_平均',
+        '周回数_標準偏差'
     ]
 FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER: Final[list[str]] = \
     [

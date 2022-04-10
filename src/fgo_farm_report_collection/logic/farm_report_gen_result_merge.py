@@ -149,6 +149,10 @@ def do_logic_that_merge_usr_tot_sum(
                                 const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[2]: 10,
                                 const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[3]: 10,
                                 const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4]: 13,
+                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[5]: 13,
+                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[6]: 13,
+                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[7]: 13,
+                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[8]: 15,
                             }
                         )
                     
@@ -180,7 +184,7 @@ def do_logic_that_merge_usr_tot_sum(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
-                ['A1:E1', 'A2:E2']
+                ['A1:I1', 'A2:I2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -238,6 +242,10 @@ def do_logic_that_merge_qst_tot_sum(
                                 const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[2]: 10,
                                 const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[3]: 10,
                                 const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4]: 13,
+                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[5]: 13,
+                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[6]: 13,
+                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[7]: 13,
+                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[8]: 15,
                             }
                         )
                     
@@ -269,7 +277,7 @@ def do_logic_that_merge_qst_tot_sum(
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
                 const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
-                ['A1:E1', 'A2:E2']
+                ['A1:I1', 'A2:I2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
@@ -394,7 +402,7 @@ def __generate_excel_writer(
         excel_writer = StyleFrame.ExcelWriter(
                 merge_result_file_path,
                 mode='a',
-                if_sheet_exists='replace',
+                if_sheet_exists='replace',  # overlay not working
             )
     else:
         excel_writer = StyleFrame.ExcelWriter(
