@@ -27,7 +27,7 @@ def main() -> int:
         merge_user_total_summary (bool)     : [グループB1][1つのみ必須] 周回報告ユーザ全体概要マージ要否
         merge_quest_total_summary (bool)    : [グループB1][1つのみ必須] 周回報告クエスト全体概要マージ要否
         merge_individual_summary (bool)     : [グループB1][1つのみ必須] 周回報告個人概要マージ要否
-        append_gen_result (bool)            : [グループC][任意] 生成結果追記要否
+        append_sheet (bool)                 : [グループC][任意] シート追加要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -57,19 +57,19 @@ def main() -> int:
         # ロジック(周回報告生成結果マージ)の実行
         if bool(args.merge_list) == True:
             farm_report_gen_result_merge.do_logic_that_merge_list(
-                    args.append_gen_result
+                    args.append_sheet
                 )
         elif bool(args.merge_user_total_summary) == True:
             farm_report_gen_result_merge.do_logic_that_merge_usr_tot_sum(
-                    args.append_gen_result
+                    args.append_sheet
                 )
         elif bool(args.merge_quest_total_summary) == True:
             farm_report_gen_result_merge.do_logic_that_merge_qst_tot_sum(
-                    args.append_gen_result
+                    args.append_sheet
                 )
         elif bool(args.merge_individual_summary) == True:
             farm_report_gen_result_merge.do_logic_that_merge_ind_sum(
-                    args.append_gen_result
+                    args.append_sheet
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -117,10 +117,10 @@ def __get_args() -> argparse.Namespace:
         # グループCの引数(任意の引数)
         arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
             'Group C - optional arguments', '任意の引数')
-        help_ = '生成結果追記要否\n' + \
-                '指定した場合は生成結果をシート単位で追記します\n' + \
-                '指定しない場合は生成結果をシート単位で上書きします'
-        arg_group_c.add_argument('-a', '--append_gen_result', action='store_true', help=help_)
+        help_ = 'シート追加要否\n' + \
+                '指定した場合は既存のシートは変更せず、新規のシートのみを追加します\n' + \
+                '指定しない場合は全てのシートを上書きします'
+        arg_group_c.add_argument('-a', '--append_sheet', action='store_true', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
