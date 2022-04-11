@@ -13,7 +13,7 @@ from fgo_farm_report_collection.util import const_util, pandas_util
 
 
 def do_logic_that_merge_list(
-        append_gen_result: bool
+        append_sheet: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -38,7 +38,7 @@ def do_logic_that_merge_list(
             try:
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
-                        append_gen_result,
+                        append_sheet,
                         const_util.FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH
                     )
                 
@@ -104,7 +104,7 @@ def do_logic_that_merge_list(
 
 
 def do_logic_that_merge_usr_tot_sum(
-        append_gen_result: bool
+        append_sheet: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -129,7 +129,7 @@ def do_logic_that_merge_usr_tot_sum(
             try:
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
-                        append_gen_result,
+                        append_sheet,
                         const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH
                     )
                 
@@ -197,7 +197,7 @@ def do_logic_that_merge_usr_tot_sum(
 
 
 def do_logic_that_merge_qst_tot_sum(
-        append_gen_result: bool
+        append_sheet: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -222,7 +222,7 @@ def do_logic_that_merge_qst_tot_sum(
             try:
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
-                        append_gen_result,
+                        append_sheet,
                         const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH
                     )
                 
@@ -290,7 +290,7 @@ def do_logic_that_merge_qst_tot_sum(
 
 
 def do_logic_that_merge_ind_sum(
-        append_gen_result: bool
+        append_sheet: bool
     ) -> None:
     
     '''ロジック実行'''
@@ -315,7 +315,7 @@ def do_logic_that_merge_ind_sum(
             try:
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
-                        append_gen_result,
+                        append_sheet,
                         const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH
                     )
                 
@@ -390,7 +390,7 @@ def __get_gen_result_file_paths(gen_result_file_path: str) -> list[str]:
 
 
 def __generate_excel_writer(
-        append_gen_result: bool,
+        append_sheet: bool,
         merge_result_file_path: str
     ) -> Optional[pd.ExcelWriter]:
     
@@ -398,7 +398,7 @@ def __generate_excel_writer(
     
     excel_writer: Optional[pd.ExcelWriter] = None
     
-    if append_gen_result == True and os.path.isfile(merge_result_file_path) == True:
+    if append_sheet == True and os.path.isfile(merge_result_file_path) == True:
         excel_writer = StyleFrame.ExcelWriter(
                 merge_result_file_path,
                 mode='a',
