@@ -430,10 +430,9 @@ Group B - only one required arguments:
 Group C - optional arguments:
   任意の引数
 
-  -a, --append_gen_result
-                        生成結果追記要否
-                        指定した場合は生成結果をシート単位で追記します
-                        指定しない場合は生成結果をシート単位で上書きします
+  -a, --append_sheet    シート追加要否
+                        指定した場合は既存のシートは変更せず、新規のシートのみを追加します
+                        指定しない場合は全てのシートを上書きします
 ```
 
 また、下記コマンドは実行例である。
