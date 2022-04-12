@@ -68,7 +68,7 @@ def do_logic_that_merge_list(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '月ごとの周回報告一覧',
+                            '周回報告一覧',
                             const_util.FARM_REPORT_LIST_HEADER,
                             sheet_name
                         )
@@ -103,7 +103,7 @@ def do_logic_that_merge_list(
     return None
 
 
-def do_logic_that_merge_usr_tot_sum(
+def do_logic_that_merge_monthly_usr_tot_sum(
         append_sheet: bool
     ) -> None:
     
@@ -114,15 +114,15 @@ def do_logic_that_merge_usr_tot_sum(
     try:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'周回報告ユーザ全体概要マージを開始します。')
+        pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを開始します。')
         
-        # 周回報告ユーザ全体概要ファイルパスの取得
+        # 周回報告月間ユーザ全体概要ファイルパスの取得
         gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_USER_TOTAL_SUMMARY_FILE_PATH)
+            const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH)
         
-        # 周回報告ユーザ全体概要ファイルの件数が0件の場合
+        # 周回報告月間ユーザ全体概要ファイルの件数が0件の場合
         if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告ユーザ全体概要ファイルの件数が0件です。' +
+            pyl.log_war(lg, f'周回報告月間ユーザ全体概要ファイルの件数が0件です。' +
                             f'(gen_result_file_paths:{gen_result_file_paths})')
         else:
             excel_writer: Optional[pd.ExcelWriter] = None
@@ -130,13 +130,13 @@ def do_logic_that_merge_usr_tot_sum(
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
                         append_sheet,
-                        const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH
+                        const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH
                     )
                 
-                # 周回報告ユーザ全体概要マージ結果ファイルへの出力
+                # 周回報告月間ユーザ全体概要マージ結果ファイルへの出力
                 for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告ユーザ全体概要データフレームの取得
-                    pyl.log_inf(lg, f'周回報告ユーザ全体概要ファイルパス：{gen_result_file_path}')
+                    # 周回報告月間ユーザ全体概要データフレームの取得
+                    pyl.log_inf(lg, f'周回報告月間ユーザ全体概要ファイルパス：{gen_result_file_path}')
                     gen_result_df: pd.DataFrame = pandas_util.read_farm_report_usr_tot_sum_file(
                         gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
                     
@@ -144,15 +144,15 @@ def do_logic_that_merge_usr_tot_sum(
                     gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
                             gen_result_df,
                             {
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[0]: 20,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[1]: 20,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[2]: 10,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[3]: 10,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[4]: 13,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[5]: 13,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[6]: 13,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[7]: 13,
-                                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER[8]: 15,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[0]: 20,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]: 20,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2]: 10,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3]: 10,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4]: 13,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5]: 13,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]: 13,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]: 13,
+                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]: 15,
                             }
                         )
                     
@@ -161,12 +161,12 @@ def do_logic_that_merge_usr_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '月およびクエスト種別ごとの周回数(ユーザ編)',
-                            const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER,
+                            'クエスト種別ごとの月間周回数(ユーザ編)',
+                            const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
                             sheet_name
                         )
                     
-                    # 周回報告ユーザ全体概要スタイルフレームの保存
+                    # 周回報告月間ユーザ全体概要スタイルフレームの保存
                     pandas_util.save_gen_result_sf(
                             sheet_description_sfs,
                             gen_result_sf,
@@ -175,7 +175,7 @@ def do_logic_that_merge_usr_tot_sum(
                             columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
-                pyl.log_err(lg, f'周回報告ユーザ全体概要マージ結果ファイルへの出力に失敗しました。')
+                pyl.log_err(lg, f'周回報告月間ユーザ全体概要マージ結果ファイルへの出力に失敗しました。')
                 raise(e)
             finally:
                 if excel_writer is not None:
@@ -183,20 +183,20 @@ def do_logic_that_merge_usr_tot_sum(
         
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
-                const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
+                const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH,
                 ['A1:I1', 'A2:I2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_USER_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH}')
-        pyl.log_inf(lg, f'周回報告ユーザ全体概要マージを終了します。')
+                        f'{const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH}')
+        pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを終了します。')
     except Exception as e:
         raise(e)
     
     return None
 
 
-def do_logic_that_merge_qst_tot_sum(
+def do_logic_that_merge_monthly_qst_tot_sum(
         append_sheet: bool
     ) -> None:
     
@@ -207,15 +207,15 @@ def do_logic_that_merge_qst_tot_sum(
     try:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'周回報告クエスト全体概要マージを開始します。')
+        pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを開始します。')
         
-        # 周回報告クエスト全体概要ファイルパスの取得
+        # 周回報告月間クエスト全体概要ファイルパスの取得
         gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_FILE_PATH)
+            const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH)
         
-        # 周回報告クエスト全体概要ファイルの件数が0件の場合
+        # 周回報告月間クエスト全体概要ファイルの件数が0件の場合
         if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告クエスト全体概要ファイルの件数が0件です。' +
+            pyl.log_war(lg, f'周回報告月間クエスト全体概要ファイルの件数が0件です。' +
                             f'(gen_result_file_paths:{gen_result_file_paths})')
         else:
             excel_writer: Optional[pd.ExcelWriter] = None
@@ -223,13 +223,13 @@ def do_logic_that_merge_qst_tot_sum(
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
                         append_sheet,
-                        const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH
+                        const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH
                     )
                 
-                # 周回報告クエスト全体概要マージ結果ファイルへの出力
+                # 周回報告月間クエスト全体概要マージ結果ファイルへの出力
                 for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告クエスト全体概要データフレームの取得
-                    pyl.log_inf(lg, f'周回報告クエスト全体概要ファイルパス：{gen_result_file_path}')
+                    # 周回報告月間クエスト全体概要データフレームの取得
+                    pyl.log_inf(lg, f'周回報告月間クエスト全体概要ファイルパス：{gen_result_file_path}')
                     gen_result_df: pd.DataFrame = pandas_util.read_farm_report_qst_tot_sum_file(
                         gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
                     
@@ -237,15 +237,15 @@ def do_logic_that_merge_qst_tot_sum(
                     gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
                             gen_result_df,
                             {
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[0]: 20,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[1]: 20,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[2]: 10,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[3]: 10,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[4]: 13,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[5]: 13,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[6]: 13,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[7]: 13,
-                                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER[8]: 15,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[0]: 20,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[1]: 20,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2]: 10,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3]: 10,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4]: 13,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5]: 13,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]: 13,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]: 13,
+                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]: 15,
                             }
                         )
                     
@@ -254,12 +254,12 @@ def do_logic_that_merge_qst_tot_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '月およびクエスト種別ごとの周回数(クエスト編)',
-                            const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER,
+                            'クエスト種別ごとの月間周回数(クエスト編)',
+                            const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
                             sheet_name
                         )
                     
-                    # 周回報告クエスト全体概要スタイルフレームの保存
+                    # 周回報告月間クエスト全体概要スタイルフレームの保存
                     pandas_util.save_gen_result_sf(
                             sheet_description_sfs,
                             gen_result_sf,
@@ -268,7 +268,7 @@ def do_logic_that_merge_qst_tot_sum(
                             columns_and_rows_to_freeze='A4',
                         )
             except Exception as e:
-                pyl.log_err(lg, f'周回報告クエスト全体概要マージ結果ファイルへの出力に失敗しました。')
+                pyl.log_err(lg, f'周回報告月間クエスト全体概要マージ結果ファイルへの出力に失敗しました。')
                 raise(e)
             finally:
                 if excel_writer is not None:
@@ -276,13 +276,13 @@ def do_logic_that_merge_qst_tot_sum(
         
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
-                const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH,
+                const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH,
                 ['A1:I1', 'A2:I2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_MERGE_RESULT_FILE_PATH}')
-        pyl.log_inf(lg, f'周回報告クエスト全体概要マージを終了します。')
+                        f'{const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH}')
+        pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを終了します。')
     except Exception as e:
         raise(e)
     
@@ -304,7 +304,7 @@ def do_logic_that_merge_ind_sum(
         
         # 周回報告個人概要ファイルパスの取得
         gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_FILE_PATH)
+            const_util.FARM_REPORT_IND_SUM_FILE_PATH)
         
         # 周回報告個人概要ファイルの件数が0件の場合
         if len(gen_result_file_paths) == 0:
@@ -316,7 +316,7 @@ def do_logic_that_merge_ind_sum(
                 # Excelライターの生成
                 excel_writer = __generate_excel_writer(
                         append_sheet,
-                        const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH
+                        const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH
                     )
                 
                 # 周回報告個人概要マージ結果ファイルへの出力
@@ -330,10 +330,10 @@ def do_logic_that_merge_ind_sum(
                     gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
                             gen_result_df,
                             {
-                                const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[0]: 10,
-                                const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[1]: 17,
-                                const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[2]: 17,
-                                const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER[3]: 17,
+                                const_util.FARM_REPORT_IND_SUM_HEADER[0]: 10,
+                                const_util.FARM_REPORT_IND_SUM_HEADER[1]: 17,
+                                const_util.FARM_REPORT_IND_SUM_HEADER[2]: 17,
+                                const_util.FARM_REPORT_IND_SUM_HEADER[3]: 17,
                             }
                         )
                     
@@ -342,8 +342,8 @@ def do_logic_that_merge_ind_sum(
                     
                     # シート説明スタイルフレームの生成
                     sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '年およびユーザごとの周回数',
-                            const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER,
+                            'ユーザごとの周回数',
+                            const_util.FARM_REPORT_IND_SUM_HEADER,
                             sheet_name
                         )
                     
@@ -364,12 +364,12 @@ def do_logic_that_merge_ind_sum(
         
         # マージ結果ファイルのセルの結合
         __merge_cells_of_merge_result_file(
-                const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH,
+                const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH,
                 ['A1:D1', 'A2:D2']
             )
         
         pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_MERGE_RESULT_FILE_PATH}')
+                        f'{const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH}')
         pyl.log_inf(lg, f'周回報告個人概要マージを終了します。')
     except Exception as e:
         raise(e)

@@ -27,24 +27,24 @@ def main() -> int:
         -
     
     Args on cmd line:
-        col_year (str)                      : [グループB1][1つのみ必須] 収集年(yyyy形式)
-        col_year_month (str)                : [グループB1][1つのみ必須] 収集年月(yyyy-mm形式)
-        generate_user_total_summary (bool)  : [グループB2][1つのみ必須] 周回報告ユーザ全体概要生成要否
-        generate_quest_total_summary (bool) : [グループB2][1つのみ必須] 周回報告クエスト全体概要生成要否
-        min_num_of_all_quest (int)          : [グループB3][1つのみ必須] 最低周回数(全て)
-        min_num_of_normal_quest (int)       : [グループB3][1つのみ必須] 最低周回数(通常クエ)
-        min_num_of_event_quest (int)        : [グループB3][1つのみ必須] 最低周回数(イベクエ)
-        min_num_of_quest_by_batch (int)     : [グループB3][1つのみ必須] 最低周回数(3種類一括)
-        generate_list (bool)                : [グループC][任意] 周回報告一覧生成要否
-        output_user_name (bool)             : [グループC][任意] ユーザ名出力要否
+        col_year (str)                              : [グループB1][1つのみ必須] 収集年(yyyy形式)
+        col_year_month (str)                        : [グループB1][1つのみ必須] 収集年月(yyyy-mm形式)
+        generate_monthly_user_total_summary (bool)  : [グループB2][1つのみ必須] 周回報告月間ユーザ全体概要生成要否
+        generate_monthly_quest_total_summary (bool) : [グループB2][1つのみ必須] 周回報告月間クエスト全体概要生成要否
+        min_num_of_all_quest (int)                  : [グループB3][1つのみ必須] 最低周回数(全て)
+        min_num_of_normal_quest (int)               : [グループB3][1つのみ必須] 最低周回数(通常クエ)
+        min_num_of_event_quest (int)                : [グループB3][1つのみ必須] 最低周回数(イベクエ)
+        min_num_of_quest_by_batch (int)             : [グループB3][1つのみ必須] 最低周回数(3種類一括)
+        generate_list (bool)                        : [グループC][任意] 周回報告一覧生成要否
+        output_user_name (bool)                     : [グループC][任意] ユーザ名出力要否
     
     Returns:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/[収集年月].csv
-        周回報告ユーザ全体概要ファイル: ./dest/farm_report_total_summary/user/[収集年月]_[クエスト種別]_[最低周回数].csv
-        周回報告クエスト全体概要ファイル: ./dest/farm_report_total_summary/quest/[収集年月]_[クエスト種別]_[最低周回数].csv
+        周回報告月間ユーザ全体概要ファイル: ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
+        周回報告月間クエスト全体概要ファイル: ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -75,31 +75,31 @@ def main() -> int:
                             args.col_year_month
                         )
         
-        # ロジック(周回報告全体概要生成)の実行
+        # ロジック(周回報告月間全体概要生成)の実行
         if args.col_year is not None:
             if args.min_num_of_quest_by_batch is None:
                 pyl.measure_proc_time(__do_individual_processing)(
                         (farm_report_total_summary_gen.
-                            do_logic_that_generate_tot_sum_by_col_year),
+                            do_logic_that_generate_monthly_tot_sum_by_col_year),
                         args
                     )
             else:
                 pyl.measure_proc_time(__do_batch_processing)(
                         (farm_report_total_summary_gen.
-                            do_logic_that_generate_tot_sum_by_col_year),
+                            do_logic_that_generate_monthly_tot_sum_by_col_year),
                         args
                     )
         elif args.col_year_month is not None:
             if args.min_num_of_quest_by_batch is None:
                 pyl.measure_proc_time(__do_individual_processing)(
                         (farm_report_total_summary_gen.
-                            do_logic_that_generate_tot_sum_by_col_year_month),
+                            do_logic_that_generate_monthly_tot_sum_by_col_year_month),
                         args
                     )
             else:
                 pyl.measure_proc_time(__do_batch_processing)(
                         (farm_report_total_summary_gen.
-                            do_logic_that_generate_tot_sum_by_col_year_month),
+                            do_logic_that_generate_monthly_tot_sum_by_col_year_month),
                         args
                     )
     except KeyboardInterrupt as e:
@@ -120,7 +120,7 @@ def __do_individual_processing(function_object: Callable, args: argparse.Namespa
     pyl.measure_proc_time(function_object)(
             args.col_year if args.col_year is not None else args.col_year_month,
             (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_user_total_summary) == True
+                if bool(args.generate_monthly_user_total_summary) == True
                 else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
             (int(args.min_num_of_all_quest)
                 if args.min_num_of_all_quest is not None
@@ -145,7 +145,7 @@ def __do_batch_processing(function_object: Callable, args: argparse.Namespace) -
     pyl.measure_proc_time(function_object)(
             args.col_year if args.col_year is not None else args.col_year_month,
             (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_user_total_summary) == True
+                if bool(args.generate_monthly_user_total_summary) == True
                 else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
             int(args.min_num_of_quest_by_batch),
             const_util.QUEST_KINDS[0],
@@ -154,7 +154,7 @@ def __do_batch_processing(function_object: Callable, args: argparse.Namespace) -
     pyl.measure_proc_time(function_object)(
             args.col_year if args.col_year is not None else args.col_year_month,
             (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_user_total_summary) == True
+                if bool(args.generate_monthly_user_total_summary) == True
                 else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
             int(args.min_num_of_quest_by_batch),
             const_util.QUEST_KINDS[1],
@@ -163,7 +163,7 @@ def __do_batch_processing(function_object: Callable, args: argparse.Namespace) -
     pyl.measure_proc_time(function_object)(
             args.col_year if args.col_year is not None else args.col_year_month,
             (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_user_total_summary) == True
+                if bool(args.generate_monthly_user_total_summary) == True
                 else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
             int(args.min_num_of_quest_by_batch),
             const_util.QUEST_KINDS[2],
@@ -204,12 +204,16 @@ def __get_args() -> argparse.Namespace:
             '1つのみ必須な引数\n処理を指定します')
         mutually_exclusive_group_b2: argparse._MutuallyExclusiveGroup = \
             arg_group_b2.add_mutually_exclusive_group(required=True)
-        help_ = '周回報告{0}全体概要生成要否\n' + \
-                '周回報告{0}全体概要を生成します'
+        help_ = '周回報告月間{0}全体概要生成要否\n' + \
+                '周回報告月間{0}全体概要を生成します'
         mutually_exclusive_group_b2.add_argument(
-            '-u', '--generate_user_total_summary', action='store_true', help=help_.format('ユーザ'))
+            '-mu', '--generate_monthly_user_total_summary',
+            action='store_true',
+            help=help_.format('ユーザ'))
         mutually_exclusive_group_b2.add_argument(
-            '-q', '--generate_quest_total_summary', action='store_true', help=help_.format('クエスト'))
+            '-mq', '--generate_monthly_quest_total_summary',
+            action='store_true',
+            help=help_.format('クエスト'))
         
         # グループB3の引数(1つのみ必須な引数)
         arg_group_b3: argparse._ArgumentGroup = parser.add_argument_group(
@@ -236,7 +240,7 @@ def __get_args() -> argparse.Namespace:
         arg_group_c.add_argument('-l', '--generate_list', action='store_true', help=help_)
         help_ = 'ユーザ名出力要否\n' + \
                 '指定した場合は周回報告ユーザ全体概要ファイルにユーザ名を出力します'
-        arg_group_c.add_argument('-un', '--output_user_name', action='store_true', help=help_)
+        arg_group_c.add_argument('-u', '--output_user_name', action='store_true', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
