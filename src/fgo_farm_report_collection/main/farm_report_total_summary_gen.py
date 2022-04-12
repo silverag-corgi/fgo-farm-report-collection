@@ -75,33 +75,44 @@ def main() -> int:
                             args.col_year_month
                         )
         
-        # ロジック(周回報告月間全体概要生成)の実行
+        # 関数オブジェクトの取得
+        function_object: Optional[Callable] = None
         if args.col_year is not None:
-            if args.min_num_of_quest_by_batch is None:
-                pyl.measure_proc_time(__do_individual_processing)(
-                        (farm_report_total_summary_gen.
-                            do_logic_that_generate_monthly_tot_sum_by_col_year),
-                        args
-                    )
-            else:
-                pyl.measure_proc_time(__do_batch_processing)(
-                        (farm_report_total_summary_gen.
-                            do_logic_that_generate_monthly_tot_sum_by_col_year),
-                        args
-                    )
+            if args.generate_monthly_user_total_summary == True \
+                or args.generate_monthly_quest_total_summary == True:
+                function_object = (farm_report_total_summary_gen.
+                                    do_logic_that_generate_monthly_tot_sum_by_col_year)
         elif args.col_year_month is not None:
-            if args.min_num_of_quest_by_batch is None:
-                pyl.measure_proc_time(__do_individual_processing)(
-                        (farm_report_total_summary_gen.
-                            do_logic_that_generate_monthly_tot_sum_by_col_year_month),
-                        args
-                    )
-            else:
-                pyl.measure_proc_time(__do_batch_processing)(
-                        (farm_report_total_summary_gen.
-                            do_logic_that_generate_monthly_tot_sum_by_col_year_month),
-                        args
-                    )
+            if args.generate_monthly_user_total_summary == True \
+                or args.generate_monthly_quest_total_summary == True:
+                function_object = (farm_report_total_summary_gen.
+                                    do_logic_that_generate_monthly_tot_sum_by_col_year_month)
+        
+        # ロジック(周回報告全体概要生成)の実行
+        if function_object is not None:
+            pyl.measure_proc_time(function_object)(
+                    (args.col_year
+                        if args.col_year is not None
+                        else args.col_year_month),
+                    (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                        if bool(args.generate_monthly_user_total_summary) == True
+                        else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+                    (int(args.min_num_of_all_quest)
+                        if args.min_num_of_all_quest is not None
+                        else int(args.min_num_of_normal_quest)
+                        if args.min_num_of_normal_quest is not None
+                        else int(args.min_num_of_event_quest)
+                        if args.min_num_of_event_quest is not None
+                        else int(args.min_num_of_quest_by_batch)),
+                    ([const_util.QUEST_KINDS[0]]
+                        if args.min_num_of_all_quest is not None
+                        else [const_util.QUEST_KINDS[1]]
+                        if args.min_num_of_normal_quest is not None
+                        else [const_util.QUEST_KINDS[2]]
+                        if args.min_num_of_event_quest is not None
+                        else const_util.QUEST_KINDS),
+                    bool(args.output_user_name)
+                )
     except KeyboardInterrupt as e:
         if lg is not None:
             pyl.log_inf(lg, f'処理を中断しました。')
@@ -111,66 +122,6 @@ def main() -> int:
         return 1
     
     return 0
-
-
-def __do_individual_processing(function_object: Callable, args: argparse.Namespace) -> None:
-    
-    '''個別処理実行'''
-    
-    pyl.measure_proc_time(function_object)(
-            args.col_year if args.col_year is not None else args.col_year_month,
-            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_monthly_user_total_summary) == True
-                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-            (int(args.min_num_of_all_quest)
-                if args.min_num_of_all_quest is not None
-                else int(args.min_num_of_normal_quest)
-                if args.min_num_of_normal_quest is not None
-                else int(args.min_num_of_event_quest)),
-            (const_util.QUEST_KINDS[0]
-                if args.min_num_of_all_quest is not None
-                else const_util.QUEST_KINDS[1]
-                if args.min_num_of_normal_quest is not None
-                else const_util.QUEST_KINDS[2]),
-            bool(args.output_user_name)
-        )
-    
-    return None
-
-
-def __do_batch_processing(function_object: Callable, args: argparse.Namespace) -> None:
-    
-    '''一括処理実行'''
-    
-    pyl.measure_proc_time(function_object)(
-            args.col_year if args.col_year is not None else args.col_year_month,
-            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_monthly_user_total_summary) == True
-                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-            int(args.min_num_of_quest_by_batch),
-            const_util.QUEST_KINDS[0],
-            bool(args.output_user_name)
-        )
-    pyl.measure_proc_time(function_object)(
-            args.col_year if args.col_year is not None else args.col_year_month,
-            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_monthly_user_total_summary) == True
-                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-            int(args.min_num_of_quest_by_batch),
-            const_util.QUEST_KINDS[1],
-            args.output_user_name
-        )
-    pyl.measure_proc_time(function_object)(
-            args.col_year if args.col_year is not None else args.col_year_month,
-            (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
-                if bool(args.generate_monthly_user_total_summary) == True
-                else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
-            int(args.min_num_of_quest_by_batch),
-            const_util.QUEST_KINDS[2],
-            args.output_user_name
-        )
-    
-    return None
 
 
 def __get_args() -> argparse.Namespace:
