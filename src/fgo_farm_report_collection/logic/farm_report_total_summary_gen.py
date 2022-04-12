@@ -25,7 +25,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
         col_year: str,
         enum_of_proc: EnumOfProc,
         min_num_of_farms: int,
-        quest_kind: str,
+        quest_kinds: list[str],
         output_user_name: bool = False
     ) -> None:
     
@@ -47,7 +47,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
                     col_year_month,
                     enum_of_proc,
                     min_num_of_farms,
-                    quest_kind,
+                    quest_kinds,
                     output_user_name
                 )
         
@@ -62,7 +62,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
         col_year_month: str,
         enum_of_proc: EnumOfProc,
         min_num_of_farms: int,
-        quest_kind: str,
+        quest_kinds: list[str],
         output_user_name: bool = False
     ) -> None:
     
@@ -85,42 +85,43 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
         if col_first_date > first_date_of_this_month:
             pyl.log_inf(lg, f'収集年月が未来です。(col_year_month:{col_year_month})')
         else:
-            # 周回報告一覧ファイルパスの生成
-            farm_report_list_file_path: str = \
-                const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
-            
-            # 周回報告月間全体概要ファイルパス(ユーザ、クエスト)の生成
-            farm_report_monthly_tot_sum_file_path: str = ''
-            if enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
-                farm_report_monthly_tot_sum_file_path = \
-                    const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH.format(
-                        col_year_month, quest_kind, min_num_of_farms)
-            elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
-                farm_report_monthly_tot_sum_file_path = \
-                    const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH.format(
-                        col_year_month, quest_kind, min_num_of_farms)
-            
-            # 周回報告一覧ファイルが存在しない場合
-            if os.path.isfile(farm_report_list_file_path) == False:
-                pyl.log_inf(lg, f'周回報告一覧ファイルが存在しません。' +
-                                f'(farm_report_list_file_path:{farm_report_list_file_path})')
-            else:
-                # 周回報告月間全体概要ファイル(ユーザ、クエスト)の生成
+            for quest_kind in quest_kinds:
+                # 周回報告一覧ファイルパスの生成
+                farm_report_list_file_path: str = \
+                    const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
+                
+                # 周回報告月間全体概要ファイルパス(ユーザ、クエスト)の生成
+                farm_report_monthly_tot_sum_file_path: str = ''
                 if enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
-                    __generate_farm_report_monthly_usr_tot_sum_file(
-                            farm_report_list_file_path,
-                            quest_kind,
-                            min_num_of_farms,
-                            farm_report_monthly_tot_sum_file_path,
-                            output_user_name
-                        )
+                    farm_report_monthly_tot_sum_file_path = \
+                        const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH.format(
+                            col_year_month, quest_kind, min_num_of_farms)
                 elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
-                    __generate_farm_report_monthly_qst_tot_sum_file(
-                            farm_report_list_file_path,
-                            quest_kind,
-                            min_num_of_farms,
-                            farm_report_monthly_tot_sum_file_path
-                        )
+                    farm_report_monthly_tot_sum_file_path = \
+                        const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH.format(
+                            col_year_month, quest_kind, min_num_of_farms)
+                
+                # 周回報告一覧ファイルが存在しない場合
+                if os.path.isfile(farm_report_list_file_path) == False:
+                    pyl.log_inf(lg, f'周回報告一覧ファイルが存在しません。' +
+                                    f'(farm_report_list_file_path:{farm_report_list_file_path})')
+                else:
+                    # 周回報告月間全体概要ファイル(ユーザ、クエスト)の生成
+                    if enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
+                        __generate_farm_report_monthly_usr_tot_sum_file(
+                                farm_report_list_file_path,
+                                quest_kind,
+                                min_num_of_farms,
+                                farm_report_monthly_tot_sum_file_path,
+                                output_user_name
+                            )
+                    elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
+                        __generate_farm_report_monthly_qst_tot_sum_file(
+                                farm_report_list_file_path,
+                                quest_kind,
+                                min_num_of_farms,
+                                farm_report_monthly_tot_sum_file_path
+                            )
         
         pyl.log_inf(lg, f'周回報告月間全体概要生成(年月指定)を終了します。')
     except Exception as e:
