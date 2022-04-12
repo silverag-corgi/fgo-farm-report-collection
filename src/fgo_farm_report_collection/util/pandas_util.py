@@ -122,7 +122,7 @@ def read_farm_report_usr_tot_sum_file(
     farm_report_usr_tot_sum_df: pd.DataFrame = pd.read_csv(
             farm_report_usr_tot_sum_file_path,
             header=None,
-            names=const_util.FARM_REPORT_USER_TOTAL_SUMMARY_HEADER,
+            names=const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
             index_col=None,
             skiprows=1,
             encoding=const_util.ENCODING
@@ -187,7 +187,7 @@ def read_farm_report_qst_tot_sum_file(
     farm_report_qst_tot_sum_df: pd.DataFrame = pd.read_csv(
             farm_report_qst_tot_sum_file_path,
             header=None,
-            names=const_util.FARM_REPORT_QUEST_TOTAL_SUMMARY_HEADER,
+            names=const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
             index_col=None,
             skiprows=1,
             encoding=const_util.ENCODING
@@ -248,7 +248,7 @@ def read_farm_report_ind_sum_file(
     farm_report_ind_sum_df: pd.DataFrame = pd.read_csv(
             farm_report_ind_sum_file_path,
             header=None,
-            names=const_util.FARM_REPORT_INDIVIDUAL_SUMMARY_HEADER,
+            names=const_util.FARM_REPORT_IND_SUM_HEADER,
             index_col=None,
             skiprows=1,
             encoding=const_util.ENCODING
