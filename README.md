@@ -9,8 +9,8 @@
   - [2.2. 実行結果](#22-実行結果)
     - [2.2.1. 生成結果ファイル](#221-生成結果ファイル)
       - [2.2.1.1. 周回報告一覧ファイル](#2211-周回報告一覧ファイル)
-      - [2.2.1.2. 周回報告ユーザ全体概要ファイル](#2212-周回報告ユーザ全体概要ファイル)
-      - [2.2.1.3. 周回報告クエスト全体概要ファイル](#2213-周回報告クエスト全体概要ファイル)
+      - [2.2.1.2. 周回報告月間ユーザ全体概要ファイル](#2212-周回報告月間ユーザ全体概要ファイル)
+      - [2.2.1.3. 周回報告月間クエスト全体概要ファイル](#2213-周回報告月間クエスト全体概要ファイル)
       - [2.2.1.4. 周回報告個人概要ファイル](#2214-周回報告個人概要ファイル)
     - [2.2.2. マージ結果ファイル](#222-マージ結果ファイル)
 - [3. 動作確認済み環境](#3-動作確認済み環境)
@@ -25,8 +25,8 @@
   - [5.2. 周回報告全体概要生成](#52-周回報告全体概要生成)
     - [5.2.1. 実行コマンド](#521-実行コマンド)
     - [5.2.2. 実行結果](#522-実行結果)
-      - [5.2.2.1. 周回報告ユーザ全体概要ファイル](#5221-周回報告ユーザ全体概要ファイル)
-      - [5.2.2.2. 周回報告クエスト全体概要ファイル](#5222-周回報告クエスト全体概要ファイル)
+      - [5.2.2.1. 周回報告月間ユーザ全体概要ファイル](#5221-周回報告月間ユーザ全体概要ファイル)
+      - [5.2.2.2. 周回報告月間クエスト全体概要ファイル](#5222-周回報告月間クエスト全体概要ファイル)
   - [5.3. 周回報告個人概要生成](#53-周回報告個人概要生成)
     - [5.3.1. 実行コマンド](#531-実行コマンド)
     - [5.3.2. 実行結果](#532-実行結果)
@@ -35,8 +35,8 @@
     - [5.4.1. 実行コマンド](#541-実行コマンド)
     - [5.4.2. 実行結果](#542-実行結果)
       - [5.4.2.1. 周回報告一覧マージ結果ファイル](#5421-周回報告一覧マージ結果ファイル)
-      - [5.4.2.2. 周回報告ユーザ全体概要マージ結果ファイル](#5422-周回報告ユーザ全体概要マージ結果ファイル)
-      - [5.4.2.3. 周回報告クエスト全体概要マージ結果ファイル](#5423-周回報告クエスト全体概要マージ結果ファイル)
+      - [5.4.2.2. 周回報告月間ユーザ全体概要マージ結果ファイル](#5422-周回報告月間ユーザ全体概要マージ結果ファイル)
+      - [5.4.2.3. 周回報告月間クエスト全体概要マージ結果ファイル](#5423-周回報告月間クエスト全体概要マージ結果ファイル)
       - [5.4.2.4. 周回報告個人概要マージ結果ファイル](#5424-周回報告個人概要マージ結果ファイル)
 - [6. マージ結果ファイルのURL](#6-マージ結果ファイルのurl)
 - [7. 実行コマンド一覧](#7-実行コマンド一覧)
@@ -84,16 +84,16 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 #### 2.2.1.1. 周回報告一覧ファイル
 
-指定した年月の周回報告の一覧である。
+周回報告一覧である。
 
   - 年月：2022-01
 
 ![farm_report_list](./pic/farm_report_list.JPG)
 
 
-#### 2.2.1.2. 周回報告ユーザ全体概要ファイル
+#### 2.2.1.2. 周回報告月間ユーザ全体概要ファイル
 
-周回報告による、指定した年月およびクエスト種別のユーザ(Twitter)ごとの周回概要である。
+周回報告を基にした、クエスト種別ごとの月間周回概要(ユーザ編)である。
 
   - 年月：2022-01
   - クエスト種別：全て(通常クエ＋イベクエ)
@@ -102,9 +102,9 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 ![farm_report_total_summary](./pic/farm_report_user_total_summary.JPG)
 
 
-#### 2.2.1.3. 周回報告クエスト全体概要ファイル
+#### 2.2.1.3. 周回報告月間クエスト全体概要ファイル
 
-周回報告による、指定した年月およびクエスト種別のクエストごとの周回概要である。
+周回報告による、クエスト種別ごとの月間周回概要(クエスト編)である。
 
   - 年月：2022-01
   - クエスト種別：全て(通常クエ＋イベクエ)
@@ -115,7 +115,7 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 #### 2.2.1.4. 周回報告個人概要ファイル
 
-周回報告による、指定した年およびユーザ(Twitter)の周回概要である。
+周回報告による、ユーザ(Twitter)ごとの周回概要である。
 
   - 年：2022
   - ユーザID：silverag_corgi
@@ -239,7 +239,7 @@ Group B - only one required arguments:
 ヘルプ：
 ```cmd
 > poetry run tot-gen -h
-usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-u | -q) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-un]
+usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-mu | -mq) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-u]
 
 周回報告全体概要生成
 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
@@ -261,12 +261,12 @@ Group B2 - only one required arguments:
   1つのみ必須な引数
   処理を指定します
 
-  -u, --generate_user_total_summary
-                        周回報告ユーザ全体概要生成要否
-                        周回報告ユーザ全体概要を生成します
-  -q, --generate_quest_total_summary
-                        周回報告クエスト全体概要生成要否
-                        周回報告クエスト全体概要を生成します
+  -mu, --generate_monthly_user_total_summary
+                        周回報告月間ユーザ全体概要生成要否
+                        周回報告月間ユーザ全体概要を生成します
+  -mq, --generate_monthly_quest_total_summary
+                        周回報告月間クエスト全体概要生成要否
+                        周回報告月間クエスト全体概要を生成します
 
 Group B3 - only one required arguments:
   1つのみ必須な引数
@@ -287,7 +287,7 @@ Group C - optional arguments:
   -l, --generate_list   周回報告一覧生成要否
                         指定した場合は一覧を生成します
                         指定しない場合は生成せずに既存の一覧のみを使用します
-  -un, --output_user_name
+  -u, --output_user_name
                         ユーザ名出力要否
                         指定した場合は周回報告ユーザ全体概要ファイルにユーザ名を出力します
 ```
@@ -308,28 +308,28 @@ Group C - optional arguments:
 周回報告全体概要ファイルと周回報告クエスト全体概要ファイルが生成される。
 
 
-#### 5.2.2.1. 周回報告ユーザ全体概要ファイル
+#### 5.2.2.1. 周回報告月間ユーザ全体概要ファイル
 
 下記パスに生成される。
 
-| 種類         | ファイルパス                                                                       |
-| ------------ | ---------------------------------------------------------------------------------- |
-| フォーマット | ./dest/farm_report_total_summary/user/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
-| 例           | ./dest/farm_report_total_summary/user/2022-01_全て_100周以上.csv                   |
+| 種類         | ファイルパス                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| フォーマット | ./dest/farm_report_total_summary/monthly_user/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
+| 例           | ./dest/farm_report_total_summary/monthly_user/2022-01_全て_100周以上.csv                   |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
 ![farm_report_total_summary](./pic/farm_report_user_total_summary.JPG)
 
 
-#### 5.2.2.2. 周回報告クエスト全体概要ファイル
+#### 5.2.2.2. 周回報告月間クエスト全体概要ファイル
 
 下記パスに生成される。
 
-| 種類         | ファイルパス                                                                        |
-| ------------ | ----------------------------------------------------------------------------------- |
-| フォーマット | ./dest/farm_report_total_summary/quest/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
-| 例           | ./dest/farm_report_total_summary/quest/2022-01_全て_100周以上.csv                   |
+| 種類         | ファイルパス                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------- |
+| フォーマット | ./dest/farm_report_total_summary/monthly_quest/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
+| 例           | ./dest/farm_report_total_summary/monthly_quest/2022-01_全て_100周以上.csv                   |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
@@ -407,7 +407,7 @@ Group C - optional arguments:
 ヘルプ：
 ```cmd
 > poetry run merge -h
-usage: merge [-h] (-l | -u | -q | -i) [-a]
+usage: merge [-h] (-l | -mu | -mq | -i) [-a]
 
 周回報告生成結果マージ
 生成結果をExcelファイルにマージします
@@ -420,10 +420,10 @@ Group B - only one required arguments:
   処理を指定します
 
   -l, --merge_list      周回報告一覧マージ要否
-  -u, --merge_user_total_summary
-                        周回報告ユーザ全体概要マージ要否
-  -q, --merge_quest_total_summary
-                        周回報告クエスト全体概要マージ要否
+  -mu, --merge_monthly_user_total_summary
+                        周回報告月間ユーザ全体概要マージ要否
+  -mq, --merge_monthly_quest_total_summary
+                        周回報告月間クエスト全体概要マージ要否
   -i, --merge_individual_summary
                         周回報告個人概要マージ要否
 
@@ -458,7 +458,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/merge_result/周回報告一覧.xlsx |
 
 
-#### 5.4.2.2. 周回報告ユーザ全体概要マージ結果ファイル
+#### 5.4.2.2. 周回報告月間ユーザ全体概要マージ結果ファイル
 
 下記パスに生成される。
 
@@ -467,7 +467,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/merge_result/周回報告ユーザ全体概要.xlsx |
 
 
-#### 5.4.2.3. 周回報告クエスト全体概要マージ結果ファイル
+#### 5.4.2.3. 周回報告月間クエスト全体概要マージ結果ファイル
 
 下記パスに生成される。
 
@@ -489,11 +489,11 @@ Group C - optional arguments:
 
 マージ結果ファイルをGoogleドライブ経由にて下記リンクで公開している。
 
-- 周回報告ユーザ全体概要マージ結果ファイル
+- 周回報告月間ユーザ全体概要マージ結果ファイル
   - [スプレッドシート版](https://docs.google.com/spreadsheets/d/1fupclGtdYSTMs-s9vOjQZPr3D9nF18bL/edit?usp=sharing&ouid=106816149049152778475&rtpof=true&sd=true)
   - [Webサイト版](https://docs.google.com/spreadsheets/d/e/2PACX-1vSXSRzQvhFYMx430bwbSavdzIo5uo7e9NYnVZDTZJNUW5oI7mHJcWkdi0GV_YPYQg/pubhtml)
 
-- 周回報告クエスト全体概要マージ結果ファイル
+- 周回報告月間クエスト全体概要マージ結果ファイル
   - [スプレッドシート版](https://docs.google.com/spreadsheets/d/1g-I1Y0GCjGdsE4ia3qTlaoPdF3DtpMCm/edit?usp=sharing&ouid=106816149049152778475&rtpof=true&sd=true)
   - [Webサイト版](https://docs.google.com/spreadsheets/d/e/2PACX-1vTnHSDy7kFA4X-ICwTq5yYOx8nBU2DSMfHRJ04-Qt2_zg5nuWc1HdMTOYPzRFEWAQ/pubhtml)
 
@@ -516,14 +516,14 @@ Group C - optional arguments:
 ```cmd
 > poetry run list-gen -y 2022
 
-> poetry run tot-gen -y 2022 -u -b 0
-> poetry run tot-gen -y 2022 -q -b 0
+> poetry run tot-gen -y 2022 -mu -b 0
+> poetry run tot-gen -y 2022 -mq -b 0
 
 > poetry run ind-gen 2022 silverag_corgi
 
 > poetry run merge -l
-> poetry run merge -u
-> poetry run merge -q
+> poetry run merge -mu
+> poetry run merge -mq
 > poetry run merge -i
 ```
 
