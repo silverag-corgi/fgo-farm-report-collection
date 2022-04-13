@@ -29,6 +29,8 @@ def main() -> int:
     Args on cmd line:
         col_year (str)                              : [グループB1][1つのみ必須] 収集年(yyyy形式)
         col_year_month (str)                        : [グループB1][1つのみ必須] 収集年月(yyyy-mm形式)
+        generate_yearly_user_total_summary (bool)   : [グループB2][1つのみ必須] 周回報告年間ユーザ全体概要生成要否
+        generate_yearly_quest_total_summary (bool)  : [グループB2][1つのみ必須] 周回報告年間クエスト全体概要生成要否
         generate_monthly_user_total_summary (bool)  : [グループB2][1つのみ必須] 周回報告月間ユーザ全体概要生成要否
         generate_monthly_quest_total_summary (bool) : [グループB2][1つのみ必須] 周回報告月間クエスト全体概要生成要否
         min_num_of_all_quest (int)                  : [グループB3][1つのみ必須] 最低周回数(全て)
@@ -43,6 +45,8 @@ def main() -> int:
     
     Destinations:
         周回報告一覧ファイル: ./dest/farm_report_list/[収集年月].csv
+        周回報告年間ユーザ全体概要ファイル: ./dest/farm_report_total_summary/yearly_user/[収集年]_[クエスト種別]_[最低周回数].csv
+        周回報告年間クエスト全体概要ファイル: ./dest/farm_report_total_summary/yearly_quest/[収集年]_[クエスト種別]_[最低周回数].csv
         周回報告月間ユーザ全体概要ファイル: ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
         周回報告月間クエスト全体概要ファイル: ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
     '''  # noqa: E501
@@ -64,21 +68,20 @@ def main() -> int:
         
         # ロジック(周回報告一覧生成)の実行
         if bool(args.generate_list) == True:
-            if args.col_year is not None:
-                pyl.measure_proc_time(
-                    farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
-                            args.col_year
-                        )
-            elif args.col_year_month is not None:
-                pyl.measure_proc_time(
-                    farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
-                            args.col_year_month
-                        )
+            pyl.measure_proc_time(farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
+                    (args.col_year
+                        if args.col_year is not None
+                        else args.col_year_month)
+                )
         
         # 関数オブジェクトの取得
         function_object: Optional[Callable] = None
         if args.col_year is not None:
-            if args.generate_monthly_user_total_summary == True \
+            if args.generate_yearly_user_total_summary == True \
+                or args.generate_yearly_quest_total_summary == True:
+                function_object = (farm_report_total_summary_gen.
+                                    do_logic_that_generate_yearly_tot_sum_by_col_year)
+            elif args.generate_monthly_user_total_summary == True \
                 or args.generate_monthly_quest_total_summary == True:
                 function_object = (farm_report_total_summary_gen.
                                     do_logic_that_generate_monthly_tot_sum_by_col_year)
@@ -94,9 +97,16 @@ def main() -> int:
                     (args.col_year
                         if args.col_year is not None
                         else args.col_year_month),
-                    (farm_report_total_summary_gen.EnumOfProc.GENERATE_USER_TOTAL_SUMMARY
+                    (farm_report_total_summary_gen.EnumOfProc.GENERATE_YEARLY_USER_TOTAL_SUMMARY
+                        if bool(args.generate_yearly_user_total_summary) == True
+                        else farm_report_total_summary_gen.EnumOfProc.
+                                GENERATE_YEARLY_QUEST_TOTAL_SUMMARY
+                        if bool(args.generate_yearly_quest_total_summary) == True
+                        else farm_report_total_summary_gen.EnumOfProc.
+                                GENERATE_MONTHLY_USER_TOTAL_SUMMARY
                         if bool(args.generate_monthly_user_total_summary) == True
-                        else farm_report_total_summary_gen.EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY),
+                        else farm_report_total_summary_gen.EnumOfProc.
+                                GENERATE_MONTHLY_QUEST_TOTAL_SUMMARY),
                     (int(args.min_num_of_all_quest)
                         if args.min_num_of_all_quest is not None
                         else int(args.min_num_of_normal_quest)
@@ -155,6 +165,16 @@ def __get_args() -> argparse.Namespace:
             '1つのみ必須な引数\n処理を指定します')
         mutually_exclusive_group_b2: argparse._MutuallyExclusiveGroup = \
             arg_group_b2.add_mutually_exclusive_group(required=True)
+        help_ = '周回報告年間{0}全体概要生成要否\n' + \
+                '収集年を指定した場合、周回報告年間{0}全体概要を生成します'
+        mutually_exclusive_group_b2.add_argument(
+            '-yu', '--generate_yearly_user_total_summary',
+            action='store_true',
+            help=help_.format('ユーザ'))
+        mutually_exclusive_group_b2.add_argument(
+            '-yq', '--generate_yearly_quest_total_summary',
+            action='store_true',
+            help=help_.format('クエスト'))
         help_ = '周回報告月間{0}全体概要生成要否\n' + \
                 '周回報告月間{0}全体概要を生成します'
         mutually_exclusive_group_b2.add_argument(
@@ -222,6 +242,15 @@ def __validate_args(args: argparse.Namespace) -> bool:
             except ValueError:
                 pyl.log_war(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
                 return False
+        
+        # 検証：周回報告年間ユーザ全体概要生成要否、もしくは、周回報告年間クエスト全体概要生成要否が真の場合は、
+        # 収集年が指定されていること
+        if (args.generate_yearly_user_total_summary == True
+            or args.generate_yearly_quest_total_summary == True) \
+                and args.col_year is None:
+            pyl.log_war(lg, f'収集年が指定されていません。' +
+                            f'(col_year:{args.col_year}, col_year_month:{args.col_year_month})')
+            return False
         
         # 検証：最低周回数のいずれかが0以上であること
         if args.min_num_of_all_quest is not None \
