@@ -2,6 +2,10 @@ from typing import Final
 
 FARM_REPORT_LIST_FILE_PATH: Final[str] = \
     './dest/farm_report_list/{0}.csv'
+FARM_REPORT_YEARLY_USR_TOT_SUM_FILE_PATH: Final[str] = \
+    './dest/farm_report_total_summary/yearly_user/{0}_{1}_{2}周以上.csv'
+FARM_REPORT_YEARLY_QST_TOT_SUM_FILE_PATH: Final[str] = \
+    './dest/farm_report_total_summary/yearly_quest/{0}_{1}_{2}周以上.csv'
 FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH: Final[str] = \
     './dest/farm_report_total_summary/monthly_user/{0}_{1}_{2}周以上.csv'
 FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH: Final[str] = \
