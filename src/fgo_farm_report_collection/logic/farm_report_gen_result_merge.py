@@ -61,6 +61,90 @@ def do_logic_that_merge_list(
     return None
 
 
+def do_logic_that_merge_yearly_usr_tot_sum(
+        append_sheet: bool
+    ) -> None:
+    
+    '''ロジック(周回報告年間ユーザ全体概要マージ)実行'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告年間ユーザ全体概要マージを開始します。')
+        
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
+                const_util.FARM_REPORT_YEARLY_USR_TOT_SUM_FILE_PATH,
+                const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
+                append_sheet,
+                const_util.FARM_REPORT_YEARLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH,
+                'クエスト種別ごとの年間周回数(ユーザ編)',
+                {
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[0]: 20,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]: 20,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2]: 10,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3]: 10,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]: 15,
+                },
+                'A4',
+                ['A1:I1', 'A2:I2']
+            )
+        
+        pyl.log_inf(lg, f'周回報告年間ユーザ全体概要マージを終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
+
+
+def do_logic_that_merge_yearly_qst_tot_sum(
+        append_sheet: bool
+    ) -> None:
+    
+    '''ロジック(周回報告年間クエスト全体概要マージ)実行'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告年間クエスト全体概要マージを開始します。')
+        
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
+                const_util.FARM_REPORT_YEARLY_QST_TOT_SUM_FILE_PATH,
+                const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
+                append_sheet,
+                const_util.FARM_REPORT_YEARLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH,
+                'クエスト種別ごとの年間周回数(クエスト編)',
+                {
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[0]: 20,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[1]: 20,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2]: 10,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3]: 10,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]: 15,
+                },
+                'A4',
+                ['A1:I1', 'A2:I2']
+            )
+        
+        pyl.log_inf(lg, f'周回報告年間クエスト全体概要マージを終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
+
+
 def do_logic_that_merge_monthly_usr_tot_sum(
         append_sheet: bool
     ) -> None:
@@ -295,8 +379,9 @@ def __do_logic_that_merge_gen_result(
                 if merge_result_wb is not None:
                     merge_result_wb.save(merge_result_file_path)
                     merge_result_wb.close()
+            
+            pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：{merge_result_file_path}')
         
-        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：{merge_result_file_path}')
         pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を終了します。')
     except Exception as e:
         raise(e)

@@ -15,6 +15,10 @@ FARM_REPORT_IND_SUM_FILE_PATH: Final[str] = \
 
 FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH: Final[str] = \
     './dest/merge_result/周回報告一覧.xlsx'
+FARM_REPORT_YEARLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告年間ユーザ全体概要.xlsx'
+FARM_REPORT_YEARLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH: Final[str] = \
+    './dest/merge_result/周回報告年間クエスト全体概要.xlsx'
 FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH: Final[str] = \
     './dest/merge_result/周回報告ユーザ全体概要.xlsx'
 FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH: Final[str] = \

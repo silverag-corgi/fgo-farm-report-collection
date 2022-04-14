@@ -24,6 +24,8 @@ def main() -> int:
     
     Args on cmd line:
         merge_list (bool)                           : [グループB1][1つのみ必須] 周回報告一覧マージ要否
+        merge_yearly_user_total_summary (bool)      : [グループB1][1つのみ必須] 周回報告年間ユーザ全体概要マージ要否
+        merge_yearly_quest_total_summary (bool)     : [グループB1][1つのみ必須] 周回報告年間クエスト全体概要マージ要否
         merge_monthly_user_total_summary (bool)     : [グループB1][1つのみ必須] 周回報告月間ユーザ全体概要マージ要否
         merge_monthly_quest_total_summary (bool)    : [グループB1][1つのみ必須] 周回報告月間クエスト全体概要マージ要否
         merge_individual_summary (bool)             : [グループB1][1つのみ必須] 周回報告個人概要マージ要否
@@ -34,6 +36,8 @@ def main() -> int:
     
     Destinations:
         周回報告一覧マージ結果ファイル: ./dest/merge_result/周回報告一覧.xlsx
+        周回報告年間ユーザ全体概要マージ結果ファイル: ./dest/merge_result/周回報告年間ユーザ全体概要.xlsx
+        周回報告年間クエスト全体概要マージ結果ファイル: ./dest/merge_result/周回報告年間クエスト全体概要.xlsx
         周回報告月間ユーザ全体概要マージ結果ファイル: ./dest/merge_result/周回報告ユーザ全体概要.xlsx
         周回報告月間クエスト全体概要マージ結果ファイル: ./dest/merge_result/周回報告クエスト全体概要.xlsx
         周回報告個人概要マージ結果ファイル: ./dest/merge_result/周回報告個人概要.xlsx
@@ -57,6 +61,14 @@ def main() -> int:
         # ロジック(周回報告生成結果マージ)の実行
         if bool(args.merge_list) == True:
             farm_report_gen_result_merge.do_logic_that_merge_list(
+                    args.append_sheet
+                )
+        elif bool(args.merge_yearly_user_total_summary) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_yearly_usr_tot_sum(
+                    args.append_sheet
+                )
+        elif bool(args.merge_yearly_quest_total_summary) == True:
+            farm_report_gen_result_merge.do_logic_that_merge_yearly_qst_tot_sum(
                     args.append_sheet
                 )
         elif bool(args.merge_monthly_user_total_summary) == True:
@@ -104,6 +116,12 @@ def __get_args() -> argparse.Namespace:
         help_ = '周回報告一覧マージ要否'
         mutually_exclusive_group_b.add_argument(
             '-l', '--merge_list', action='store_true', help=help_)
+        help_ = '周回報告年間ユーザ全体概要マージ要否'
+        mutually_exclusive_group_b.add_argument(
+            '-yu', '--merge_yearly_user_total_summary', action='store_true', help=help_)
+        help_ = '周回報告年間クエスト全体概要マージ要否'
+        mutually_exclusive_group_b.add_argument(
+            '-yq', '--merge_yearly_quest_total_summary', action='store_true', help=help_)
         help_ = '周回報告月間ユーザ全体概要マージ要否'
         mutually_exclusive_group_b.add_argument(
             '-mu', '--merge_monthly_user_total_summary', action='store_true', help=help_)
