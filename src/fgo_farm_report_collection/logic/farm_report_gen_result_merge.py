@@ -304,6 +304,89 @@ def __do_logic_that_merge_gen_result(
     return None
 
 
+def __generate_merge_result_header_part_sfs(
+        merge_result_book_name: str,
+        merge_result_sheet_name: str,
+        gen_result_header: list[str]
+    ) -> list[StyleFrame]:
+    
+    '''周回報告マージ結果ヘッダ部スタイルフレーム生成'''
+    
+    merge_result_header_part_sfs: list[StyleFrame] = []
+    
+    # 周回報告マージ結果ヘッダ部01データフレームの生成
+    merge_result_header_part_col_num: int = 0
+    merge_result_header_part_01_df: pd.DataFrame = pd.DataFrame({
+            f'col_{merge_result_header_part_col_num}':
+            [merge_result_book_name, merge_result_sheet_name]
+        })
+    for _ in range(len(gen_result_header) - 1):
+        merge_result_header_part_col_num = merge_result_header_part_col_num + 1
+        merge_result_header_part_01_df[f'col_{merge_result_header_part_col_num}'] = ''
+    
+    # 周回報告マージ結果ヘッダ部01の書式設定の適用
+    merge_result_header_part_01_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_01_df, is_update_datetime_col=False)
+    
+    # 更新日時の取得
+    update_datetime: datetime = datetime.now()
+    update_date: str = update_datetime.strftime('%Y-%m-%d')
+    update_time: str = update_datetime.strftime('%H:%M:%S')
+    
+    # 周回報告マージ結果ヘッダ部02データフレームの生成
+    merge_result_header_part_col_num = merge_result_header_part_col_num + 1
+    merge_result_header_part_02_df: pd.DataFrame = \
+        pd.DataFrame({f'col_{merge_result_header_part_col_num}': [update_date, update_time]})
+    
+    # 周回報告マージ結果ヘッダ部02の書式設定の適用
+    merge_result_header_part_02_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_02_df, is_update_datetime_col=True)
+    
+    # 周回報告マージ結果ヘッダ部スタイルフレームへの追加
+    merge_result_header_part_sfs.append(merge_result_header_part_01_sf)
+    merge_result_header_part_sfs.append(merge_result_header_part_02_sf)
+    
+    return merge_result_header_part_sfs
+
+
+def __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_df: pd.DataFrame,
+        merge_result_column_widths: dict[str, Union[int, float]] = {},
+        is_update_datetime_col: bool = False
+    ) -> StyleFrame:
+    
+    '''書式設定適用(周回報告マージ結果ヘッダ部)'''
+    
+    DATETIME_FORMAT: Final[str] = 'YYYY-MM-DD HH:MM:SS'
+    
+    # デフォルトのスタイルの適用
+    default_style: Styler = Styler(
+            bg_color=None,
+            bold=False,
+            font=const_util.FONT_NAME,
+            font_size=const_util.FONT_SIZE,
+            number_format=utils.number_formats.general,
+            horizontal_alignment=(utils.horizontal_alignments.general
+                                    if is_update_datetime_col == False
+                                    else utils.horizontal_alignments.right),
+            wrap_text=False,
+            shrink_to_fit=False if is_update_datetime_col == False else True,
+            date_time_format=DATETIME_FORMAT,
+        )
+    merge_result_header_part_sf: StyleFrame = StyleFrame(merge_result_header_part_df, default_style)
+    
+    # 列の幅の適用
+    merge_result_header_part_sf.set_column_width_dict(merge_result_column_widths)
+    
+    # 行の高さの適用
+    row_indexes: tuple = merge_result_header_part_sf.row_indexes
+    merge_result_header_part_sf.set_row_height_dict({
+            row_indexes[:len(row_indexes) - 1]: 20,
+        })
+    
+    return merge_result_header_part_sf
+
+
 def __apply_formatting_to_gen_result(
         gen_result_df: pd.DataFrame,
         merge_result_column_widths: dict[str, Union[int, float]] = {}
@@ -357,86 +440,3 @@ def __apply_formatting_to_gen_result(
             })
     
     return merge_result_data_part_sf
-
-
-def __apply_formatting_to_merge_result_header_part(
-        merge_result_header_part_df: pd.DataFrame,
-        merge_result_column_widths: dict[str, Union[int, float]] = {},
-        is_update_datetime_col: bool = False
-    ) -> StyleFrame:
-    
-    '''書式設定適用(周回報告マージ結果ヘッダ部)'''
-    
-    DATETIME_FORMAT: Final[str] = 'YYYY-MM-DD HH:MM:SS'
-    
-    # デフォルトのスタイルの適用
-    default_style: Styler = Styler(
-            bg_color=None,
-            bold=False,
-            font=const_util.FONT_NAME,
-            font_size=const_util.FONT_SIZE,
-            number_format=utils.number_formats.general,
-            horizontal_alignment=(utils.horizontal_alignments.general
-                                    if is_update_datetime_col == False
-                                    else utils.horizontal_alignments.right),
-            wrap_text=False,
-            shrink_to_fit=False if is_update_datetime_col == False else True,
-            date_time_format=DATETIME_FORMAT,
-        )
-    merge_result_header_part_sf: StyleFrame = StyleFrame(merge_result_header_part_df, default_style)
-    
-    # 列の幅の適用
-    merge_result_header_part_sf.set_column_width_dict(merge_result_column_widths)
-    
-    # 行の高さの適用
-    row_indexes: tuple = merge_result_header_part_sf.row_indexes
-    merge_result_header_part_sf.set_row_height_dict({
-            row_indexes[:len(row_indexes) - 1]: 20,
-        })
-    
-    return merge_result_header_part_sf
-
-
-def __generate_merge_result_header_part_sfs(
-        merge_result_book_name: str,
-        merge_result_sheet_name: str,
-        gen_result_header: list[str]
-    ) -> list[StyleFrame]:
-    
-    '''周回報告マージ結果ヘッダ部スタイルフレーム生成'''
-    
-    merge_result_header_part_sfs: list[StyleFrame] = []
-    
-    # 周回報告マージ結果ヘッダ部01データフレームの生成
-    merge_result_header_part_col_num: int = 0
-    merge_result_header_part_01_df: pd.DataFrame = pd.DataFrame({
-            f'col_{merge_result_header_part_col_num}':
-            [merge_result_book_name, merge_result_sheet_name]
-        })
-    for _ in range(len(gen_result_header) - 1):
-        merge_result_header_part_col_num = merge_result_header_part_col_num + 1
-        merge_result_header_part_01_df[f'col_{merge_result_header_part_col_num}'] = ''
-    
-    # 周回報告マージ結果ヘッダ部01の書式設定の適用
-    merge_result_header_part_01_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
-        merge_result_header_part_01_df, is_update_datetime_col=False)
-    
-    # 更新日時の取得
-    update_datetime: datetime = datetime.now()
-    update_date: str = update_datetime.strftime('%Y-%m-%d')
-    update_time: str = update_datetime.strftime('%H:%M:%S')
-    
-    # 周回報告マージ結果ヘッダ部02データフレームの生成
-    merge_result_header_part_col_num = merge_result_header_part_col_num + 1
-    merge_result_header_part_02_df: pd.DataFrame = \
-        pd.DataFrame({f'col_{merge_result_header_part_col_num}': [update_date, update_time]})
-    
-    # 周回報告マージ結果ヘッダ部02の書式設定の適用
-    merge_result_header_part_02_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
-        merge_result_header_part_02_df, is_update_datetime_col=True)
-    
-    # 周回報告マージ結果ヘッダ部スタイルフレームへの追加
-    merge_result_header_part_sfs.append(merge_result_header_part_01_sf)
-    merge_result_header_part_sfs.append(merge_result_header_part_02_sf)
-    
-    return merge_result_header_part_sfs
