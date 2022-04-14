@@ -1,22 +1,31 @@
 import glob
 import os
 from datetime import datetime
+from enum import IntEnum, auto
 from logging import Logger
 from typing import Final, Optional, Union
 
 import openpyxl
 import pandas as pd
 import python_lib_for_me as pyl
+from openpyxl.worksheet.worksheet import Worksheet
 from styleframe import StyleFrame, Styler, utils
 
 from fgo_farm_report_collection.util import const_util, pandas_util
+
+
+class EnumOfProc(IntEnum):
+    GENERATE_LIST = auto()
+    GENERATE_USER_TOTAL_SUMMARY = auto()
+    GENERATE_QUEST_TOTAL_SUMMARY = auto()
+    GENERATE_INDIVIDUAL_SUMMARY = auto()
 
 
 def do_logic_that_merge_list(
         append_sheet: bool
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(周回報告一覧マージ)実行'''
     
     lg: Optional[Logger] = None
     
@@ -25,77 +34,26 @@ def do_logic_that_merge_list(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告一覧マージを開始します。')
         
-        # 周回報告一覧ファイルパスの取得
-        gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_LIST_FILE_PATH)
-        
-        # 周回報告一覧ファイルの件数が0件の場合
-        if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告一覧ファイルの件数が0件です。' +
-                            f'(gen_result_file_paths:{gen_result_file_paths})')
-        else:
-            excel_writer: Optional[pd.ExcelWriter] = None
-            try:
-                # Excelライターの生成
-                excel_writer = __generate_excel_writer(
-                        append_sheet,
-                        const_util.FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH
-                    )
-                
-                # 周回報告一覧マージ結果ファイルへの出力
-                for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告一覧データフレームの取得
-                    pyl.log_inf(lg, f'周回報告一覧ファイルパス：{gen_result_file_path}')
-                    gen_result_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
-                        gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
-                    
-                    # 書式設定の適用
-                    gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
-                            gen_result_df,
-                            {
-                                const_util.FARM_REPORT_LIST_HEADER[0]: 20,
-                                const_util.FARM_REPORT_LIST_HEADER[1]: 20,
-                                const_util.FARM_REPORT_LIST_HEADER[2]: 14,
-                                const_util.FARM_REPORT_LIST_HEADER[3]: 25,
-                                const_util.FARM_REPORT_LIST_HEADER[4]: 20,
-                                const_util.FARM_REPORT_LIST_HEADER[5]: 10,
-                                const_util.FARM_REPORT_LIST_HEADER[6]: 200,
-                            }
-                        )
-                    
-                    # シート名の生成
-                    sheet_name: str = pyl.generate_file_name(gen_result_file_path)
-                    
-                    # シート説明スタイルフレームの生成
-                    sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            '周回報告一覧',
-                            const_util.FARM_REPORT_LIST_HEADER,
-                            sheet_name
-                        )
-                    
-                    # 周回報告一覧スタイルフレームの保存
-                    pandas_util.save_gen_result_sf(
-                            sheet_description_sfs,
-                            gen_result_sf,
-                            excel_writer,
-                            sheet_name,
-                            columns_and_rows_to_freeze='A4',
-                        )
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告一覧マージ結果ファイルへの出力に失敗しました。')
-                raise(e)
-            finally:
-                if excel_writer is not None:
-                    excel_writer.close()
-        
-        # マージ結果ファイルのセルの結合
-        __merge_cells_of_merge_result_file(
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_LIST,
+                const_util.FARM_REPORT_LIST_FILE_PATH,
+                const_util.FARM_REPORT_LIST_HEADER,
+                append_sheet,
                 const_util.FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH,
+                '周回報告一覧',
+                {
+                    const_util.FARM_REPORT_LIST_HEADER[0]: 20,
+                    const_util.FARM_REPORT_LIST_HEADER[1]: 20,
+                    const_util.FARM_REPORT_LIST_HEADER[2]: 14,
+                    const_util.FARM_REPORT_LIST_HEADER[3]: 25,
+                    const_util.FARM_REPORT_LIST_HEADER[4]: 20,
+                    const_util.FARM_REPORT_LIST_HEADER[5]: 10,
+                    const_util.FARM_REPORT_LIST_HEADER[6]: 200,
+                },
+                'A4',
                 ['A1:G1', 'A2:G2']
             )
         
-        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_LIST_MERGE_RESULT_FILE_PATH}')
         pyl.log_inf(lg, f'周回報告一覧マージを終了します。')
     except Exception as e:
         raise(e)
@@ -107,7 +65,7 @@ def do_logic_that_merge_monthly_usr_tot_sum(
         append_sheet: bool
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(周回報告月間ユーザ全体概要マージ)実行'''
     
     lg: Optional[Logger] = None
     
@@ -116,79 +74,28 @@ def do_logic_that_merge_monthly_usr_tot_sum(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを開始します。')
         
-        # 周回報告月間ユーザ全体概要ファイルパスの取得
-        gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH)
-        
-        # 周回報告月間ユーザ全体概要ファイルの件数が0件の場合
-        if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告月間ユーザ全体概要ファイルの件数が0件です。' +
-                            f'(gen_result_file_paths:{gen_result_file_paths})')
-        else:
-            excel_writer: Optional[pd.ExcelWriter] = None
-            try:
-                # Excelライターの生成
-                excel_writer = __generate_excel_writer(
-                        append_sheet,
-                        const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH
-                    )
-                
-                # 周回報告月間ユーザ全体概要マージ結果ファイルへの出力
-                for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告月間ユーザ全体概要データフレームの取得
-                    pyl.log_inf(lg, f'周回報告月間ユーザ全体概要ファイルパス：{gen_result_file_path}')
-                    gen_result_df: pd.DataFrame = pandas_util.read_farm_report_usr_tot_sum_file(
-                        gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
-                    
-                    # 書式設定の適用
-                    gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
-                            gen_result_df,
-                            {
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[0]: 20,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]: 20,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2]: 10,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3]: 10,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4]: 13,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5]: 13,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]: 13,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]: 13,
-                                const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]: 15,
-                            }
-                        )
-                    
-                    # シート名の生成
-                    sheet_name: str = pyl.generate_file_name(gen_result_file_path)
-                    
-                    # シート説明スタイルフレームの生成
-                    sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            'クエスト種別ごとの月間周回数(ユーザ編)',
-                            const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
-                            sheet_name
-                        )
-                    
-                    # 周回報告月間ユーザ全体概要スタイルフレームの保存
-                    pandas_util.save_gen_result_sf(
-                            sheet_description_sfs,
-                            gen_result_sf,
-                            excel_writer,
-                            sheet_name,
-                            columns_and_rows_to_freeze='A4',
-                        )
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告月間ユーザ全体概要マージ結果ファイルへの出力に失敗しました。')
-                raise(e)
-            finally:
-                if excel_writer is not None:
-                    excel_writer.close()
-        
-        # マージ結果ファイルのセルの結合
-        __merge_cells_of_merge_result_file(
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
+                const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH,
+                const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
+                append_sheet,
                 const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH,
+                'クエスト種別ごとの月間周回数(ユーザ編)',
+                {
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[0]: 20,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]: 20,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2]: 10,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3]: 10,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]: 13,
+                    const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]: 15,
+                },
+                'A4',
                 ['A1:I1', 'A2:I2']
             )
         
-        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_MERGE_RESULT_FILE_PATH}')
         pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを終了します。')
     except Exception as e:
         raise(e)
@@ -200,7 +107,7 @@ def do_logic_that_merge_monthly_qst_tot_sum(
         append_sheet: bool
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(周回報告月間クエスト全体概要マージ)実行'''
     
     lg: Optional[Logger] = None
     
@@ -209,79 +116,28 @@ def do_logic_that_merge_monthly_qst_tot_sum(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを開始します。')
         
-        # 周回報告月間クエスト全体概要ファイルパスの取得
-        gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH)
-        
-        # 周回報告月間クエスト全体概要ファイルの件数が0件の場合
-        if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告月間クエスト全体概要ファイルの件数が0件です。' +
-                            f'(gen_result_file_paths:{gen_result_file_paths})')
-        else:
-            excel_writer: Optional[pd.ExcelWriter] = None
-            try:
-                # Excelライターの生成
-                excel_writer = __generate_excel_writer(
-                        append_sheet,
-                        const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH
-                    )
-                
-                # 周回報告月間クエスト全体概要マージ結果ファイルへの出力
-                for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告月間クエスト全体概要データフレームの取得
-                    pyl.log_inf(lg, f'周回報告月間クエスト全体概要ファイルパス：{gen_result_file_path}')
-                    gen_result_df: pd.DataFrame = pandas_util.read_farm_report_qst_tot_sum_file(
-                        gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
-                    
-                    # 書式設定の適用
-                    gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
-                            gen_result_df,
-                            {
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[0]: 20,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[1]: 20,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2]: 10,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3]: 10,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4]: 13,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5]: 13,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]: 13,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]: 13,
-                                const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]: 15,
-                            }
-                        )
-                    
-                    # シート名の生成
-                    sheet_name: str = pyl.generate_file_name(gen_result_file_path)
-                    
-                    # シート説明スタイルフレームの生成
-                    sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            'クエスト種別ごとの月間周回数(クエスト編)',
-                            const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
-                            sheet_name
-                        )
-                    
-                    # 周回報告月間クエスト全体概要スタイルフレームの保存
-                    pandas_util.save_gen_result_sf(
-                            sheet_description_sfs,
-                            gen_result_sf,
-                            excel_writer,
-                            sheet_name,
-                            columns_and_rows_to_freeze='A4',
-                        )
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告月間クエスト全体概要マージ結果ファイルへの出力に失敗しました。')
-                raise(e)
-            finally:
-                if excel_writer is not None:
-                    excel_writer.close()
-        
-        # マージ結果ファイルのセルの結合
-        __merge_cells_of_merge_result_file(
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
+                const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH,
+                const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
+                append_sheet,
                 const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH,
+                'クエスト種別ごとの月間周回数(クエスト編)',
+                {
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[0]: 20,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[1]: 20,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2]: 10,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3]: 10,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]: 13,
+                    const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]: 15,
+                },
+                'A4',
                 ['A1:I1', 'A2:I2']
             )
         
-        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_MERGE_RESULT_FILE_PATH}')
         pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを終了します。')
     except Exception as e:
         raise(e)
@@ -293,7 +149,7 @@ def do_logic_that_merge_ind_sum(
         append_sheet: bool
     ) -> None:
     
-    '''ロジック実行'''
+    '''ロジック(周回報告個人概要マージ)実行'''
     
     lg: Optional[Logger] = None
     
@@ -302,74 +158,23 @@ def do_logic_that_merge_ind_sum(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'周回報告個人概要マージを開始します。')
         
-        # 周回報告個人概要ファイルパスの取得
-        gen_result_file_paths: list[str] = __get_gen_result_file_paths(
-            const_util.FARM_REPORT_IND_SUM_FILE_PATH)
-        
-        # 周回報告個人概要ファイルの件数が0件の場合
-        if len(gen_result_file_paths) == 0:
-            pyl.log_war(lg, f'周回報告個人概要ファイルの件数が0件です。' +
-                            f'(gen_result_file_paths:{gen_result_file_paths})')
-        else:
-            excel_writer: Optional[pd.ExcelWriter] = None
-            try:
-                # Excelライターの生成
-                excel_writer = __generate_excel_writer(
-                        append_sheet,
-                        const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH
-                    )
-                
-                # 周回報告個人概要マージ結果ファイルへの出力
-                for gen_result_file_path in reversed(gen_result_file_paths):
-                    # 周回報告個人概要データフレームの取得
-                    pyl.log_inf(lg, f'周回報告個人概要ファイルパス：{gen_result_file_path}')
-                    gen_result_df: pd.DataFrame = pandas_util.read_farm_report_ind_sum_file(
-                        gen_result_file_path, reset_index_from_one=True, move_index_to_column=True)
-                    
-                    # 書式設定の適用
-                    gen_result_sf: StyleFrame = __apply_formatting_of_gen_result(
-                            gen_result_df,
-                            {
-                                const_util.FARM_REPORT_IND_SUM_HEADER[0]: 10,
-                                const_util.FARM_REPORT_IND_SUM_HEADER[1]: 17,
-                                const_util.FARM_REPORT_IND_SUM_HEADER[2]: 17,
-                                const_util.FARM_REPORT_IND_SUM_HEADER[3]: 17,
-                            }
-                        )
-                    
-                    # シート名の生成
-                    sheet_name: str = pyl.generate_file_name(gen_result_file_path)
-                    
-                    # シート説明スタイルフレームの生成
-                    sheet_description_sfs: list[StyleFrame] = __generate_sheet_description_sfs(
-                            'ユーザごとの周回数',
-                            const_util.FARM_REPORT_IND_SUM_HEADER,
-                            sheet_name
-                        )
-                    
-                    # 周回報告個人概要スタイルフレームの保存
-                    pandas_util.save_gen_result_sf(
-                            sheet_description_sfs,
-                            gen_result_sf,
-                            excel_writer,
-                            sheet_name,
-                            columns_and_rows_to_freeze='A4',
-                        )
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告個人概要ファイルの書き込みに失敗しました。')
-                raise(e)
-            finally:
-                if excel_writer is not None:
-                    excel_writer.close()
-        
-        # マージ結果ファイルのセルの結合
-        __merge_cells_of_merge_result_file(
+        __do_logic_that_merge_gen_result(
+                EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY,
+                const_util.FARM_REPORT_IND_SUM_FILE_PATH,
+                const_util.FARM_REPORT_IND_SUM_HEADER,
+                append_sheet,
                 const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH,
+                'ユーザごとの周回数',
+                {
+                    const_util.FARM_REPORT_IND_SUM_HEADER[0]: 10,
+                    const_util.FARM_REPORT_IND_SUM_HEADER[1]: 17,
+                    const_util.FARM_REPORT_IND_SUM_HEADER[2]: 17,
+                    const_util.FARM_REPORT_IND_SUM_HEADER[3]: 17,
+                },
+                'A4',
                 ['A1:D1', 'A2:D2']
             )
         
-        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：' +
-                        f'{const_util.FARM_REPORT_IND_SUM_MERGE_RESULT_FILE_PATH}')
         pyl.log_inf(lg, f'周回報告個人概要マージを終了します。')
     except Exception as e:
         raise(e)
@@ -377,45 +182,131 @@ def do_logic_that_merge_ind_sum(
     return None
 
 
-def __get_gen_result_file_paths(gen_result_file_path: str) -> list[str]:
+def __do_logic_that_merge_gen_result(
+        enum_of_proc: EnumOfProc,
+        gen_result_file_path_format: str,
+        gen_result_header: list[str],
+        append_merge_result_sheet: bool,
+        merge_result_file_path: str,
+        merge_result_book_name: str,
+        merge_result_column_widths: dict[str, Union[int, float]],
+        merge_result_cell_to_fix_window_frame: str,
+        merge_result_ranges_to_merge_cells: list[str],
+    ) -> None:
     
-    '''生成結果ファイルパス(複数)生成'''
+    '''ロジック(周回報告生成結果マージ(共通))実行'''
     
-    gen_result_file_dir: str = os.path.dirname(gen_result_file_path)
-    gen_result_file_ext: str = os.path.splitext(gen_result_file_path)[1]
-    gen_result_file_path_with_wildcard: str = gen_result_file_dir + '/*' + gen_result_file_ext
-    gen_result_file_paths: list[str] = glob.glob(gen_result_file_path_with_wildcard)
+    lg: Optional[Logger] = None
     
-    return gen_result_file_paths
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を開始します。')
+        
+        # 周回報告生成結果ファイルパスの取得
+        gen_result_file_dir: str = os.path.dirname(gen_result_file_path_format)
+        gen_result_file_ext: str = os.path.splitext(gen_result_file_path_format)[1]
+        gen_result_file_path_with_wildcard: str = gen_result_file_dir + '/*' + gen_result_file_ext
+        gen_result_file_paths: list[str] = glob.glob(gen_result_file_path_with_wildcard)
+        
+        # 周回報告生成結果ファイルの件数が0件の場合
+        if len(gen_result_file_paths) == 0:
+            pyl.log_war(lg, f'周回報告生成結果ファイルの件数が0件です。' +
+                            f'(gen_result_file_path:{gen_result_file_path_with_wildcard})')
+        else:
+            excel_writer: Optional[pd.ExcelWriter] = None
+            try:
+                # Excelライターの生成
+                if append_merge_result_sheet == True \
+                    and os.path.isfile(merge_result_file_path) == True:
+                    excel_writer = StyleFrame.ExcelWriter(
+                            merge_result_file_path,
+                            mode='a',
+                            if_sheet_exists='replace',  # overlay not working
+                        )
+                else:
+                    excel_writer = StyleFrame.ExcelWriter(
+                            merge_result_file_path,
+                            mode='w',
+                        )
+                
+                # 周回報告マージ結果ファイルへの出力
+                for gen_result_file_path in reversed(gen_result_file_paths):
+                    pyl.log_inf(lg, f'周回報告生成結果ファイルパス：{gen_result_file_path}')
+                    
+                    # 周回報告マージ結果シート名の生成
+                    merge_result_sheet_name: str = pyl.generate_file_name(gen_result_file_path)
+                    
+                    # 周回報告マージ結果ヘッダ部スタイルフレームの生成
+                    merge_result_header_part_sfs: list[StyleFrame] = \
+                        __generate_merge_result_header_part_sfs(
+                                merge_result_book_name,
+                                merge_result_sheet_name,
+                                gen_result_header
+                            )
+                    
+                    # 周回報告生成結果データフレームの取得
+                    gen_result_df: pd.DataFrame = pd.DataFrame()
+                    if enum_of_proc == EnumOfProc.GENERATE_LIST:
+                        gen_result_df = pandas_util.read_farm_report_list_file(
+                            gen_result_file_path, True, True)
+                    elif enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
+                        gen_result_df = pandas_util.read_farm_report_usr_tot_sum_file(
+                            gen_result_file_path, True, True)
+                    elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
+                        gen_result_df = pandas_util.read_farm_report_qst_tot_sum_file(
+                            gen_result_file_path, True, True)
+                    elif enum_of_proc == EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY:
+                        gen_result_df = pandas_util.read_farm_report_ind_sum_file(
+                            gen_result_file_path, True, True)
+                    
+                    # 周回報告生成結果データフレームへの書式設定の適用
+                    # (周回報告マージ結果データ部スタイルフレームの生成)
+                    merge_result_data_part_sf: StyleFrame = __apply_formatting_to_gen_result(
+                        gen_result_df, merge_result_column_widths)
+                    
+                    # 周回報告マージ結果スタイルフレームの保存
+                    pandas_util.save_farm_report_merge_result_sf(
+                            merge_result_header_part_sfs,
+                            merge_result_data_part_sf,
+                            excel_writer,
+                            merge_result_sheet_name,
+                            cell_to_fix_window_frame=merge_result_cell_to_fix_window_frame,
+                        )
+            except Exception as e:
+                pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルへの出力に失敗しました。')
+                raise(e)
+            finally:
+                if excel_writer is not None:
+                    excel_writer.close()
+            
+            merge_result_wb: Optional[openpyxl.Workbook] = None
+            try:
+                # 周回報告マージ結果ファイルのセルの結合
+                merge_result_wb = openpyxl.load_workbook(merge_result_file_path)
+                for sheet_name in merge_result_wb.sheetnames:
+                    merge_result_ws: Worksheet = merge_result_wb[sheet_name]  # type: ignore
+                    for range in merge_result_ranges_to_merge_cells:
+                        merge_result_ws.merge_cells(range)
+            except Exception as e:
+                pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルのセルの結合に失敗しました。')
+                raise(e)
+            finally:
+                if merge_result_wb is not None:
+                    merge_result_wb.save(merge_result_file_path)
+                    merge_result_wb.close()
+        
+        pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：{merge_result_file_path}')
+        pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
 
 
-def __generate_excel_writer(
-        append_sheet: bool,
-        merge_result_file_path: str
-    ) -> Optional[pd.ExcelWriter]:
-    
-    '''Excelライター生成'''
-    
-    excel_writer: Optional[pd.ExcelWriter] = None
-    
-    if append_sheet == True and os.path.isfile(merge_result_file_path) == True:
-        excel_writer = StyleFrame.ExcelWriter(
-                merge_result_file_path,
-                mode='a',
-                if_sheet_exists='replace',  # overlay not working
-            )
-    else:
-        excel_writer = StyleFrame.ExcelWriter(
-                merge_result_file_path,
-                mode='w',
-            )
-    
-    return excel_writer
-
-
-def __apply_formatting_of_gen_result(
+def __apply_formatting_to_gen_result(
         gen_result_df: pd.DataFrame,
-        col_width_dict: dict[str, Union[int, float]] = {}
+        merge_result_column_widths: dict[str, Union[int, float]] = {}
     ) -> StyleFrame:
     
     '''書式設定適用(生成結果)'''
@@ -434,7 +325,7 @@ def __apply_formatting_of_gen_result(
             shrink_to_fit=False,
             date_time_format=DATETIME_FORMAT,
         )
-    gen_result_sf: StyleFrame = StyleFrame(gen_result_df, default_style)
+    merge_result_data_part_sf: StyleFrame = StyleFrame(gen_result_df, default_style)
     
     # ヘッダのスタイルの適用
     header_style: Styler = Styler(
@@ -448,33 +339,33 @@ def __apply_formatting_of_gen_result(
             shrink_to_fit=False,
             date_time_format=DATETIME_FORMAT,
         )
-    gen_result_sf.apply_headers_style(header_style)
+    merge_result_data_part_sf.apply_headers_style(header_style)
     
     # 列の幅の適用
-    gen_result_sf.set_column_width_dict(col_width_dict)
+    merge_result_data_part_sf.set_column_width_dict(merge_result_column_widths)
     
     # 行の高さの適用
-    row_indexes: tuple = gen_result_sf.row_indexes
+    row_indexes: tuple = merge_result_data_part_sf.row_indexes
     if len(row_indexes) == 1:
-        gen_result_sf.set_row_height_dict({
+        merge_result_data_part_sf.set_row_height_dict({
                 row_indexes[0]: 30,
             })
     else:
-        gen_result_sf.set_row_height_dict({
+        merge_result_data_part_sf.set_row_height_dict({
                 row_indexes[0]: 30,
                 row_indexes[1:]: 20,
             })
     
-    return gen_result_sf
+    return merge_result_data_part_sf
 
 
-def __apply_formatting_of_sheet_description(
-        sheet_description_df: pd.DataFrame,
-        col_width_dict: dict[str, Union[int, float]] = {},
+def __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_df: pd.DataFrame,
+        merge_result_column_widths: dict[str, Union[int, float]] = {},
         is_update_datetime_col: bool = False
     ) -> StyleFrame:
     
-    '''書式設定適用(シート説明)'''
+    '''書式設定適用(周回報告マージ結果ヘッダ部)'''
     
     DATETIME_FORMAT: Final[str] = 'YYYY-MM-DD HH:MM:SS'
     
@@ -492,76 +383,60 @@ def __apply_formatting_of_sheet_description(
             shrink_to_fit=False if is_update_datetime_col == False else True,
             date_time_format=DATETIME_FORMAT,
         )
-    sheet_description_sf: StyleFrame = StyleFrame(sheet_description_df, default_style)
+    merge_result_header_part_sf: StyleFrame = StyleFrame(merge_result_header_part_df, default_style)
     
     # 列の幅の適用
-    sheet_description_sf.set_column_width_dict(col_width_dict)
+    merge_result_header_part_sf.set_column_width_dict(merge_result_column_widths)
     
     # 行の高さの適用
-    row_indexes: tuple = sheet_description_sf.row_indexes
-    sheet_description_sf.set_row_height_dict({
+    row_indexes: tuple = merge_result_header_part_sf.row_indexes
+    merge_result_header_part_sf.set_row_height_dict({
             row_indexes[:len(row_indexes) - 1]: 20,
         })
     
-    return sheet_description_sf
+    return merge_result_header_part_sf
 
 
-def __generate_sheet_description_sfs(
-        sheet_description: str,
-        gen_result_header: list[str],
-        sheet_name: str
+def __generate_merge_result_header_part_sfs(
+        merge_result_book_name: str,
+        merge_result_sheet_name: str,
+        gen_result_header: list[str]
     ) -> list[StyleFrame]:
     
-    '''シート説明スタイルフレーム生成'''
+    '''周回報告マージ結果ヘッダ部スタイルフレーム生成'''
     
-    sheet_description_sfs: list[StyleFrame] = []
+    merge_result_header_part_sfs: list[StyleFrame] = []
     
-    # シート説明01データフレームの生成
-    sheet_description_col_num: int = 0
-    sheet_description_01_df: pd.DataFrame = \
-        pd.DataFrame({f'col_{sheet_description_col_num}': [sheet_description, sheet_name]})
+    # 周回報告マージ結果ヘッダ部01データフレームの生成
+    merge_result_header_part_col_num: int = 0
+    merge_result_header_part_01_df: pd.DataFrame = pd.DataFrame({
+            f'col_{merge_result_header_part_col_num}':
+            [merge_result_book_name, merge_result_sheet_name]
+        })
     for _ in range(len(gen_result_header) - 1):
-        sheet_description_col_num = sheet_description_col_num + 1
-        sheet_description_01_df[f'col_{sheet_description_col_num}'] = ''
+        merge_result_header_part_col_num = merge_result_header_part_col_num + 1
+        merge_result_header_part_01_df[f'col_{merge_result_header_part_col_num}'] = ''
     
-    # シート説明01の書式設定の適用
-    sheet_description_01_sf: StyleFrame = __apply_formatting_of_sheet_description(
-        sheet_description_01_df, is_update_datetime_col=False)
+    # 周回報告マージ結果ヘッダ部01の書式設定の適用
+    merge_result_header_part_01_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_01_df, is_update_datetime_col=False)
     
     # 更新日時の取得
     update_datetime: datetime = datetime.now()
     update_date: str = update_datetime.strftime('%Y-%m-%d')
     update_time: str = update_datetime.strftime('%H:%M:%S')
     
-    # シート説明02データフレームの生成
-    sheet_description_col_num = sheet_description_col_num + 1
-    sheet_description_02_df: pd.DataFrame = \
-        pd.DataFrame({f'col_{sheet_description_col_num}': [update_date, update_time]})
+    # 周回報告マージ結果ヘッダ部02データフレームの生成
+    merge_result_header_part_col_num = merge_result_header_part_col_num + 1
+    merge_result_header_part_02_df: pd.DataFrame = \
+        pd.DataFrame({f'col_{merge_result_header_part_col_num}': [update_date, update_time]})
     
-    # シート説明02の書式設定の適用
-    sheet_description_02_sf: StyleFrame = __apply_formatting_of_sheet_description(
-        sheet_description_02_df, is_update_datetime_col=True)
+    # 周回報告マージ結果ヘッダ部02の書式設定の適用
+    merge_result_header_part_02_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
+        merge_result_header_part_02_df, is_update_datetime_col=True)
     
-    # シート説明スタイルフレームへの追加
-    sheet_description_sfs.append(sheet_description_01_sf)
-    sheet_description_sfs.append(sheet_description_02_sf)
+    # 周回報告マージ結果ヘッダ部スタイルフレームへの追加
+    merge_result_header_part_sfs.append(merge_result_header_part_01_sf)
+    merge_result_header_part_sfs.append(merge_result_header_part_02_sf)
     
-    return sheet_description_sfs
-
-
-def __merge_cells_of_merge_result_file(
-        merge_result_file_path: str,
-        ranges: list[str]
-    ) -> None:
-    
-    '''セル結合(マージ結果ファイル)'''
-    
-    merge_result_wb: openpyxl.Workbook = openpyxl.load_workbook(merge_result_file_path)
-    
-    for sheet_name in merge_result_wb.sheetnames:
-        for range in ranges:
-            merge_result_wb[sheet_name].merge_cells(range)  # type: ignore
-    
-    merge_result_wb.save(merge_result_file_path)
-    
-    return None
+    return merge_result_header_part_sfs
