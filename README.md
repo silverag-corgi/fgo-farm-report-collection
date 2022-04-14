@@ -39,9 +39,11 @@
     - [5.4.1. 実行コマンド](#541-実行コマンド)
     - [5.4.2. 実行結果](#542-実行結果)
       - [5.4.2.1. 周回報告一覧マージ結果ファイル](#5421-周回報告一覧マージ結果ファイル)
-      - [5.4.2.2. 周回報告月間ユーザ全体概要マージ結果ファイル](#5422-周回報告月間ユーザ全体概要マージ結果ファイル)
-      - [5.4.2.3. 周回報告月間クエスト全体概要マージ結果ファイル](#5423-周回報告月間クエスト全体概要マージ結果ファイル)
-      - [5.4.2.4. 周回報告個人概要マージ結果ファイル](#5424-周回報告個人概要マージ結果ファイル)
+      - [5.4.2.2. 周回報告年間ユーザ全体概要マージ結果ファイル](#5422-周回報告年間ユーザ全体概要マージ結果ファイル)
+      - [5.4.2.3. 周回報告年間クエスト全体概要マージ結果ファイル](#5423-周回報告年間クエスト全体概要マージ結果ファイル)
+      - [5.4.2.4. 周回報告月間ユーザ全体概要マージ結果ファイル](#5424-周回報告月間ユーザ全体概要マージ結果ファイル)
+      - [5.4.2.5. 周回報告月間クエスト全体概要マージ結果ファイル](#5425-周回報告月間クエスト全体概要マージ結果ファイル)
+      - [5.4.2.6. 周回報告個人概要マージ結果ファイル](#5426-周回報告個人概要マージ結果ファイル)
 - [6. マージ結果ファイルのURL](#6-マージ結果ファイルのurl)
 - [7. 実行コマンド一覧](#7-実行コマンド一覧)
   - [7.1. ヘルプ](#71-ヘルプ)
@@ -466,7 +468,7 @@ Group C - optional arguments:
 ヘルプ：
 ```cmd
 > poetry run merge -h
-usage: merge [-h] (-l | -mu | -mq | -i) [-a]
+usage: merge [-h] (-l | -yu | -yq | -mu | -mq | -i) [-a]
 
 周回報告生成結果マージ
 生成結果をExcelファイルにマージします
@@ -479,6 +481,10 @@ Group B - only one required arguments:
   処理を指定します
 
   -l, --merge_list      周回報告一覧マージ要否
+  -yu, --merge_yearly_user_total_summary
+                        周回報告年間ユーザ全体概要マージ要否
+  -yq, --merge_yearly_quest_total_summary
+                        周回報告年間クエスト全体概要マージ要否
   -mu, --merge_monthly_user_total_summary
                         周回報告月間ユーザ全体概要マージ要否
   -mq, --merge_monthly_quest_total_summary
@@ -517,7 +523,25 @@ Group C - optional arguments:
 | フォーマット | ./dest/merge_result/周回報告一覧.xlsx |
 
 
-#### 5.4.2.2. 周回報告月間ユーザ全体概要マージ結果ファイル
+#### 5.4.2.2. 周回報告年間ユーザ全体概要マージ結果ファイル
+
+下記パスに生成される。
+
+| 種類         | ファイルパス                                        |
+| ------------ | --------------------------------------------------- |
+| フォーマット | ./dest/merge_result/周回報告年間ユーザ全体概要.xlsx |
+
+
+#### 5.4.2.3. 周回報告年間クエスト全体概要マージ結果ファイル
+
+下記パスに生成される。
+
+| 種類         | ファイルパス                                          |
+| ------------ | ----------------------------------------------------- |
+| フォーマット | ./dest/merge_result/周回報告年間クエスト全体概要.xlsx |
+
+
+#### 5.4.2.4. 周回報告月間ユーザ全体概要マージ結果ファイル
 
 下記パスに生成される。
 
@@ -526,7 +550,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/merge_result/周回報告ユーザ全体概要.xlsx |
 
 
-#### 5.4.2.3. 周回報告月間クエスト全体概要マージ結果ファイル
+#### 5.4.2.5. 周回報告月間クエスト全体概要マージ結果ファイル
 
 下記パスに生成される。
 
@@ -535,7 +559,7 @@ Group C - optional arguments:
 | フォーマット | ./dest/merge_result/周回報告クエスト全体概要.xlsx |
 
 
-#### 5.4.2.4. 周回報告個人概要マージ結果ファイル
+#### 5.4.2.6. 周回報告個人概要マージ結果ファイル
 
 下記パスに生成される。
 
@@ -547,6 +571,14 @@ Group C - optional arguments:
 # 6. マージ結果ファイルのURL
 
 マージ結果ファイルをGoogleドライブ経由にて下記リンクで公開している。
+
+- 周回報告年間ユーザ全体概要マージ結果ファイル
+  - [スプレッドシート版](https://docs.google.com/spreadsheets/d/1jyXv6IKaN7N9QE4evZpw56jomHPYS2QJ/edit?usp=sharing&ouid=106816149049152778475&rtpof=true&sd=true)
+  - [Webサイト版](https://docs.google.com/spreadsheets/d/e/2PACX-1vTUdbvY1GqU4JUvVXG1auz__mr62vjBdQ7K_kdC_l0avvZWT1xGTqHXowVqc0tP8Q/pubhtml)
+
+- 周回報告年間クエスト全体概要マージ結果ファイル
+  - [スプレッドシート版](https://docs.google.com/spreadsheets/d/1jwL2xBWNgg6tJm3G_WPnJTU14OJNyaXx/edit?usp=sharing&ouid=106816149049152778475&rtpof=true&sd=true)
+  - [Webサイト版](https://docs.google.com/spreadsheets/d/e/2PACX-1vTFASRz5wHOY0UHtLScg--1yBhMb3vYH8wmYBavDRLcY8z2rX4ykpOmA-TYvEUeFw/pubhtml)
 
 - 周回報告月間ユーザ全体概要マージ結果ファイル
   - [スプレッドシート版](https://docs.google.com/spreadsheets/d/1fupclGtdYSTMs-s9vOjQZPr3D9nF18bL/edit?usp=sharing&ouid=106816149049152778475&rtpof=true&sd=true)
@@ -583,6 +615,8 @@ Group C - optional arguments:
 > poetry run ind-gen 2021 silverag_corgi
 
 > poetry run merge -l
+> poetry run merge -yu
+> poetry run merge -yq
 > poetry run merge -mu
 > poetry run merge -mq
 > poetry run merge -i
