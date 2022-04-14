@@ -9,9 +9,11 @@
   - [2.2. 実行結果](#22-実行結果)
     - [2.2.1. 生成結果ファイル](#221-生成結果ファイル)
       - [2.2.1.1. 周回報告一覧ファイル](#2211-周回報告一覧ファイル)
-      - [2.2.1.2. 周回報告月間ユーザ全体概要ファイル](#2212-周回報告月間ユーザ全体概要ファイル)
-      - [2.2.1.3. 周回報告月間クエスト全体概要ファイル](#2213-周回報告月間クエスト全体概要ファイル)
-      - [2.2.1.4. 周回報告個人概要ファイル](#2214-周回報告個人概要ファイル)
+      - [2.2.1.2. 周回報告年間ユーザ全体概要ファイル](#2212-周回報告年間ユーザ全体概要ファイル)
+      - [2.2.1.3. 周回報告年間クエスト全体概要ファイル](#2213-周回報告年間クエスト全体概要ファイル)
+      - [2.2.1.4. 周回報告月間ユーザ全体概要ファイル](#2214-周回報告月間ユーザ全体概要ファイル)
+      - [2.2.1.5. 周回報告月間クエスト全体概要ファイル](#2215-周回報告月間クエスト全体概要ファイル)
+      - [2.2.1.6. 周回報告個人概要ファイル](#2216-周回報告個人概要ファイル)
     - [2.2.2. マージ結果ファイル](#222-マージ結果ファイル)
 - [3. 動作確認済み環境](#3-動作確認済み環境)
 - [4. セットアップ手順](#4-セットアップ手順)
@@ -25,8 +27,10 @@
   - [5.2. 周回報告全体概要生成](#52-周回報告全体概要生成)
     - [5.2.1. 実行コマンド](#521-実行コマンド)
     - [5.2.2. 実行結果](#522-実行結果)
-      - [5.2.2.1. 周回報告月間ユーザ全体概要ファイル](#5221-周回報告月間ユーザ全体概要ファイル)
-      - [5.2.2.2. 周回報告月間クエスト全体概要ファイル](#5222-周回報告月間クエスト全体概要ファイル)
+      - [5.2.2.1. 周回報告年間ユーザ全体概要ファイル](#5221-周回報告年間ユーザ全体概要ファイル)
+      - [5.2.2.2. 周回報告年間クエスト全体概要ファイル](#5222-周回報告年間クエスト全体概要ファイル)
+      - [5.2.2.3. 周回報告月間ユーザ全体概要ファイル](#5223-周回報告月間ユーザ全体概要ファイル)
+      - [5.2.2.4. 周回報告月間クエスト全体概要ファイル](#5224-周回報告月間クエスト全体概要ファイル)
   - [5.3. 周回報告個人概要生成](#53-周回報告個人概要生成)
     - [5.3.1. 実行コマンド](#531-実行コマンド)
     - [5.3.2. 実行結果](#532-実行結果)
@@ -74,7 +78,7 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 ## 2.2. 実行結果
 
-4種類の生成結果ファイルと4種類のマージ結果ファイルが生成される。
+生成結果ファイルとマージ結果ファイルが生成される。
 
 ここでは実行結果の例を示す。また、`VSCode Excel Viewer`で開いている。
 
@@ -86,38 +90,60 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 周回報告一覧である。
 
-  - 年月：2022-01
+  - 年月：2021-01
 
 ![farm_report_list](./pic/farm_report_list.JPG)
 
 
-#### 2.2.1.2. 周回報告月間ユーザ全体概要ファイル
+#### 2.2.1.2. 周回報告年間ユーザ全体概要ファイル
+
+周回報告を基にした、クエスト種別ごとの年間周回概要(ユーザ編)である。
+
+  - 年月：2021
+  - クエスト種別：全て(通常クエ＋イベクエ)
+  - 最低周回数：100周以上
+
+![farm_report_yearly_user_total_summary](./pic/farm_report_total_summary/yearly_user.JPG)
+
+
+#### 2.2.1.3. 周回報告年間クエスト全体概要ファイル
+
+周回報告による、クエスト種別ごとの年間周回概要(クエスト編)である。
+
+  - 年月：2021
+  - クエスト種別：全て(通常クエ＋イベクエ)
+  - 最低周回数：100周以上
+
+![farm_report_yearly_quest_total_summary](./pic/farm_report_total_summary/yearly_quest.JPG)
+
+
+#### 2.2.1.4. 周回報告月間ユーザ全体概要ファイル
 
 周回報告を基にした、クエスト種別ごとの月間周回概要(ユーザ編)である。
 
-  - 年月：2022-01
+  - 年月：2021-01
   - クエスト種別：全て(通常クエ＋イベクエ)
   - 最低周回数：100周以上
 
-![farm_report_total_summary](./pic/farm_report_user_total_summary.JPG)
+![farm_report_monthly_user_total_summary](./pic/farm_report_total_summary/monthly_user.JPG)
 
 
-#### 2.2.1.3. 周回報告月間クエスト全体概要ファイル
+#### 2.2.1.5. 周回報告月間クエスト全体概要ファイル
 
 周回報告による、クエスト種別ごとの月間周回概要(クエスト編)である。
 
-  - 年月：2022-01
+  - 年月：2021-01
   - クエスト種別：全て(通常クエ＋イベクエ)
   - 最低周回数：100周以上
 
-![farm_report_total_summary](./pic/farm_report_quest_total_summary.JPG)
+![farm_report_monthly_quest_total_summary](./pic/farm_report_total_summary/monthly_quest.JPG)
 
 
-#### 2.2.1.4. 周回報告個人概要ファイル
+#### 2.2.1.6. 周回報告個人概要ファイル
 
 周回報告による、ユーザ(Twitter)ごとの周回概要である。
 
-  - 年：2022
+  - 年：2021
   - ユーザID：silverag_corgi
 
 ![farm_report_individual_summary](./pic/farm_report_individual_summary.JPG)
@@ -125,7 +151,7 @@ FGOの周回報告を収集・集計し、csvファイルに保存する。
 
 ### 2.2.2. マージ結果ファイル
 
-上記4種類の生成結果ファイルを各々Excelファイルにマージしただけであるため、実行結果の例は省略する。
+上記の生成結果ファイルを各々Excelファイルにマージしただけであるため、実行結果の例は省略する。
 
 
 # 3. 動作確認済み環境
@@ -206,7 +232,7 @@ Group B - only one required arguments:
 実行例：
 ```cmd
 > cd fgo-farm-report-collection
-> poetry run list-gen -m 2022-01
+> poetry run list-gen -m 2021-01
 ```
 
 
@@ -222,7 +248,7 @@ Group B - only one required arguments:
 | 種類         | ファイルパス                           |
 | ------------ | -------------------------------------- |
 | フォーマット | ./dest/farm_report_list/[収集年月].csv |
-| 例           | ./dest/farm_report_list/2022-01.csv    |
+| 例           | ./dest/farm_report_list/2021-01.csv    |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
@@ -239,7 +265,7 @@ Group B - only one required arguments:
 ヘルプ：
 ```cmd
 > poetry run tot-gen -h
-usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-mu | -mq) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-u]
+usage: tot-gen [-h] (-y COL_YEAR | -m COL_YEAR_MONTH) (-yu | -yq | -mu | -mq) (-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH) [-l] [-u]
 
 周回報告全体概要生成
 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
@@ -261,6 +287,12 @@ Group B2 - only one required arguments:
   1つのみ必須な引数
   処理を指定します
 
+  -yu, --generate_yearly_user_total_summary
+                        周回報告年間ユーザ全体概要生成要否
+                        収集年を指定した場合、周回報告年間ユーザ全体概要を生成します
+  -yq, --generate_yearly_quest_total_summary
+                        周回報告年間クエスト全体概要生成要否
+                        収集年を指定した場合、周回報告年間クエスト全体概要を生成します
   -mu, --generate_monthly_user_total_summary
                         周回報告月間ユーザ全体概要生成要否
                         周回報告月間ユーザ全体概要を生成します
@@ -297,43 +329,70 @@ Group C - optional arguments:
 実行例：
 ```cmd
 > cd fgo-farm-report-collection
-> poetry run tot-gen -m 2022-01 -u -a 100
-> poetry run tot-gen -m 2022-01 -q -a 100
+> poetry run tot-gen -m 2021-01 -u -a 100
+> poetry run tot-gen -m 2021-01 -q -a 100
 ```
 
 
 ### 5.2.2. 実行結果
 
-周回報告一覧ファイルが[周回報告一覧生成](#51-周回報告一覧生成)と同様に生成され、
-周回報告全体概要ファイルと周回報告クエスト全体概要ファイルが生成される。
+周回報告一覧ファイルが[周回報告一覧生成](#51-周回報告一覧生成)と同様に生成され、周回報告全体概要ファイルが生成される。
 
 
-#### 5.2.2.1. 周回報告月間ユーザ全体概要ファイル
+#### 5.2.2.1. 周回報告年間ユーザ全体概要ファイル
+
+下記パスに生成される。
+
+| 種類         | ファイルパス                                                                            |
+| ------------ | --------------------------------------------------------------------------------------- |
+| フォーマット | ./dest/farm_report_total_summary/yearly_user/[収集年]\_[クエスト種別]\_[最低周回数].csv |
+| 例           | ./dest/farm_report_total_summary/yearly_user/2021_全て_100周以上.csv                    |
+
+また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
+
+![farm_report_yearly_user_total_summary](./pic/farm_report_total_summary/yearly_user.JPG)
+
+
+#### 5.2.2.2. 周回報告年間クエスト全体概要ファイル
+
+下記パスに生成される。
+
+| 種類         | ファイルパス                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| フォーマット | ./dest/farm_report_total_summary/yearly_quest/[収集年]\_[クエスト種別]\_[最低周回数].csv |
+| 例           | ./dest/farm_report_total_summary/yearly_quest/2021_全て_100周以上.csv                    |
+
+また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
+
+![farm_report_yearly_quest_total_summary](./pic/farm_report_total_summary/yearly_quest.JPG)
+
+
+#### 5.2.2.3. 周回報告月間ユーザ全体概要ファイル
 
 下記パスに生成される。
 
 | 種類         | ファイルパス                                                                               |
 | ------------ | ------------------------------------------------------------------------------------------ |
 | フォーマット | ./dest/farm_report_total_summary/monthly_user/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
-| 例           | ./dest/farm_report_total_summary/monthly_user/2022-01_全て_100周以上.csv                   |
+| 例           | ./dest/farm_report_total_summary/monthly_user/2021-01_全て_100周以上.csv                   |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
-![farm_report_total_summary](./pic/farm_report_user_total_summary.JPG)
+![farm_report_monthly_user_total_summary](./pic/farm_report_total_summary/monthly_user.JPG)
 
 
-#### 5.2.2.2. 周回報告月間クエスト全体概要ファイル
+#### 5.2.2.4. 周回報告月間クエスト全体概要ファイル
 
 下記パスに生成される。
 
 | 種類         | ファイルパス                                                                                |
 | ------------ | ------------------------------------------------------------------------------------------- |
 | フォーマット | ./dest/farm_report_total_summary/monthly_quest/[収集年月]\_[クエスト種別]\_[最低周回数].csv |
-| 例           | ./dest/farm_report_total_summary/monthly_quest/2022-01_全て_100周以上.csv                   |
+| 例           | ./dest/farm_report_total_summary/monthly_quest/2021-01_全て_100周以上.csv                   |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
-![farm_report_total_summary](./pic/farm_report_quest_total_summary.JPG)
+![farm_report_monthly_quest_total_summary](./pic/farm_report_total_summary/monthly_quest.JPG)
 
 
 ## 5.3. 周回報告個人概要生成
@@ -374,7 +433,7 @@ Group C - optional arguments:
 実行例：
 ```cmd
 > cd fgo-farm-report-collection
-> poetry run ind-gen 2022 silverag_corgi
+> poetry run ind-gen 2021 silverag_corgi
 ```
 
 
@@ -390,7 +449,7 @@ Group C - optional arguments:
 | 種類         | ファイルパス                                                            |
 | ------------ | ----------------------------------------------------------------------- |
 | フォーマット | ./dest/farm_report_individual_summary/[収集年]\_[ユーザID(Twitter)].csv |
-| 例           | ./dest/farm_report_individual_summary/2022_silverag_corgi.csv           |
+| 例           | ./dest/farm_report_individual_summary/2021_silverag_corgi.csv           |
 
 また、下記画像は実行結果の例である。`VSCode Excel Viewer`で開いている。
 
@@ -446,7 +505,7 @@ Group C - optional arguments:
 
 ### 5.4.2. 実行結果
 
-4種類のマージ結果ファイルが生成される。
+マージ結果ファイルが生成される。
 
 
 #### 5.4.2.1. 周回報告一覧マージ結果ファイル
@@ -514,12 +573,14 @@ Group C - optional arguments:
 ## 7.2. 実行例
 
 ```cmd
-> poetry run list-gen -y 2022
+> poetry run list-gen -y 2021
 
-> poetry run tot-gen -y 2022 -mu -b 0
-> poetry run tot-gen -y 2022 -mq -b 0
+> poetry run tot-gen -y 2021 -yu -b 0
+> poetry run tot-gen -y 2021 -yq -b 0
+> poetry run tot-gen -y 2021 -mu -b 0
+> poetry run tot-gen -y 2021 -mq -b 0
 
-> poetry run ind-gen 2022 silverag_corgi
+> poetry run ind-gen 2021 silverag_corgi
 
 > poetry run merge -l
 > poetry run merge -mu
