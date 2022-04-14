@@ -266,16 +266,16 @@ def read_farm_report_ind_sum_file(
     return farm_report_ind_sum_df
 
 
-def save_gen_result_sf(
-        sheet_description_sfs: list[StyleFrame],
-        gen_result_sf: StyleFrame,
+def save_farm_report_merge_result_sf(
+        merge_result_header_part_sfs: list[StyleFrame],
+        merge_result_data_part_sf: StyleFrame,
         excel_writer: Optional[pd.ExcelWriter],
-        sheet_name: str,
-        row_to_add_filters: int = 0,
-        columns_and_rows_to_freeze: Optional[str] = None
+        merge_result_sheet_name: str,
+        row_to_set_filters: int = 0,
+        cell_to_fix_window_frame: Optional[str] = None
     ) -> None:
     
-    '''生成結果スタイルフレーム保存'''
+    '''周回報告マージ結果スタイルフレーム保存'''
     
     lg: Optional[Logger] = None
     
@@ -283,12 +283,12 @@ def save_gen_result_sf(
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # シート説明スタイルフレームの保存
+        # 周回報告マージ結果ヘッダ部スタイルフレームの保存
         col_num: int = 0
-        for sheet_description_sf in sheet_description_sfs:
+        for sheet_description_sf in merge_result_header_part_sfs:
             sheet_description_sf.to_excel(
                     excel_writer,  # type: ignore
-                    sheet_name=sheet_name,
+                    sheet_name=merge_result_sheet_name,
                     header=False,
                     index=False,
                     startcol=col_num,
@@ -296,14 +296,14 @@ def save_gen_result_sf(
                 )
             col_num = col_num + len(sheet_description_sf.columns)
         
-        # 周回報告スタイルフレームの保存
-        gen_result_sf.to_excel(
+        # 周回報告マージ結果データ部スタイルフレームの保存
+        merge_result_data_part_sf.to_excel(
                 excel_writer,  # type: ignore
-                sheet_name=sheet_name,
-                row_to_add_filters=row_to_add_filters,
-                columns_and_rows_to_freeze=columns_and_rows_to_freeze,
+                sheet_name=merge_result_sheet_name,
+                row_to_add_filters=row_to_set_filters,
+                columns_and_rows_to_freeze=cell_to_fix_window_frame,
                 index=False,
-                startrow=len(sheet_description_sfs[0])
+                startrow=len(merge_result_header_part_sfs[0])
             )
     except Exception as e:
         raise(e)
