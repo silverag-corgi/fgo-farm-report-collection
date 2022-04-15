@@ -275,7 +275,7 @@ def __do_logic_that_merge_gen_result(
         merge_result_book_name: str,
         merge_result_column_widths: dict[str, Union[int, float]],
         merge_result_cell_to_fix_window_frame: str,
-        merge_result_ranges_to_merge_cells: list[str],
+        merge_result_ranges_to_merge_cells: list[str]
     ) -> None:
     
     '''ロジック(周回報告生成結果マージ(共通))実行'''
@@ -298,91 +298,117 @@ def __do_logic_that_merge_gen_result(
             pyl.log_war(lg, f'周回報告生成結果ファイルの件数が0件です。' +
                             f'(gen_result_file_path:{gen_result_file_path_with_wildcard})')
         else:
-            excel_writer: Optional[pd.ExcelWriter] = None
-            try:
-                # Excelライターの生成
-                if append_merge_result_sheet == True \
-                    and os.path.isfile(merge_result_file_path) == True:
-                    excel_writer = StyleFrame.ExcelWriter(
-                            merge_result_file_path,
-                            mode='a',
-                            if_sheet_exists='replace',  # overlay not working
-                        )
-                else:
-                    excel_writer = StyleFrame.ExcelWriter(
-                            merge_result_file_path,
-                            mode='w',
-                        )
-                
-                # 周回報告マージ結果ファイルへの出力
-                for gen_result_file_path in reversed(gen_result_file_paths):
-                    pyl.log_inf(lg, f'周回報告生成結果ファイルパス：{gen_result_file_path}')
-                    
-                    # 周回報告マージ結果シート名の生成
-                    merge_result_sheet_name: str = pyl.generate_file_name(gen_result_file_path)
-                    
-                    # 周回報告マージ結果ヘッダ部スタイルフレームの生成
-                    merge_result_header_part_sfs: list[StyleFrame] = \
-                        __generate_merge_result_header_part_sfs(
-                                merge_result_book_name,
-                                merge_result_sheet_name,
-                                gen_result_header
-                            )
-                    
-                    # 周回報告生成結果データフレームの取得
-                    gen_result_df: pd.DataFrame = pd.DataFrame()
-                    if enum_of_proc == EnumOfProc.GENERATE_LIST:
-                        gen_result_df = pandas_util.read_farm_report_list_file(
-                            gen_result_file_path, True, True)
-                    elif enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
-                        gen_result_df = pandas_util.read_farm_report_usr_tot_sum_file(
-                            gen_result_file_path, True, True)
-                    elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
-                        gen_result_df = pandas_util.read_farm_report_qst_tot_sum_file(
-                            gen_result_file_path, True, True)
-                    elif enum_of_proc == EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY:
-                        gen_result_df = pandas_util.read_farm_report_ind_sum_file(
-                            gen_result_file_path, True, True)
-                    
-                    # 周回報告生成結果データフレームへの書式設定の適用
-                    # (周回報告マージ結果データ部スタイルフレームの生成)
-                    merge_result_data_part_sf: StyleFrame = __apply_formatting_to_gen_result(
-                        gen_result_df, merge_result_column_widths)
-                    
-                    # 周回報告マージ結果スタイルフレームの保存
-                    pandas_util.save_farm_report_merge_result_sf(
-                            merge_result_header_part_sfs,
-                            merge_result_data_part_sf,
-                            excel_writer,
-                            merge_result_sheet_name,
-                            cell_to_fix_window_frame=merge_result_cell_to_fix_window_frame,
-                        )
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルへの出力に失敗しました。')
-                raise(e)
-            finally:
-                if excel_writer is not None:
-                    excel_writer.close()
+            # Pandasによる周回報告マージ結果ファイルの生成
+            __generate_merge_result_file_by_pandas(
+                    enum_of_proc,
+                    gen_result_file_paths,
+                    gen_result_header,
+                    append_merge_result_sheet,
+                    merge_result_file_path,
+                    merge_result_book_name,
+                    merge_result_column_widths,
+                    merge_result_cell_to_fix_window_frame
+                )
             
-            merge_result_wb: Optional[openpyxl.Workbook] = None
-            try:
-                # 周回報告マージ結果ファイルのセルの結合
-                merge_result_wb = openpyxl.load_workbook(merge_result_file_path)
-                for sheet_name in merge_result_wb.sheetnames:
-                    merge_result_ws: Worksheet = merge_result_wb[sheet_name]  # type: ignore
-                    for range in merge_result_ranges_to_merge_cells:
-                        merge_result_ws.merge_cells(range)
-            except Exception as e:
-                pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルのセルの結合に失敗しました。')
-                raise(e)
-            finally:
-                if merge_result_wb is not None:
-                    merge_result_wb.save(merge_result_file_path)
-                    merge_result_wb.close()
+            # OpenPyXLによる周回報告マージ結果ファイルの編集
+            __edit_merge_result_file_by_openpyxl(
+                    merge_result_file_path,
+                    merge_result_ranges_to_merge_cells
+                )
             
             pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：{merge_result_file_path}')
         
         pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return None
+
+
+def __generate_merge_result_file_by_pandas(
+        enum_of_proc: EnumOfProc,
+        gen_result_file_paths: list[str],
+        gen_result_header: list[str],
+        append_merge_result_sheet: bool,
+        merge_result_file_path: str,
+        merge_result_book_name: str,
+        merge_result_column_widths: dict[str, Union[int, float]],
+        merge_result_cell_to_fix_window_frame: str
+    ) -> None:
+    
+    '''周回報告マージ結果ファイル生成(Pandas)'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        
+        excel_writer: Optional[pd.ExcelWriter] = None
+        try:
+            # Excelライターの生成
+            if append_merge_result_sheet == True \
+                and os.path.isfile(merge_result_file_path) == True:
+                excel_writer = StyleFrame.ExcelWriter(
+                        merge_result_file_path,
+                        mode='a',
+                        if_sheet_exists='replace',  # overlay not working
+                    )
+            else:
+                excel_writer = StyleFrame.ExcelWriter(
+                        merge_result_file_path,
+                        mode='w',
+                    )
+            
+            # 周回報告マージ結果ファイルへの出力
+            for gen_result_file_path in reversed(gen_result_file_paths):
+                pyl.log_inf(lg, f'周回報告生成結果ファイルパス：{gen_result_file_path}')
+                
+                # 周回報告マージ結果シート名の生成
+                merge_result_sheet_name: str = pyl.generate_file_name(gen_result_file_path)
+                
+                # 周回報告マージ結果ヘッダ部スタイルフレームの生成
+                merge_result_header_part_sfs: list[StyleFrame] = \
+                    __generate_merge_result_header_part_sfs(
+                            merge_result_book_name,
+                            merge_result_sheet_name,
+                            gen_result_header
+                        )
+                
+                # 周回報告生成結果データフレームの取得
+                gen_result_df: pd.DataFrame = pd.DataFrame()
+                if enum_of_proc == EnumOfProc.GENERATE_LIST:
+                    gen_result_df = pandas_util.read_farm_report_list_file(
+                        gen_result_file_path, True, True)
+                elif enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
+                    gen_result_df = pandas_util.read_farm_report_usr_tot_sum_file(
+                        gen_result_file_path, True, True)
+                elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
+                    gen_result_df = pandas_util.read_farm_report_qst_tot_sum_file(
+                        gen_result_file_path, True, True)
+                elif enum_of_proc == EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY:
+                    gen_result_df = pandas_util.read_farm_report_ind_sum_file(
+                        gen_result_file_path, True, True)
+                
+                # 周回報告生成結果データフレームへの書式設定の適用
+                # (周回報告マージ結果データ部スタイルフレームの生成)
+                merge_result_data_part_sf: StyleFrame = __apply_formatting_to_gen_result(
+                    gen_result_df, merge_result_column_widths)
+                
+                # 周回報告マージ結果スタイルフレームの保存
+                pandas_util.save_farm_report_merge_result_sf(
+                        merge_result_header_part_sfs,
+                        merge_result_data_part_sf,
+                        excel_writer,
+                        merge_result_sheet_name,
+                        cell_to_fix_window_frame=merge_result_cell_to_fix_window_frame,
+                    )
+        except Exception as e:
+            pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルへの出力に失敗しました。')
+            raise(e)
+        finally:
+            if excel_writer is not None:
+                excel_writer.close()
     except Exception as e:
         raise(e)
     
@@ -525,3 +551,37 @@ def __apply_formatting_to_gen_result(
             })
     
     return merge_result_data_part_sf
+
+
+def __edit_merge_result_file_by_openpyxl(
+        merge_result_file_path: str,
+        merge_result_ranges_to_merge_cells: list[str]
+    ) -> None:
+    
+    '''周回報告マージ結果ファイル編集(OpenPyXL)'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        # ロガーの取得
+        lg = pyl.get_logger(__name__)
+        
+        merge_result_wb: Optional[openpyxl.Workbook] = None
+        try:
+            # 周回報告マージ結果ファイルのセルの結合
+            merge_result_wb = openpyxl.load_workbook(merge_result_file_path)
+            for sheet_name in merge_result_wb.sheetnames:
+                merge_result_ws: Worksheet = merge_result_wb[sheet_name]  # type: ignore
+                for range in merge_result_ranges_to_merge_cells:
+                    merge_result_ws.merge_cells(range)
+        except Exception as e:
+            pyl.log_err(lg, f'周回報告生成結果マージ結果ファイルのセルの結合に失敗しました。')
+            raise(e)
+        finally:
+            if merge_result_wb is not None:
+                merge_result_wb.save(merge_result_file_path)
+                merge_result_wb.close()
+    except Exception as e:
+        raise(e)
+    
+    return None
