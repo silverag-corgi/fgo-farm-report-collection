@@ -33,10 +33,10 @@ def do_logic_that_generate_list_by_col_year(
             do_logic_that_generate_list_by_col_year_month(
                     col_year_month
                 )
-        
-        pyl.log_inf(lg, f'周回報告一覧生成(年指定)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告一覧生成(年指定)を終了します。')
     
     return None
 
@@ -101,10 +101,10 @@ def do_logic_that_generate_list_by_col_year_month(
                         farm_report_list_file_path,
                         has_farm_report_list
                     )
-        
-        pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告一覧生成(年月指定)を終了します。')
     
     return None
 
