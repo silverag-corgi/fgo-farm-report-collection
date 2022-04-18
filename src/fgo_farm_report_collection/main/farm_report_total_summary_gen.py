@@ -234,13 +234,13 @@ def __validate_args(args: argparse.Namespace) -> bool:
             try:
                 datetime.strptime(args.col_year, '%Y')
             except ValueError:
-                pyl.log_war(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+                pyl.log_err(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
                 return False
         elif args.col_year_month is not None:
             try:
                 datetime.strptime(args.col_year_month, '%Y-%m')
             except ValueError:
-                pyl.log_war(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
+                pyl.log_err(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
                 return False
         
         # 検証：周回報告年間ユーザ全体概要生成要否、もしくは、周回報告年間クエスト全体概要生成要否が真の場合は、
@@ -248,24 +248,24 @@ def __validate_args(args: argparse.Namespace) -> bool:
         if (args.generate_yearly_user_total_summary == True
             or args.generate_yearly_quest_total_summary == True) \
                 and args.col_year is None:
-            pyl.log_war(lg, f'収集年が指定されていません。' +
+            pyl.log_err(lg, f'収集年が指定されていません。' +
                             f'(col_year:{args.col_year}, col_year_month:{args.col_year_month})')
             return False
         
         # 検証：最低周回数のいずれかが0以上であること
         if args.min_num_of_all_quest is not None \
             and not (args.min_num_of_all_quest >= 0):
-            pyl.log_war(lg, f'最低周回数(全て)が0以上ではありません。' +
+            pyl.log_err(lg, f'最低周回数(全て)が0以上ではありません。' +
                             f'(min_num_of_all_quest:{args.min_num_of_all_quest})')
             return False
         elif args.min_num_of_normal_quest is not None \
             and not (args.min_num_of_normal_quest >= 0):
-            pyl.log_war(lg, f'最低周回数(通常クエ)が0以上ではありません。' +
+            pyl.log_err(lg, f'最低周回数(通常クエ)が0以上ではありません。' +
                             f'(min_num_of_normal_quest:{args.min_num_of_normal_quest})')
             return False
         elif args.min_num_of_event_quest is not None \
             and not (args.min_num_of_event_quest >= 0):
-            pyl.log_war(lg, f'最低周回数(イベクエ)が0以上ではありません。' +
+            pyl.log_err(lg, f'最低周回数(イベクエ)が0以上ではありません。' +
                             f'(min_num_of_event_quest:{args.min_num_of_event_quest})')
             return False
     except Exception as e:

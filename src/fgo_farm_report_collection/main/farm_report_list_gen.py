@@ -116,13 +116,13 @@ def __validate_args(args: argparse.Namespace) -> bool:
             try:
                 datetime.strptime(args.col_year, '%Y')
             except ValueError:
-                pyl.log_war(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
+                pyl.log_err(lg, f'収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})')
                 return False
         elif args.col_year_month is not None:
             try:
                 datetime.strptime(args.col_year_month, '%Y-%m')
             except ValueError:
-                pyl.log_war(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
+                pyl.log_err(lg, f'収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})')
                 return False
     except Exception as e:
         raise(e)
