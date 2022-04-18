@@ -76,10 +76,10 @@ def do_logic(
         # 周回報告個人概要データフレームの保存
         pandas_util.save_farm_report_ind_sum_df(
             farm_report_ind_sum_df, farm_report_ind_sum_file_path)
-        
-        pyl.log_inf(lg, f'周回報告個人概要生成を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告個人概要生成を終了します。')
     
     return None
 

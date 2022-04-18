@@ -53,10 +53,10 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
                 quest_kinds,
                 output_user_name
             )
-        
-        pyl.log_inf(lg, f'周回報告年間全体概要生成(年指定)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告年間全体概要生成(年指定)を終了します。')
     
     return None
 
@@ -91,10 +91,10 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
                     quest_kinds,
                     output_user_name
                 )
-        
-        pyl.log_inf(lg, f'周回報告月間全体概要生成(年指定)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告月間全体概要生成(年指定)を終了します。')
     
     return None
 
@@ -125,10 +125,10 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
                 quest_kinds,
                 output_user_name
             )
-        
-        pyl.log_inf(lg, f'周回報告月間全体概要生成(年月指定)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告月間全体概要生成(年月指定)を終了します。')
     
     return None
 
@@ -222,10 +222,10 @@ def __do_logic_that_generate_tot_sum(
                         min_num_of_farms,
                         farm_report_tot_sum_file_path
                     )
-        
-        pyl.log_inf(lg, f'周回報告全体概要生成(共通)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告全体概要生成(共通)を終了します。')
     
     return None
 

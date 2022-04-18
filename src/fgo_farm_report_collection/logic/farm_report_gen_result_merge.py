@@ -53,10 +53,10 @@ def do_logic_that_merge_list(
                 'A4',
                 ['A1:G1', 'A2:G2']
             )
-        
-        pyl.log_inf(lg, f'周回報告一覧マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告一覧マージを終了します。')
     
     return None
 
@@ -95,10 +95,10 @@ def do_logic_that_merge_yearly_usr_tot_sum(
                 'A4',
                 ['A1:I1', 'A2:I2']
             )
-        
-        pyl.log_inf(lg, f'周回報告年間ユーザ全体概要マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告年間ユーザ全体概要マージを終了します。')
     
     return None
 
@@ -137,10 +137,10 @@ def do_logic_that_merge_yearly_qst_tot_sum(
                 'A4',
                 ['A1:I1', 'A2:I2']
             )
-        
-        pyl.log_inf(lg, f'周回報告年間クエスト全体概要マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告年間クエスト全体概要マージを終了します。')
     
     return None
 
@@ -179,10 +179,10 @@ def do_logic_that_merge_monthly_usr_tot_sum(
                 'A4',
                 ['A1:I1', 'A2:I2']
             )
-        
-        pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告月間ユーザ全体概要マージを終了します。')
     
     return None
 
@@ -221,10 +221,10 @@ def do_logic_that_merge_monthly_qst_tot_sum(
                 'A4',
                 ['A1:I1', 'A2:I2']
             )
-        
-        pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告月間クエスト全体概要マージを終了します。')
     
     return None
 
@@ -258,10 +258,10 @@ def do_logic_that_merge_ind_sum(
                 'A4',
                 ['A1:D1', 'A2:D2']
             )
-        
-        pyl.log_inf(lg, f'周回報告個人概要マージを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告個人概要マージを終了します。')
     
     return None
 
@@ -317,10 +317,10 @@ def __do_logic_that_merge_gen_result(
                 )
             
             pyl.log_inf(lg, f'周回報告マージ結果ファイルパス：{merge_result_file_path}')
-        
-        pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'周回報告生成結果マージ(共通)を終了します。')
     
     return None
 
