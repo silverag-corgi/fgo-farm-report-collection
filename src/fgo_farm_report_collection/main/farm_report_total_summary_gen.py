@@ -68,11 +68,16 @@ def main() -> int:
         
         # ロジック(周回報告一覧生成)の実行
         if bool(args.generate_list) == True:
-            pyl.measure_proc_time(farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
-                    (args.col_year
-                        if args.col_year is not None
-                        else args.col_year_month)
-                )
+            if args.col_year is not None:
+                pyl.measure_proc_time(
+                    farm_report_list_gen.do_logic_that_generate_list_by_col_year)(
+                            args.col_year
+                        )
+            elif args.col_year_month is not None:
+                pyl.measure_proc_time(
+                    farm_report_list_gen.do_logic_that_generate_list_by_col_year_month)(
+                            args.col_year_month
+                        )
         
         # 関数オブジェクトの取得
         function_object: Optional[Callable] = None
