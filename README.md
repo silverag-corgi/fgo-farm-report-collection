@@ -605,14 +605,14 @@ Group C - optional arguments:
 ## 7.2. 実行例
 
 ```cmd
-> poetry run list-gen -y 2021
+> poetry run list-gen -m 2022-08
 
-> poetry run tot-gen -y 2021 -yu -b 0
-> poetry run tot-gen -y 2021 -yq -b 0
-> poetry run tot-gen -y 2021 -mu -b 0
-> poetry run tot-gen -y 2021 -mq -b 0
+> poetry run tot-gen -y 2022 -yu -b 0 -u
+> poetry run tot-gen -y 2022 -yq -b 0
+> poetry run tot-gen -m 2022-08 -mu -b 0 -u
+> poetry run tot-gen -m 2022-08 -mq -b 0
 
-> poetry run ind-gen 2021 silverag_corgi
+> poetry run ind-gen 2022 silverag_corgi
 
 > poetry run merge -l
 > poetry run merge -yu
