@@ -2,7 +2,7 @@ import os
 from datetime import date, datetime
 from enum import IntEnum, auto
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional, cast
 
 import numpy as np
 import pandas as pd
@@ -279,20 +279,20 @@ def __generate_farm_report_usr_tot_sum_file(
             )
 
             # 周回数と報告数の集計
-            # TODO 変数`farm_report_tot_sum_series`の型を`pd.Series`から`pd.DataFrame`に変更する
-            farm_report_tot_sum_series: pd.Series = farm_report_list_df_group[
-                const_util.FARM_REPORT_LIST_HEADER[5]
-            ].aggregate([np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
-            farm_report_tot_sum_df: pd.DataFrame = pd.DataFrame(farm_report_tot_sum_series).rename(
-                columns={
-                    "sum": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2],
-                    "count_nonzero": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3],
-                    "min": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4],
-                    "max": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5],
-                    "median": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6],
-                    "mean": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7],
-                    "std": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8],
-                }
+            farm_report_tot_sum_df: pd.DataFrame = (
+                farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[5]]
+                .aggregate([np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
+                .rename(
+                    columns={
+                        "sum": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[2],
+                        "count_nonzero": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[3],
+                        "min": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[4],
+                        "max": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[5],
+                        "median": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6],
+                        "mean": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7],
+                        "std": const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8],
+                    }
+                )
             )
             farm_report_tot_sum_df.fillna(0, inplace=True)
 
@@ -308,21 +308,20 @@ def __generate_farm_report_usr_tot_sum_file(
             )
 
             # 周回数の揃え
-            # TODO 引数`func`を`cast(Any, pyl.round_half_up(data, 2))`に変更する
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
 
             # 列(ユーザ名)の追加
@@ -337,9 +336,8 @@ def __generate_farm_report_usr_tot_sum_file(
                             str(user_id).strip()
                         )
                         user_info_site_response: Response = requests.get(user_info_site_url)
-                        # TODO 引数`markup`を`cast(str, user_info_site_response.content)`に変更する
                         user_info_site_bs: BeautifulSoup = BeautifulSoup(
-                            user_info_site_response.content,
+                            cast(str, user_info_site_response.content),
                             "lxml",
                             from_encoding=const_util.ENCODING,
                         )
@@ -412,20 +410,20 @@ def __generate_farm_report_qst_tot_sum_file(
             )
 
             # 周回数と報告数の集計
-            # TODO 変数`farm_report_tot_sum_series`の型を`pd.Series`から`pd.DataFrame`に変更する
-            farm_report_tot_sum_series: pd.Series = farm_report_list_df_group[
-                const_util.FARM_REPORT_LIST_HEADER[5]
-            ].aggregate([np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
-            farm_report_tot_sum_df: pd.DataFrame = pd.DataFrame(farm_report_tot_sum_series).rename(
-                columns={
-                    "sum": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2],
-                    "count_nonzero": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3],
-                    "min": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4],
-                    "max": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5],
-                    "median": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6],
-                    "mean": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7],
-                    "std": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8],
-                }
+            farm_report_tot_sum_df: pd.DataFrame = (
+                farm_report_list_df_group[const_util.FARM_REPORT_LIST_HEADER[5]]
+                .aggregate([np.sum, np.count_nonzero, min, max, np.median, np.mean, np.std])
+                .rename(
+                    columns={
+                        "sum": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[2],
+                        "count_nonzero": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[3],
+                        "min": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[4],
+                        "max": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[5],
+                        "median": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6],
+                        "mean": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7],
+                        "std": const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8],
+                    }
+                )
             )
             farm_report_tot_sum_df.fillna(0, inplace=True)
 
@@ -441,21 +439,20 @@ def __generate_farm_report_qst_tot_sum_file(
             )
 
             # 周回数の揃え
-            # TODO 引数`func`を`cast(Any, pyl.round_half_up(data, 2))`に変更する
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
             farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]
             ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]].apply(
-                lambda data: pyl.round_half_up(data, 2)
+                lambda data: cast(Any, pyl.round_half_up(data, 2))
             )
 
             # 周回報告クエスト全体概要データフレームの保存

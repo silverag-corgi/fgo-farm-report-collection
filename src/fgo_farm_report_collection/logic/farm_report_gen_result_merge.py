@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from enum import IntEnum, auto
 from logging import Logger
-from typing import Final, Optional, Union
+from typing import Final, Optional, Union, cast
 
 import openpyxl
 import pandas as pd
@@ -481,12 +481,7 @@ def __apply_formatting_to_merge_result_header_part(
 
     # 行の高さの適用
     row_indexes: tuple = merge_result_header_part_sf.row_indexes
-    # TODO 引数`row_height_dict`を見直す
-    merge_result_header_part_sf.set_row_height_dict(
-        {
-            row_indexes[: len(row_indexes) - 1]: 20,
-        }
-    )
+    merge_result_header_part_sf.set_row_height(row_indexes[: len(row_indexes) - 1], 20)
 
     return merge_result_header_part_sf
 
@@ -532,19 +527,10 @@ def __apply_formatting_to_gen_result(
     # 行の高さの適用
     row_indexes: tuple = merge_result_data_part_sf.row_indexes
     if len(row_indexes) == 1:
-        merge_result_data_part_sf.set_row_height_dict(
-            {
-                row_indexes[0]: 30,
-            }
-        )
+        merge_result_data_part_sf.set_row_height(row_indexes[0], 30)
     else:
-        # TODO 引数`row_height_dict`を見直す
-        merge_result_data_part_sf.set_row_height_dict(
-            {
-                row_indexes[0]: 30,
-                row_indexes[1:]: 20,
-            }
-        )
+        merge_result_data_part_sf.set_row_height(row_indexes[0], 30)
+        merge_result_data_part_sf.set_row_height(row_indexes[1:], 20)
 
     return merge_result_data_part_sf
 
@@ -565,8 +551,7 @@ def __edit_merge_result_file_by_openpyxl(
             # 周回報告マージ結果ファイルのセルの結合
             merge_result_wb = openpyxl.load_workbook(merge_result_file_path)
             for sheet_name in merge_result_wb.sheetnames:
-                # TODO 変数`merge_result_ws`の値を`cast(Worksheet, merge_result_wb[sheet_name])`に変更する
-                merge_result_ws: Worksheet = merge_result_wb[sheet_name]
+                merge_result_ws: Worksheet = cast(Worksheet, merge_result_wb[sheet_name])
                 for range in merge_result_ranges_to_merge_cells:
                     merge_result_ws.merge_cells(range)
         except Exception as e:
