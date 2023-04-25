@@ -271,28 +271,32 @@ def save_farm_report_merge_result_sf(
         # ロガーの取得
         lg = pyl.get_logger(__name__)
 
-        # 周回報告マージ結果ヘッダ部スタイルフレームの保存
-        col_num: int = 0
-        for sheet_description_sf in merge_result_header_part_sfs:
-            sheet_description_sf.to_excel(
-                excel_writer,  # type: ignore
-                sheet_name=merge_result_sheet_name,
-                header=False,
-                index=False,
-                startcol=col_num,
-                startrow=0,
-            )
-            col_num = col_num + len(sheet_description_sf.columns)
+        if excel_writer is not None:
+            # 周回報告マージ結果ヘッダ部スタイルフレームの保存
+            col_num: int = 0
+            for sheet_description_sf in merge_result_header_part_sfs:
+                sheet_description_sf.to_excel(
+                    excel_writer,
+                    sheet_name=merge_result_sheet_name,
+                    header=False,
+                    index=False,
+                    startcol=col_num,
+                    startrow=0,
+                )
+                col_num = col_num + len(sheet_description_sf.columns)
 
-        # 周回報告マージ結果データ部スタイルフレームの保存
-        merge_result_data_part_sf.to_excel(
-            excel_writer,  # type: ignore
-            sheet_name=merge_result_sheet_name,
-            row_to_add_filters=row_to_set_filters,
-            columns_and_rows_to_freeze=cell_to_fix_window_frame,
-            index=False,
-            startrow=len(merge_result_header_part_sfs[0]),
-        )
+            # 周回報告マージ結果データ部スタイルフレームの保存
+            merge_result_data_part_sf.to_excel(
+                excel_writer,
+                sheet_name=merge_result_sheet_name,
+                row_to_add_filters=row_to_set_filters,
+                columns_and_rows_to_freeze=cell_to_fix_window_frame,
+                index=False,
+                startrow=len(merge_result_header_part_sfs[0]),
+            )
+        else:
+            # TODO `excel_writer`が`None`の場合に何かしらを通知する(ログ出力、例外スローなど)
+            pass
     except Exception as e:
         raise (e)
 
