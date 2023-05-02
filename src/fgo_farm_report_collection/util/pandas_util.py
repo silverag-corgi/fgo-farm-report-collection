@@ -1,4 +1,3 @@
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -15,19 +14,19 @@ def save_farm_report_list_df(
 ) -> None:
     """周回報告一覧データフレーム保存"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # インデックスのリセット
         farm_report_list_df.reset_index(drop=True)
 
         # 周回報告全体概要データフレームのログ出力
-        pyl.log_inf(lg, f"周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}")
-        pyl.log_inf(lg, f"周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}")
-        pyl.log_inf(lg, f"周回報告一覧ファイルパス：\n{farm_report_list_file_path}")
+        clg.log_inf(f"周回報告一覧(追加分先頭n行)：\n{farm_report_list_df.head(5)}")
+        clg.log_inf(f"周回報告一覧(追加分末尾n行)：\n{farm_report_list_df.tail(5)}")
+        clg.log_inf(f"周回報告一覧ファイルパス：\n{farm_report_list_file_path}")
 
         # 周回報告全体概要データフレームの保存
         farm_report_list_df.to_csv(
@@ -78,19 +77,19 @@ def save_farm_report_usr_tot_sum_df(
 ) -> None:
     """周回報告ユーザ全体概要データフレーム保存"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # インデックスのリセット
         farm_report_usr_tot_sum_df.reset_index(inplace=True)
 
         # 周回報告ユーザ全体概要データフレームのログ出力
-        pyl.log_inf(lg, f"周回報告ユーザ全体概要(先頭n行)：\n{farm_report_usr_tot_sum_df.head(5)}")
-        pyl.log_inf(lg, f"周回報告ユーザ全体概要(末尾n行)：\n{farm_report_usr_tot_sum_df.tail(5)}")
-        pyl.log_inf(lg, f"周回報告ユーザ全体概要ファイルパス：\n{farm_report_usr_tot_sum_file_path}")
+        clg.log_inf(f"周回報告ユーザ全体概要(先頭n行)：\n{farm_report_usr_tot_sum_df.head(5)}")
+        clg.log_inf(f"周回報告ユーザ全体概要(末尾n行)：\n{farm_report_usr_tot_sum_df.tail(5)}")
+        clg.log_inf(f"周回報告ユーザ全体概要ファイルパス：\n{farm_report_usr_tot_sum_file_path}")
 
         # 周回報告ユーザ全体概要データフレームの保存
         farm_report_usr_tot_sum_df.to_csv(
@@ -140,19 +139,19 @@ def save_farm_report_qst_tot_sum_df(
 ) -> None:
     """周回報告クエスト全体概要データフレーム保存"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # インデックスのリセット
         farm_report_qst_tot_sum_df.reset_index(inplace=True)
 
         # 周回報告クエスト全体概要データフレームのログ出力
-        pyl.log_inf(lg, f"周回報告クエスト全体概要(先頭n行)：\n{farm_report_qst_tot_sum_df.head(5)}")
-        pyl.log_inf(lg, f"周回報告クエスト全体概要(末尾n行)：\n{farm_report_qst_tot_sum_df.tail(5)}")
-        pyl.log_inf(lg, f"周回報告クエスト全体概要ファイルパス：\n{farm_report_qst_tot_sum_file_path}")
+        clg.log_inf(f"周回報告クエスト全体概要(先頭n行)：\n{farm_report_qst_tot_sum_df.head(5)}")
+        clg.log_inf(f"周回報告クエスト全体概要(末尾n行)：\n{farm_report_qst_tot_sum_df.tail(5)}")
+        clg.log_inf(f"周回報告クエスト全体概要ファイルパス：\n{farm_report_qst_tot_sum_file_path}")
 
         # 周回報告クエスト全体概要データフレームの保存
         farm_report_qst_tot_sum_df.to_csv(
@@ -202,15 +201,15 @@ def save_farm_report_ind_sum_df(
 ) -> None:
     """周回報告個人概要データフレーム保存"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 周回報告全体概要データフレームのログ出力
-        pyl.log_inf(lg, f"周回報告個人概要：\n{farm_report_ind_sum_df}")
-        pyl.log_inf(lg, f"周回報告個人概要ファイルパス：\n{farm_report_ind_sum_file_path}")
+        clg.log_inf(f"周回報告個人概要：\n{farm_report_ind_sum_df}")
+        clg.log_inf(f"周回報告個人概要ファイルパス：\n{farm_report_ind_sum_file_path}")
 
         # 周回報告全体概要データフレームの保存
         farm_report_ind_sum_df.to_csv(
@@ -265,11 +264,11 @@ def save_farm_report_merge_result_sf(
 ) -> None:
     """周回報告マージ結果スタイルフレーム保存"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         if excel_writer is not None:
             # 周回報告マージ結果ヘッダ部スタイルフレームの保存

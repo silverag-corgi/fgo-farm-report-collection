@@ -1,7 +1,6 @@
 import os
 from datetime import date, datetime
 from enum import IntEnum, auto
-from logging import Logger
 from typing import Any, Optional, cast
 
 import numpy as np
@@ -32,12 +31,12 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
 ) -> None:
     """ロジック(周回報告年間全体概要生成(年指定))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告年間全体概要生成(年指定)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告年間全体概要生成(年指定)を開始します。")
 
         # 収集年月の生成
         col_year_months: list[str] = [
@@ -51,7 +50,8 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告年間全体概要生成(年指定)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告年間全体概要生成(年指定)を終了します。")
 
     return None
 
@@ -65,12 +65,12 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
 ) -> None:
     """ロジック(周回報告月間全体概要生成(年指定))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告月間全体概要生成(年指定)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告月間全体概要生成(年指定)を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
@@ -88,7 +88,8 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告月間全体概要生成(年指定)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告月間全体概要生成(年指定)を終了します。")
 
     return None
 
@@ -102,12 +103,12 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
 ) -> None:
     """ロジック(周回報告月間全体概要生成(年月指定))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告月間全体概要生成(年月指定)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告月間全体概要生成(年月指定)を開始します。")
 
         # ロジック(周回報告全体概要生成(共通))の実行
         __do_logic_that_generate_tot_sum(
@@ -121,7 +122,8 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告月間全体概要生成(年月指定)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告月間全体概要生成(年月指定)を終了します。")
 
     return None
 
@@ -136,12 +138,12 @@ def __do_logic_that_generate_tot_sum(
 ) -> None:
     """ロジック(周回報告全体概要生成(共通))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告全体概要生成(共通)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告全体概要生成(共通)を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -158,7 +160,7 @@ def __do_logic_that_generate_tot_sum(
 
             # 周回報告一覧ファイルパスの追加
             if first_date_of_col_year_month > first_date_of_this_month:
-                pyl.log_inf(lg, f"収集年月が未来です。(col_year_month:{col_year_month})")
+                clg.log_inf(f"収集年月が未来です。(col_year_month:{col_year_month})")
             else:
                 farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
                     col_year_month
@@ -227,7 +229,8 @@ def __do_logic_that_generate_tot_sum(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告全体概要生成(共通)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告全体概要生成(共通)を終了します。")
 
     return None
 
@@ -241,19 +244,18 @@ def __generate_farm_report_usr_tot_sum_file(
 ) -> None:
     """周回報告ユーザ全体概要ファイル生成"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
         for farm_report_list_file_path in farm_report_list_file_paths:
             if os.path.isfile(farm_report_list_file_path) is False:
-                pyl.log_inf(
-                    lg,
-                    f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})",
+                clg.log_inf(
+                    f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
                 )
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
@@ -329,7 +331,7 @@ def __generate_farm_report_usr_tot_sum_file(
 
             # ユーザ名の設定
             if output_user_name is True:
-                pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+                clg.log_inf(f"時間がかかるため気長にお待ちください。")
                 for user_id, _ in farm_report_tot_sum_df.iterrows():
                     try:
                         user_info_site_url: str = const_util.USER_INFO_SITE_URL.format(
@@ -345,12 +347,9 @@ def __generate_farm_report_usr_tot_sum_file(
                         farm_report_tot_sum_df.at[
                             user_id, const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]
                         ] = user_name_rs[0].get_text()
-                        pyl.log_deb(lg, f"ユーザ名の設定に成功しました。(user_id:{user_id})")
+                        clg.log_dbg(f"ユーザ名の設定に成功しました。(user_id:{user_id})")
                     except Exception as e:
-                        pyl.log_war(
-                            lg,
-                            f"ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{user_id})",
-                        )
+                        clg.log_wrn(f"ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{user_id})")
 
             # 周回報告ユーザ全体概要データフレームの保存
             pandas_util.save_farm_report_usr_tot_sum_df(
@@ -370,21 +369,19 @@ def __generate_farm_report_qst_tot_sum_file(
 ) -> None:
     """周回報告クエスト全体概要ファイル生成"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
         for farm_report_list_file_path in farm_report_list_file_paths:
             # 周回報告一覧ファイルの存在確認
             if os.path.isfile(farm_report_list_file_path) is False:
-                pyl.log_inf(
-                    lg,
-                    f"周回報告一覧ファイルが存在しません。"
-                    + f"(farm_report_list_file_path:{farm_report_list_file_path})",
+                clg.log_inf(
+                    f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
                 )
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(

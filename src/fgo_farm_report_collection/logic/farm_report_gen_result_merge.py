@@ -2,7 +2,6 @@ import glob
 import os
 from datetime import datetime
 from enum import IntEnum, auto
-from logging import Logger
 from typing import Final, Optional, Union, cast
 
 import openpyxl
@@ -24,12 +23,12 @@ class EnumOfProc(IntEnum):
 def do_logic_that_merge_list(append_sheet: bool) -> None:
     """ロジック(周回報告一覧マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告一覧マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告一覧マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_LIST,
@@ -53,7 +52,8 @@ def do_logic_that_merge_list(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告一覧マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告一覧マージを終了します。")
 
     return None
 
@@ -61,12 +61,12 @@ def do_logic_that_merge_list(append_sheet: bool) -> None:
 def do_logic_that_merge_yearly_usr_tot_sum(append_sheet: bool) -> None:
     """ロジック(周回報告年間ユーザ全体概要マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告年間ユーザ全体概要マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告年間ユーザ全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
@@ -92,7 +92,8 @@ def do_logic_that_merge_yearly_usr_tot_sum(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告年間ユーザ全体概要マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告年間ユーザ全体概要マージを終了します。")
 
     return None
 
@@ -100,12 +101,12 @@ def do_logic_that_merge_yearly_usr_tot_sum(append_sheet: bool) -> None:
 def do_logic_that_merge_yearly_qst_tot_sum(append_sheet: bool) -> None:
     """ロジック(周回報告年間クエスト全体概要マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告年間クエスト全体概要マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告年間クエスト全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
@@ -131,7 +132,8 @@ def do_logic_that_merge_yearly_qst_tot_sum(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告年間クエスト全体概要マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告年間クエスト全体概要マージを終了します。")
 
     return None
 
@@ -139,12 +141,12 @@ def do_logic_that_merge_yearly_qst_tot_sum(append_sheet: bool) -> None:
 def do_logic_that_merge_monthly_usr_tot_sum(append_sheet: bool) -> None:
     """ロジック(周回報告月間ユーザ全体概要マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告月間ユーザ全体概要マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告月間ユーザ全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
@@ -170,7 +172,8 @@ def do_logic_that_merge_monthly_usr_tot_sum(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告月間ユーザ全体概要マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告月間ユーザ全体概要マージを終了します。")
 
     return None
 
@@ -178,12 +181,12 @@ def do_logic_that_merge_monthly_usr_tot_sum(append_sheet: bool) -> None:
 def do_logic_that_merge_monthly_qst_tot_sum(append_sheet: bool) -> None:
     """ロジック(周回報告月間クエスト全体概要マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告月間クエスト全体概要マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告月間クエスト全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
@@ -209,7 +212,8 @@ def do_logic_that_merge_monthly_qst_tot_sum(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告月間クエスト全体概要マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告月間クエスト全体概要マージを終了します。")
 
     return None
 
@@ -217,12 +221,12 @@ def do_logic_that_merge_monthly_qst_tot_sum(append_sheet: bool) -> None:
 def do_logic_that_merge_ind_sum(append_sheet: bool) -> None:
     """ロジック(周回報告個人概要マージ)実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告個人概要マージを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告個人概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
             EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY,
@@ -243,7 +247,8 @@ def do_logic_that_merge_ind_sum(append_sheet: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告個人概要マージを終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告個人概要マージを終了します。")
 
     return None
 
@@ -261,12 +266,12 @@ def __do_logic_that_merge_gen_result(
 ) -> None:
     """ロジック(周回報告生成結果マージ(共通))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告生成結果マージ(共通)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告生成結果マージ(共通)を開始します。")
 
         # 周回報告生成結果ファイルパスの取得
         gen_result_file_dir: str = os.path.dirname(gen_result_file_path_format)
@@ -276,10 +281,8 @@ def __do_logic_that_merge_gen_result(
 
         # 周回報告生成結果ファイルの件数が0件の場合
         if len(gen_result_file_paths) == 0:
-            pyl.log_war(
-                lg,
-                f"周回報告生成結果ファイルの件数が0件です。"
-                + f"(gen_result_file_path:{gen_result_file_path_with_wildcard})",
+            clg.log_wrn(
+                f"周回報告生成結果ファイルの件数が0件です。(gen_result_file_path:{gen_result_file_path_with_wildcard})"
             )
         else:
             # Pandasによる周回報告マージ結果ファイルの生成
@@ -299,11 +302,12 @@ def __do_logic_that_merge_gen_result(
                 merge_result_file_path, merge_result_ranges_to_merge_cells
             )
 
-            pyl.log_inf(lg, f"周回報告マージ結果ファイルパス：{merge_result_file_path}")
+            clg.log_inf(f"周回報告マージ結果ファイルパス：{merge_result_file_path}")
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告生成結果マージ(共通)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告生成結果マージ(共通)を終了します。")
 
     return None
 
@@ -320,11 +324,11 @@ def __generate_merge_result_file_by_pandas(
 ) -> None:
     """周回報告マージ結果ファイル生成(Pandas)"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         excel_writer: Optional[pd.ExcelWriter] = None
         try:
@@ -343,7 +347,7 @@ def __generate_merge_result_file_by_pandas(
 
             # 周回報告マージ結果ファイルへの出力
             for gen_result_file_path in reversed(gen_result_file_paths):
-                pyl.log_inf(lg, f"周回報告生成結果ファイルパス：{gen_result_file_path}")
+                clg.log_inf(f"周回報告生成結果ファイルパス：{gen_result_file_path}")
 
                 # 周回報告マージ結果シート名の生成
                 merge_result_sheet_name: str = pyl.generate_file_name(gen_result_file_path)
@@ -389,7 +393,7 @@ def __generate_merge_result_file_by_pandas(
                     cell_to_fix_window_frame=merge_result_cell_to_fix_window_frame,
                 )
         except Exception as e:
-            pyl.log_err(lg, f"周回報告生成結果マージ結果ファイルへの出力に失敗しました。")
+            clg.log_err(f"周回報告生成結果マージ結果ファイルへの出力に失敗しました。")
             raise (e)
         finally:
             if excel_writer is not None:
@@ -540,11 +544,11 @@ def __edit_merge_result_file_by_openpyxl(
 ) -> None:
     """周回報告マージ結果ファイル編集(OpenPyXL)"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         merge_result_wb: Optional[openpyxl.Workbook] = None
         try:
@@ -555,7 +559,7 @@ def __edit_merge_result_file_by_openpyxl(
                 for range in merge_result_ranges_to_merge_cells:
                     merge_result_ws.merge_cells(range)
         except Exception as e:
-            pyl.log_err(lg, f"周回報告生成結果マージ結果ファイルのセルの結合に失敗しました。")
+            clg.log_err(f"周回報告生成結果マージ結果ファイルのセルの結合に失敗しました。")
             raise (e)
         finally:
             if merge_result_wb is not None:

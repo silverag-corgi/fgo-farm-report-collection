@@ -1,7 +1,6 @@
 import json
 import os
 from datetime import date, datetime, timedelta
-from logging import Logger
 from typing import Any, Optional
 
 import pandas as pd
@@ -15,12 +14,12 @@ from fgo_farm_report_collection.util import const_util, pandas_util
 def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
     """ロジック(周回報告一覧生成(年指定))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告一覧生成(年指定)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告一覧生成(年指定)を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
@@ -31,7 +30,8 @@ def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告一覧生成(年指定)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告一覧生成(年指定)を終了します。")
 
     return None
 
@@ -39,12 +39,12 @@ def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
 def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
     """ロジック(周回報告一覧生成(年月指定))実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告一覧生成(年月指定)を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告一覧生成(年月指定)を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -54,7 +54,7 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
         col_first_date: date = datetime.strptime(col_year_month + "-01", "%Y-%m-%d").date()
         first_date_of_this_month: date = pyl.get_first_date_of_this_month(today)
         if col_first_date > first_date_of_this_month:
-            pyl.log_inf(lg, f"収集年月が未来です。(col_year_month:{col_year_month})")
+            clg.log_inf(f"収集年月が未来です。(col_year_month:{col_year_month})")
         else:
             # 周回報告一覧ファイルパスの生成
             farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
@@ -78,16 +78,15 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
             generate_list: bool = True
             if list_gen_start_date is None or list_gen_end_date is None:
                 generate_list = False
-                pyl.log_inf(lg, f"周回報告一覧は最新です。(col_year_month:{col_year_month})")
+                clg.log_inf(f"周回報告一覧は最新です。(col_year_month:{col_year_month})")
             else:
                 if list_gen_start_date > list_gen_end_date:
                     generate_list = False
-                    pyl.log_inf(lg, f"周回報告一覧は最新です。(col_year_month:{col_year_month})")
+                    clg.log_inf(f"周回報告一覧は最新です。(col_year_month:{col_year_month})")
                 else:
                     generate_list = True
-                    pyl.log_inf(
-                        lg,
-                        f"周回報告一覧を生成します。(col_year_month:{list_gen_start_date}～{list_gen_end_date})",
+                    clg.log_inf(
+                        f"周回報告一覧を生成します。(col_year_month:{list_gen_start_date}～{list_gen_end_date})"
                     )
 
             # 周回報告一覧ファイルの生成
@@ -101,7 +100,8 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告一覧生成(年月指定)を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告一覧生成(年月指定)を終了します。")
 
     return None
 
@@ -167,11 +167,11 @@ def __generate_farm_report_list_file(
 ) -> None:
     """周回報告一覧ファイル生成"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 周回報告一覧データフレームの初期化
         farm_report_list_df: pd.DataFrame = pd.DataFrame(columns=const_util.FARM_REPORT_LIST_HEADER)
@@ -182,16 +182,15 @@ def __generate_farm_report_list_file(
             for list_gen_date in pyl.gen_date_range(list_gen_start_date, list_gen_end_date):
                 # 周回報告サイトURLの生成
                 farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
-                pyl.log_inf(lg, f"周回報告サイトURL：{farm_report_site_url}")
+                clg.log_inf(f"周回報告サイトURL：{farm_report_site_url}")
 
                 # 周回報告サイトからの周回報告の取得
                 farm_report_site_response: Response = requests.get(farm_report_site_url)
                 if farm_report_site_response.status_code != requests.codes["ok"]:
-                    pyl.log_war(
-                        lg,
+                    clg.log_wrn(
                         f"周回報告サイトへのアクセスに失敗しました。"
                         + f"(farm_report_site_url:{farm_report_site_url}, "
-                        + f"status_code:{farm_report_site_response.status_code})",
+                        + f"status_code:{farm_report_site_response.status_code})"
                     )
                     continue
                 farm_reports: dict[Any, Any] = json.loads(farm_report_site_response.text)

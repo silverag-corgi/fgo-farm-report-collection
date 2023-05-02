@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 from datetime import datetime
-from logging import Logger
 from typing import Callable, Optional
 
 import python_lib_for_me as pyl
@@ -50,15 +49,15 @@ def main() -> int:
         周回報告月間クエスト全体概要ファイル: ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -146,11 +145,11 @@ def main() -> int:
                 bool(args.output_user_name),
             )
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -292,24 +291,24 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：収集年が年(yyyy形式)であるか、もしくは収集年月が年月(yyyy-mm形式)であること
         if args.col_year is not None:
             try:
                 datetime.strptime(args.col_year, "%Y")
             except ValueError:
-                pyl.log_err(lg, f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
+                clg.log_err(f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
                 return False
         elif args.col_year_month is not None:
             try:
                 datetime.strptime(args.col_year_month, "%Y-%m")
             except ValueError:
-                pyl.log_err(lg, f"収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})")
+                clg.log_err(f"収集年月が年月(yyyy-mm形式)ではありません。(col_year_month:{args.col_year_month})")
                 return False
 
         # 検証：周回報告年間ユーザ全体概要生成要否、もしくは、周回報告年間クエスト全体概要生成要否が真の場合は、
@@ -318,28 +317,23 @@ def __validate_args(args: argparse.Namespace) -> bool:
             args.generate_yearly_user_total_summary is True
             or args.generate_yearly_quest_total_summary is True
         ) and args.col_year is None:
-            pyl.log_err(
-                lg,
-                f"収集年が指定されていません。(col_year:{args.col_year}, col_year_month:{args.col_year_month})",
+            clg.log_err(
+                f"収集年が指定されていません。(col_year:{args.col_year}, col_year_month:{args.col_year_month})"
             )
             return False
 
         # 検証：最低周回数のいずれかが0以上であること
         if args.min_num_of_all_quest is not None and not (args.min_num_of_all_quest >= 0):
-            pyl.log_err(
-                lg, f"最低周回数(全て)が0以上ではありません。(min_num_of_all_quest:{args.min_num_of_all_quest})"
-            )
+            clg.log_err(f"最低周回数(全て)が0以上ではありません。(min_num_of_all_quest:{args.min_num_of_all_quest})")
             return False
         elif args.min_num_of_normal_quest is not None and not (args.min_num_of_normal_quest >= 0):
-            pyl.log_err(
-                lg,
-                f"最低周回数(通常クエ)が0以上ではありません。(min_num_of_normal_quest:{args.min_num_of_normal_quest})",
+            clg.log_err(
+                f"最低周回数(通常クエ)が0以上ではありません。(min_num_of_normal_quest:{args.min_num_of_normal_quest})"
             )
             return False
         elif args.min_num_of_event_quest is not None and not (args.min_num_of_event_quest >= 0):
-            pyl.log_err(
-                lg,
-                f"最低周回数(イベクエ)が0以上ではありません。(min_num_of_event_quest:{args.min_num_of_event_quest})",
+            clg.log_err(
+                f"最低周回数(イベクエ)が0以上ではありません。(min_num_of_event_quest:{args.min_num_of_event_quest})"
             )
             return False
     except Exception as e:

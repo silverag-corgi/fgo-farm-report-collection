@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 from datetime import datetime
-from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -37,15 +36,15 @@ def main() -> int:
         周回報告個人概要ファイル: ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -61,11 +60,11 @@ def main() -> int:
             bool(args.generate_list),
         )
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -124,22 +123,22 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：収集年が年(yyyy形式)であること
         try:
             datetime.strptime(args.col_year, "%Y")
         except ValueError:
-            pyl.log_err(lg, f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
+            clg.log_err(f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
             return False
 
         # 検証：ユーザIDが4文字以上であること
         if not (len(args.user_id) >= 4):
-            pyl.log_err(lg, f"ユーザIDが4文字以上ではありません。(user_id:{args.user_id})")
+            clg.log_err(f"ユーザIDが4文字以上ではありません。(user_id:{args.user_id})")
             return False
     except Exception as e:
         raise (e)

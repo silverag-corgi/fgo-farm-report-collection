@@ -1,5 +1,4 @@
 import os
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -12,12 +11,12 @@ from fgo_farm_report_collection.util import const_util, pandas_util
 def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
     """ロジック実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"周回報告個人概要生成を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"周回報告個人概要生成を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -76,7 +75,8 @@ def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"周回報告個人概要生成を終了します。")
+        if clg is not None:
+            clg.log_inf(f"周回報告個人概要生成を終了します。")
 
     return None
 
@@ -86,11 +86,11 @@ def __update_farm_report_ind_sum_df(
 ) -> None:
     """周回報告個人概要データフレーム更新"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
