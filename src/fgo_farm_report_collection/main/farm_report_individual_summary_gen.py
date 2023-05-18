@@ -48,8 +48,7 @@ def main() -> int:
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
-        if __validate_args(args) is False:
-            return 1
+        __validate_args(args)
 
         # ロジック(周回報告個人概要生成)の実行
         pyl.measure_proc_time(
@@ -62,6 +61,11 @@ def main() -> int:
     except KeyboardInterrupt as e:
         if clg is not None:
             clg.log_inf(f"処理を中断しました。")
+        return 1
+    except pyl.ArgumentValidationError as e:
+        if clg is not None:
+            clg.log_err(f"{e}")
+        return 1
     except Exception as e:
         if clg is not None:
             clg.log_exc("")
@@ -120,7 +124,7 @@ def __get_args() -> argparse.Namespace:
     return args
 
 
-def __validate_args(args: argparse.Namespace) -> bool:
+def __validate_args(args: argparse.Namespace) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -133,17 +137,15 @@ def __validate_args(args: argparse.Namespace) -> bool:
         try:
             datetime.strptime(args.col_year, "%Y")
         except ValueError:
-            clg.log_err(f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
-            return False
+            raise pyl.ArgumentValidationError(f"収集年が年(yyyy形式)ではありません。(col_year:{args.col_year})")
 
         # 検証：ユーザIDが4文字以上であること
         if not (len(args.user_id) >= 4):
-            clg.log_err(f"ユーザIDが4文字以上ではありません。(user_id:{args.user_id})")
-            return False
+            raise pyl.ArgumentValidationError(f"ユーザIDが4文字以上ではありません。(user_id:{args.user_id})")
     except Exception as e:
         raise (e)
 
-    return True
+    return None
 
 
 if __name__ == "__main__":

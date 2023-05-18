@@ -53,8 +53,7 @@ def main() -> int:
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
-        if __validate_args(args) is False:
-            return 1
+        __validate_args(args)
 
         # ロジック(周回報告生成結果マージ)の実行
         if bool(args.merge_list) is True:
@@ -84,6 +83,11 @@ def main() -> int:
     except KeyboardInterrupt as e:
         if clg is not None:
             clg.log_inf(f"処理を中断しました。")
+        return 1
+    except pyl.ArgumentValidationError as e:
+        if clg is not None:
+            clg.log_err(f"{e}")
+        return 1
     except Exception as e:
         if clg is not None:
             clg.log_exc("")
@@ -175,7 +179,7 @@ def __get_args() -> argparse.Namespace:
     return args
 
 
-def __validate_args(args: argparse.Namespace) -> bool:
+def __validate_args(args: argparse.Namespace) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -188,7 +192,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     except Exception as e:
         raise (e)
 
-    return True
+    return None
 
 
 if __name__ == "__main__":
