@@ -2,7 +2,7 @@ import argparse
 import textwrap
 from typing import Final
 
-from fgo_farm_report_collection.main import (
+from fgo_farm_report_collection.main.sub_commands import (
     farm_report_gen_result_merge,
     farm_report_list_gen,
     farm_report_total_summary_gen,
