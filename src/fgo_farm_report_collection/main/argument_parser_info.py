@@ -40,6 +40,9 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                     - 生成ファイル
                         - 周回報告一覧ファイル
                             - ./dest/farm_report_list/[収集年月].csv
+                    - コマンド例
+                        - poetry run fgo gen-list -y 2021
+                        - poetry run fgo gen-list -m 2021-01
                     """  # noqa: E501
                 ),
                 "func": farm_report_list_gen.generate_farm_report_list,
@@ -88,6 +91,13 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             - ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
                         - 周回報告月間クエスト全体概要ファイル
                             - ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
+                    - コマンド例
+                        - poetry run fgo gen-tot -y 2021 -yu -a 100 -u
+                        - poetry run fgo gen-tot -y 2021 -yq -a 100
+                        - poetry run fgo gen-tot -y 2021 -mu -a 100 -u
+                        - poetry run fgo gen-tot -y 2021 -mq -a 100
+                        - poetry run fgo gen-tot -m 2021-01 -mu -a 100 -u
+                        - poetry run fgo gen-tot -m 2021-01 -mq -a 100
                     """  # noqa: E501
                 ),
                 "func": farm_report_total_summary_gen.generate_farm_report_total_summary,
@@ -122,6 +132,7 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             """\
                             - [グループB2(1つのみ必須)] 周回報告年間ユーザ全体概要生成要否
                                 - 収集年を指定した場合にのみ、周回報告年間ユーザ全体概要を生成します
+                                - 収集年月を指定した場合はエラーになります
                             """  # noqa: E501
                         ),
                         "exclusive_group": "exclusive_group_b2",
@@ -133,6 +144,7 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             """\
                             - [グループB2(1つのみ必須)] 周回報告年間クエスト全体概要生成要否
                                 - 収集年を指定した場合にのみ、周回報告年間クエスト全体概要を生成します
+                                - 収集年月を指定した場合はエラーになります
                             """  # noqa: E501
                         ),
                         "exclusive_group": "exclusive_group_b2",
@@ -240,6 +252,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             - ./dest/farm_report_list/[収集年月].csv
                         - 周回報告個人概要ファイル
                             - ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
+                    - コマンド例
+                        - poetry run fgo gen-ind 2021 silverag_corgi
                     """  # noqa: E501
                 ),
                 # "func": farm_report_list_gen.generate_farm_report_list,
@@ -299,6 +313,13 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             - ./dest/merge_result/周回報告クエスト全体概要.xlsx
                         - 周回報告個人概要マージ結果ファイル
                             - ./dest/merge_result/周回報告個人概要.xlsx
+                    - コマンド例
+                        - poetry run fgo merge -l
+                        - poetry run fgo merge -yu
+                        - poetry run fgo merge -yq
+                        - poetry run fgo merge -mu
+                        - poetry run fgo merge -mq
+                        - poetry run fgo merge -i
                     """  # noqa: E501
                 ),
                 "func": farm_report_gen_result_merge.merge_farm_report_gen_result,
