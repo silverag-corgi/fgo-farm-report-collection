@@ -27,7 +27,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
     quest_kinds: list[str],
-    output_user_name: bool = False,
+    output_user_name: bool,
 ) -> None:
     """ロジック(周回報告年間全体概要生成(年指定))実行"""
 
@@ -61,7 +61,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
     quest_kinds: list[str],
-    output_user_name: bool = False,
+    output_user_name: bool,
 ) -> None:
     """ロジック(周回報告月間全体概要生成(年指定))実行"""
 
@@ -99,7 +99,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
     quest_kinds: list[str],
-    output_user_name: bool = False,
+    output_user_name: bool,
 ) -> None:
     """ロジック(周回報告月間全体概要生成(年月指定))実行"""
 
@@ -134,7 +134,7 @@ def __do_logic_that_generate_tot_sum(
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
     quest_kinds: list[str],
-    output_user_name: bool = False,
+    output_user_name: bool,
 ) -> None:
     """ロジック(周回報告全体概要生成(共通))実行"""
 
