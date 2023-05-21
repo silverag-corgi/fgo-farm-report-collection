@@ -25,11 +25,13 @@ def generate_farm_report_list(arg_namespace: argparse.Namespace) -> None:
     clg: Optional[pyl.CustomLogger] = None
 
     try:
+        # 引数の取得
+        arg: argument.FarmReportListArg = argument.FarmReportListArg(arg_namespace)
+
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数の検証
-        arg: argument.FarmReportListArg = argument.FarmReportListArg(arg_namespace)
         __validate_arg(arg)
 
         # ロジック(周回報告一覧生成)の実行
@@ -37,12 +39,14 @@ def generate_farm_report_list(arg_namespace: argparse.Namespace) -> None:
             pyl.measure_proc_time(
                 farm_report_list_gen.do_logic_that_generate_list_by_col_year,
             )(
+                arg.use_debug_mode,
                 arg.col_year,
             )
         elif arg.col_year_month is not None:
             pyl.measure_proc_time(
                 farm_report_list_gen.do_logic_that_generate_list_by_col_year_month,
             )(
+                arg.use_debug_mode,
                 arg.col_year_month,
             )
     except Exception as e:
@@ -58,7 +62,7 @@ def __validate_arg(arg: argument.FarmReportListArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:

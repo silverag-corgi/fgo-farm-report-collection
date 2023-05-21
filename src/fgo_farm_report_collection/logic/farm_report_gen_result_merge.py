@@ -20,17 +20,21 @@ class EnumOfProc(IntEnum):
     GENERATE_INDIVIDUAL_SUMMARY = auto()
 
 
-def do_logic_that_merge_list(append_sheet: bool) -> None:
+def do_logic_that_merge_list(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告一覧マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告一覧マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_LIST,
             const_util.FARM_REPORT_LIST_FILE_PATH,
             const_util.FARM_REPORT_LIST_HEADER,
@@ -58,17 +62,21 @@ def do_logic_that_merge_list(append_sheet: bool) -> None:
     return None
 
 
-def do_logic_that_merge_yearly_usr_tot_sum(append_sheet: bool) -> None:
+def do_logic_that_merge_yearly_usr_tot_sum(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告年間ユーザ全体概要マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告年間ユーザ全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
             const_util.FARM_REPORT_YEARLY_USR_TOT_SUM_FILE_PATH,
             const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
@@ -98,17 +106,21 @@ def do_logic_that_merge_yearly_usr_tot_sum(append_sheet: bool) -> None:
     return None
 
 
-def do_logic_that_merge_yearly_qst_tot_sum(append_sheet: bool) -> None:
+def do_logic_that_merge_yearly_qst_tot_sum(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告年間クエスト全体概要マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告年間クエスト全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
             const_util.FARM_REPORT_YEARLY_QST_TOT_SUM_FILE_PATH,
             const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
@@ -138,17 +150,21 @@ def do_logic_that_merge_yearly_qst_tot_sum(append_sheet: bool) -> None:
     return None
 
 
-def do_logic_that_merge_monthly_usr_tot_sum(append_sheet: bool) -> None:
+def do_logic_that_merge_monthly_usr_tot_sum(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告月間ユーザ全体概要マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告月間ユーザ全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_USER_TOTAL_SUMMARY,
             const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH,
             const_util.FARM_REPORT_USR_TOT_SUM_HEADER,
@@ -178,17 +194,21 @@ def do_logic_that_merge_monthly_usr_tot_sum(append_sheet: bool) -> None:
     return None
 
 
-def do_logic_that_merge_monthly_qst_tot_sum(append_sheet: bool) -> None:
+def do_logic_that_merge_monthly_qst_tot_sum(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告月間クエスト全体概要マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告月間クエスト全体概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY,
             const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH,
             const_util.FARM_REPORT_QST_TOT_SUM_HEADER,
@@ -218,17 +238,21 @@ def do_logic_that_merge_monthly_qst_tot_sum(append_sheet: bool) -> None:
     return None
 
 
-def do_logic_that_merge_ind_sum(append_sheet: bool) -> None:
+def do_logic_that_merge_ind_sum(
+    use_debug_mode: bool,
+    append_sheet: bool,
+) -> None:
     """ロジック(周回報告個人概要マージ)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告個人概要マージを開始します。")
 
         __do_logic_that_merge_gen_result(
+            use_debug_mode,
             EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY,
             const_util.FARM_REPORT_IND_SUM_FILE_PATH,
             const_util.FARM_REPORT_IND_SUM_HEADER,
@@ -254,6 +278,7 @@ def do_logic_that_merge_ind_sum(append_sheet: bool) -> None:
 
 
 def __do_logic_that_merge_gen_result(
+    use_debug_mode: bool,
     enum_of_proc: EnumOfProc,
     gen_result_file_path_format: str,
     gen_result_header: list[str],
@@ -270,7 +295,7 @@ def __do_logic_that_merge_gen_result(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告生成結果マージ(共通)を開始します。")
 
         # 周回報告生成結果ファイルパスの取得
@@ -287,6 +312,7 @@ def __do_logic_that_merge_gen_result(
         else:
             # Pandasによる周回報告マージ結果ファイルの生成
             __generate_merge_result_file_by_pandas(
+                use_debug_mode,
                 enum_of_proc,
                 gen_result_file_paths,
                 gen_result_header,
@@ -299,7 +325,7 @@ def __do_logic_that_merge_gen_result(
 
             # OpenPyXLによる周回報告マージ結果ファイルの編集
             __edit_merge_result_file_by_openpyxl(
-                merge_result_file_path, merge_result_ranges_to_merge_cells
+                use_debug_mode, merge_result_file_path, merge_result_ranges_to_merge_cells
             )
 
             clg.log_inf(f"周回報告マージ結果ファイルパス：{merge_result_file_path}")
@@ -313,6 +339,7 @@ def __do_logic_that_merge_gen_result(
 
 
 def __generate_merge_result_file_by_pandas(
+    use_debug_mode: bool,
     enum_of_proc: EnumOfProc,
     gen_result_file_paths: list[str],
     gen_result_header: list[str],
@@ -328,7 +355,7 @@ def __generate_merge_result_file_by_pandas(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         excel_writer: Optional[pd.ExcelWriter] = None
         try:
@@ -356,36 +383,40 @@ def __generate_merge_result_file_by_pandas(
                 merge_result_header_part_sfs: list[
                     StyleFrame
                 ] = __generate_merge_result_header_part_sfs(
-                    merge_result_book_name, merge_result_sheet_name, gen_result_header
+                    use_debug_mode,
+                    merge_result_book_name,
+                    merge_result_sheet_name,
+                    gen_result_header,
                 )
 
                 # 周回報告生成結果データフレームの取得
                 gen_result_df: pd.DataFrame = pd.DataFrame()
                 if enum_of_proc == EnumOfProc.GENERATE_LIST:
                     gen_result_df = pandas_util.read_farm_report_list_file(
-                        gen_result_file_path, True, True
+                        use_debug_mode, gen_result_file_path, True, True
                     )
                 elif enum_of_proc == EnumOfProc.GENERATE_USER_TOTAL_SUMMARY:
                     gen_result_df = pandas_util.read_farm_report_usr_tot_sum_file(
-                        gen_result_file_path, True, True
+                        use_debug_mode, gen_result_file_path, True, True
                     )
                 elif enum_of_proc == EnumOfProc.GENERATE_QUEST_TOTAL_SUMMARY:
                     gen_result_df = pandas_util.read_farm_report_qst_tot_sum_file(
-                        gen_result_file_path, True, True
+                        use_debug_mode, gen_result_file_path, True, True
                     )
                 elif enum_of_proc == EnumOfProc.GENERATE_INDIVIDUAL_SUMMARY:
                     gen_result_df = pandas_util.read_farm_report_ind_sum_file(
-                        gen_result_file_path, True, True
+                        use_debug_mode, gen_result_file_path, True, True
                     )
 
                 # 周回報告生成結果データフレームへの書式設定の適用
                 # (周回報告マージ結果データ部スタイルフレームの生成)
                 merge_result_data_part_sf: StyleFrame = __apply_formatting_to_gen_result(
-                    gen_result_df, merge_result_column_widths
+                    use_debug_mode, gen_result_df, merge_result_column_widths
                 )
 
                 # 周回報告マージ結果スタイルフレームの保存
                 pandas_util.save_farm_report_merge_result_sf(
+                    use_debug_mode,
                     merge_result_header_part_sfs,
                     merge_result_data_part_sf,
                     excel_writer,
@@ -405,7 +436,10 @@ def __generate_merge_result_file_by_pandas(
 
 
 def __generate_merge_result_header_part_sfs(
-    merge_result_book_name: str, merge_result_sheet_name: str, gen_result_header: list[str]
+    use_debug_mode: bool,
+    merge_result_book_name: str,
+    merge_result_sheet_name: str,
+    gen_result_header: list[str],
 ) -> list[StyleFrame]:
     """周回報告マージ結果ヘッダ部スタイルフレーム生成"""
 
@@ -427,7 +461,7 @@ def __generate_merge_result_header_part_sfs(
 
     # 周回報告マージ結果ヘッダ部01の書式設定の適用
     merge_result_header_part_01_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
-        merge_result_header_part_01_df, is_update_datetime_col=False
+        use_debug_mode, merge_result_header_part_01_df, is_update_datetime_col=False
     )
 
     # 更新日時の取得
@@ -443,7 +477,7 @@ def __generate_merge_result_header_part_sfs(
 
     # 周回報告マージ結果ヘッダ部02の書式設定の適用
     merge_result_header_part_02_sf: StyleFrame = __apply_formatting_to_merge_result_header_part(
-        merge_result_header_part_02_df, is_update_datetime_col=True
+        use_debug_mode, merge_result_header_part_02_df, is_update_datetime_col=True
     )
 
     # 周回報告マージ結果ヘッダ部スタイルフレームへの追加
@@ -454,6 +488,7 @@ def __generate_merge_result_header_part_sfs(
 
 
 def __apply_formatting_to_merge_result_header_part(
+    use_debug_mode: bool,
     merge_result_header_part_df: pd.DataFrame,
     merge_result_column_widths: dict[str, Union[int, float]] = {},
     is_update_datetime_col: bool = False,
@@ -491,7 +526,9 @@ def __apply_formatting_to_merge_result_header_part(
 
 
 def __apply_formatting_to_gen_result(
-    gen_result_df: pd.DataFrame, merge_result_column_widths: dict[str, Union[int, float]] = {}
+    use_debug_mode: bool,
+    gen_result_df: pd.DataFrame,
+    merge_result_column_widths: dict[str, Union[int, float]] = {},
 ) -> StyleFrame:
     """書式設定適用(生成結果)"""
 
@@ -540,7 +577,9 @@ def __apply_formatting_to_gen_result(
 
 
 def __edit_merge_result_file_by_openpyxl(
-    merge_result_file_path: str, merge_result_ranges_to_merge_cells: list[str]
+    use_debug_mode: bool,
+    merge_result_file_path: str,
+    merge_result_ranges_to_merge_cells: list[str],
 ) -> None:
     """周回報告マージ結果ファイル編集(OpenPyXL)"""
 
@@ -548,7 +587,7 @@ def __edit_merge_result_file_by_openpyxl(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         merge_result_wb: Optional[openpyxl.Workbook] = None
         try:

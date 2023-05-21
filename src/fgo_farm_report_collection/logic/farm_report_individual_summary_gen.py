@@ -8,14 +8,19 @@ from fgo_farm_report_collection.logic import farm_report_list_gen
 from fgo_farm_report_collection.util import const_util, pandas_util
 
 
-def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
+def do_logic(
+    use_debug_mode: bool,
+    col_year: str,
+    user_id: str,
+    generate_list: bool,
+) -> None:
     """ロジック実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告個人概要生成を開始します。")
 
         # Pandasオプション設定
@@ -60,7 +65,11 @@ def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
             ] = col_year_month
             if update_ind_sum is True:
                 __update_farm_report_ind_sum_df(
-                    farm_report_list_file_path, user_id, farm_report_ind_sum_df, index
+                    use_debug_mode,
+                    farm_report_list_file_path,
+                    user_id,
+                    farm_report_ind_sum_df,
+                    index,
                 )
 
         # 周回報告個人概要ファイルパスの生成
@@ -70,7 +79,7 @@ def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
 
         # 周回報告個人概要データフレームの保存
         pandas_util.save_farm_report_ind_sum_df(
-            farm_report_ind_sum_df, farm_report_ind_sum_file_path
+            use_debug_mode, farm_report_ind_sum_df, farm_report_ind_sum_file_path
         )
     except Exception as e:
         raise (e)
@@ -82,7 +91,11 @@ def do_logic(col_year: str, user_id: str, generate_list: bool) -> None:
 
 
 def __update_farm_report_ind_sum_df(
-    farm_report_list_file_path: str, user_id: str, farm_report_ind_sum_df: pd.DataFrame, index: int
+    use_debug_mode: bool,
+    farm_report_list_file_path: str,
+    user_id: str,
+    farm_report_ind_sum_df: pd.DataFrame,
+    index: int,
 ) -> None:
     """周回報告個人概要データフレーム更新"""
 
@@ -90,11 +103,11 @@ def __update_farm_report_ind_sum_df(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
-            farm_report_list_file_path
+            use_debug_mode, farm_report_list_file_path
         )
 
         # ユーザID、クエスト種別による抽出

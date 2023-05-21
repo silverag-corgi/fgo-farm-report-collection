@@ -27,13 +27,15 @@ def generate_farm_report_individual_summary(arg_namespace: argparse.Namespace) -
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
-
-        # 引数の検証
+        # 引数の取得
         arg: argument.FarmReportIndividualSummaryArg = argument.FarmReportIndividualSummaryArg(
             arg_namespace
         )
+
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
+
+        # 引数の検証
         __validate_arg(arg)
 
         # ロジック(周回報告個人概要生成)の実行
@@ -42,7 +44,8 @@ def generate_farm_report_individual_summary(arg_namespace: argparse.Namespace) -
         )(
             arg.col_year,
             arg.user_id,
-            arg.generate_list,
+            generate_list=arg.generate_list,
+            use_debug_mode=arg.use_debug_mode,
         )
     except Exception as e:
         raise (e)
@@ -57,7 +60,7 @@ def __validate_arg(arg: argument.FarmReportIndividualSummaryArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:

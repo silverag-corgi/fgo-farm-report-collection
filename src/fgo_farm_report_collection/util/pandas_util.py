@@ -8,6 +8,7 @@ from fgo_farm_report_collection.util import const_util
 
 
 def save_farm_report_list_df(
+    use_debug_mode: bool,
     farm_report_list_df: pd.DataFrame,
     farm_report_list_file_path: str,
     has_farm_report_list: bool,
@@ -18,7 +19,7 @@ def save_farm_report_list_df(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # インデックスのリセット
         farm_report_list_df.reset_index(drop=True)
@@ -43,6 +44,7 @@ def save_farm_report_list_df(
 
 
 def read_farm_report_list_file(
+    use_debug_mode: bool,
     farm_report_list_file_path: str,
     reset_index_from_one: bool = False,
     move_index_to_column: bool = False,
@@ -73,7 +75,9 @@ def read_farm_report_list_file(
 
 
 def save_farm_report_usr_tot_sum_df(
-    farm_report_usr_tot_sum_df: pd.DataFrame, farm_report_usr_tot_sum_file_path: str
+    use_debug_mode: bool,
+    farm_report_usr_tot_sum_df: pd.DataFrame,
+    farm_report_usr_tot_sum_file_path: str,
 ) -> None:
     """周回報告ユーザ全体概要データフレーム保存"""
 
@@ -81,7 +85,7 @@ def save_farm_report_usr_tot_sum_df(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # インデックスのリセット
         farm_report_usr_tot_sum_df.reset_index(inplace=True)
@@ -106,6 +110,7 @@ def save_farm_report_usr_tot_sum_df(
 
 
 def read_farm_report_usr_tot_sum_file(
+    use_debug_mode: bool,
     farm_report_usr_tot_sum_file_path: str,
     reset_index_from_one: bool = False,
     move_index_to_column: bool = False,
@@ -135,7 +140,9 @@ def read_farm_report_usr_tot_sum_file(
 
 
 def save_farm_report_qst_tot_sum_df(
-    farm_report_qst_tot_sum_df: pd.DataFrame, farm_report_qst_tot_sum_file_path: str
+    use_debug_mode: bool,
+    farm_report_qst_tot_sum_df: pd.DataFrame,
+    farm_report_qst_tot_sum_file_path: str,
 ) -> None:
     """周回報告クエスト全体概要データフレーム保存"""
 
@@ -143,7 +150,7 @@ def save_farm_report_qst_tot_sum_df(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # インデックスのリセット
         farm_report_qst_tot_sum_df.reset_index(inplace=True)
@@ -168,6 +175,7 @@ def save_farm_report_qst_tot_sum_df(
 
 
 def read_farm_report_qst_tot_sum_file(
+    use_debug_mode: bool,
     farm_report_qst_tot_sum_file_path: str,
     reset_index_from_one: bool = False,
     move_index_to_column: bool = False,
@@ -197,7 +205,9 @@ def read_farm_report_qst_tot_sum_file(
 
 
 def save_farm_report_ind_sum_df(
-    farm_report_ind_sum_df: pd.DataFrame, farm_report_ind_sum_file_path: str
+    use_debug_mode: bool,
+    farm_report_ind_sum_df: pd.DataFrame,
+    farm_report_ind_sum_file_path: str,
 ) -> None:
     """周回報告個人概要データフレーム保存"""
 
@@ -205,7 +215,7 @@ def save_farm_report_ind_sum_df(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 周回報告全体概要データフレームのログ出力
         clg.log_inf(f"周回報告個人概要：\n{farm_report_ind_sum_df}")
@@ -226,6 +236,7 @@ def save_farm_report_ind_sum_df(
 
 
 def read_farm_report_ind_sum_file(
+    use_debug_mode: bool,
     farm_report_ind_sum_file_path: str,
     reset_index_from_one: bool = False,
     move_index_to_column: bool = False,
@@ -255,6 +266,7 @@ def read_farm_report_ind_sum_file(
 
 
 def save_farm_report_merge_result_sf(
+    use_debug_mode: bool,
     merge_result_header_part_sfs: list[StyleFrame],
     merge_result_data_part_sf: StyleFrame,
     excel_writer: Optional[pd.ExcelWriter],
@@ -268,7 +280,7 @@ def save_farm_report_merge_result_sf(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         if excel_writer is not None:
             # 周回報告マージ結果ヘッダ部スタイルフレームの保存

@@ -11,14 +11,17 @@ from requests import Response
 from fgo_farm_report_collection.util import const_util, pandas_util
 
 
-def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
+def do_logic_that_generate_list_by_col_year(
+    use_debug_mode: bool,
+    col_year: str,
+) -> None:
     """ロジック(周回報告一覧生成(年指定))実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告一覧生成(年指定)を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
@@ -26,7 +29,7 @@ def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
             col_year_month: str = f"{col_year:04}-{(index+1):02}"
 
             # 周回報告一覧生成ロジックの実行
-            do_logic_that_generate_list_by_col_year_month(col_year_month)
+            do_logic_that_generate_list_by_col_year_month(use_debug_mode, col_year_month)
     except Exception as e:
         raise (e)
     finally:
@@ -36,14 +39,17 @@ def do_logic_that_generate_list_by_col_year(col_year: str) -> None:
     return None
 
 
-def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
+def do_logic_that_generate_list_by_col_year_month(
+    use_debug_mode: bool,
+    col_year_month: str,
+) -> None:
     """ロジック(周回報告一覧生成(年月指定))実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告一覧生成(年月指定)を開始します。")
 
         # Pandasオプション設定
@@ -66,12 +72,12 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
 
             # 周回報告一覧生成開始日付の設定
             list_gen_start_date: Optional[date] = __generate_list_gen_start_date(
-                has_farm_report_list, farm_report_list_file_path, col_first_date
+                use_debug_mode, has_farm_report_list, farm_report_list_file_path, col_first_date
             )
 
             # 周回報告一覧生成終了日付の設定
             list_gen_end_date: Optional[date] = __generate_list_gen_end_date(
-                list_gen_start_date, col_first_date, first_date_of_this_month, today
+                use_debug_mode, list_gen_start_date, col_first_date, first_date_of_this_month, today
             )
 
             # 周回報告一覧生成要否の判定
@@ -92,6 +98,7 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
             # 周回報告一覧ファイルの生成
             if generate_list is True:
                 __generate_farm_report_list_file(
+                    use_debug_mode,
                     list_gen_start_date,
                     list_gen_end_date,
                     farm_report_list_file_path,
@@ -107,7 +114,10 @@ def do_logic_that_generate_list_by_col_year_month(col_year_month: str) -> None:
 
 
 def __generate_list_gen_start_date(
-    has_farm_report_list: bool, farm_report_list_file_path: str, col_first_date: date
+    use_debug_mode: bool,
+    has_farm_report_list: bool,
+    farm_report_list_file_path: str,
+    col_first_date: date,
 ) -> Optional[date]:
     """周回報告一覧生成開始日付生成"""
 
@@ -115,7 +125,7 @@ def __generate_list_gen_start_date(
         list_gen_start_date: Optional[date] = None
         if has_farm_report_list is True:
             farm_report_list_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
-                farm_report_list_file_path
+                use_debug_mode, farm_report_list_file_path
             )
 
             post_datetime_of_last_line_timestamp: pd.Timestamp = (
@@ -140,6 +150,7 @@ def __generate_list_gen_start_date(
 
 
 def __generate_list_gen_end_date(
+    use_debug_mode: bool,
     list_gen_start_date: Optional[date],
     col_first_date: date,
     first_date_of_this_month: date,
@@ -160,6 +171,7 @@ def __generate_list_gen_end_date(
 
 
 def __generate_farm_report_list_file(
+    use_debug_mode: bool,
     list_gen_start_date: Optional[date],
     list_gen_end_date: Optional[date],
     farm_report_list_file_path: str,
@@ -171,7 +183,7 @@ def __generate_farm_report_list_file(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 周回報告一覧データフレームの初期化
         farm_report_list_df: pd.DataFrame = pd.DataFrame(columns=const_util.FARM_REPORT_LIST_HEADER)
@@ -234,7 +246,10 @@ def __generate_farm_report_list_file(
         # 周回報告一覧データフレームの保存
         if len(farm_report_list_df) > 0:
             pandas_util.save_farm_report_list_df(
-                farm_report_list_df, farm_report_list_file_path, has_farm_report_list
+                use_debug_mode,
+                farm_report_list_df,
+                farm_report_list_file_path,
+                has_farm_report_list,
             )
     except Exception as e:
         raise (e)

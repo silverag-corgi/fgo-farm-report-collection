@@ -23,6 +23,7 @@ class EnumOfProc(IntEnum):
 
 
 def do_logic_that_generate_yearly_tot_sum_by_col_year(
+    use_debug_mode: bool,
     col_year: str,
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
@@ -35,7 +36,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告年間全体概要生成(年指定)を開始します。")
 
         # 収集年月の生成
@@ -45,7 +46,13 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
 
         # ロジック(周回報告全体概要生成(共通))の実行
         __do_logic_that_generate_tot_sum(
-            col_year, col_year_months, enum_of_proc, min_num_of_farms, quest_kinds, output_user_name
+            use_debug_mode,
+            col_year,
+            col_year_months,
+            enum_of_proc,
+            min_num_of_farms,
+            quest_kinds,
+            output_user_name,
         )
     except Exception as e:
         raise (e)
@@ -57,6 +64,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
 
 
 def do_logic_that_generate_monthly_tot_sum_by_col_year(
+    use_debug_mode: bool,
     col_year: str,
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
@@ -69,7 +77,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告月間全体概要生成(年指定)を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
@@ -78,6 +86,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
 
             # ロジック(周回報告全体概要生成(共通))の実行
             __do_logic_that_generate_tot_sum(
+                use_debug_mode,
                 col_year_month,
                 [col_year_month],
                 enum_of_proc,
@@ -95,6 +104,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
 
 
 def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
+    use_debug_mode: bool,
     col_year_month: str,
     enum_of_proc: EnumOfProc,
     min_num_of_farms: int,
@@ -107,11 +117,12 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告月間全体概要生成(年月指定)を開始します。")
 
         # ロジック(周回報告全体概要生成(共通))の実行
         __do_logic_that_generate_tot_sum(
+            use_debug_mode,
             col_year_month,
             [col_year_month],
             enum_of_proc,
@@ -129,6 +140,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
 
 
 def __do_logic_that_generate_tot_sum(
+    use_debug_mode: bool,
     col_year_month_for_file_path: str,
     col_year_months: list[str],
     enum_of_proc: EnumOfProc,
@@ -142,7 +154,7 @@ def __do_logic_that_generate_tot_sum(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"周回報告全体概要生成(共通)を開始します。")
 
         # Pandasオプション設定
@@ -198,6 +210,7 @@ def __do_logic_that_generate_tot_sum(
             # 周回報告全体概要ファイルの生成
             if enum_of_proc == EnumOfProc.GENERATE_YEARLY_USER_TOTAL_SUMMARY:
                 __generate_farm_report_usr_tot_sum_file(
+                    use_debug_mode,
                     farm_report_list_file_paths,
                     quest_kind,
                     min_num_of_farms,
@@ -206,6 +219,7 @@ def __do_logic_that_generate_tot_sum(
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_YEARLY_QUEST_TOTAL_SUMMARY:
                 __generate_farm_report_qst_tot_sum_file(
+                    use_debug_mode,
                     farm_report_list_file_paths,
                     quest_kind,
                     min_num_of_farms,
@@ -213,6 +227,7 @@ def __do_logic_that_generate_tot_sum(
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_MONTHLY_USER_TOTAL_SUMMARY:
                 __generate_farm_report_usr_tot_sum_file(
+                    use_debug_mode,
                     farm_report_list_file_paths,
                     quest_kind,
                     min_num_of_farms,
@@ -221,6 +236,7 @@ def __do_logic_that_generate_tot_sum(
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_MONTHLY_QUEST_TOTAL_SUMMARY:
                 __generate_farm_report_qst_tot_sum_file(
+                    use_debug_mode,
                     farm_report_list_file_paths,
                     quest_kind,
                     min_num_of_farms,
@@ -236,6 +252,7 @@ def __do_logic_that_generate_tot_sum(
 
 
 def __generate_farm_report_usr_tot_sum_file(
+    use_debug_mode: bool,
     farm_report_list_file_paths: list[str],
     quest_kind: str,
     min_num_of_farms: int,
@@ -248,7 +265,7 @@ def __generate_farm_report_usr_tot_sum_file(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
@@ -259,7 +276,7 @@ def __generate_farm_report_usr_tot_sum_file(
                 )
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
-                    farm_report_list_file_path
+                    use_debug_mode, farm_report_list_file_path
                 )
                 farm_report_list_df = pd.concat(
                     [farm_report_list_df, farm_report_list_temp_df], ignore_index=True
@@ -353,7 +370,7 @@ def __generate_farm_report_usr_tot_sum_file(
 
             # 周回報告ユーザ全体概要データフレームの保存
             pandas_util.save_farm_report_usr_tot_sum_df(
-                farm_report_tot_sum_df, farm_report_tot_sum_file_path
+                use_debug_mode, farm_report_tot_sum_df, farm_report_tot_sum_file_path
             )
     except Exception as e:
         raise (e)
@@ -362,6 +379,7 @@ def __generate_farm_report_usr_tot_sum_file(
 
 
 def __generate_farm_report_qst_tot_sum_file(
+    use_debug_mode: bool,
     farm_report_list_file_paths: list[str],
     quest_kind: str,
     min_num_of_farms: int,
@@ -373,7 +391,7 @@ def __generate_farm_report_qst_tot_sum_file(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 周回報告一覧データフレームの取得(周回報告一覧ファイルの読み込み)
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
@@ -385,7 +403,7 @@ def __generate_farm_report_qst_tot_sum_file(
                 )
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
-                    farm_report_list_file_path
+                    use_debug_mode, farm_report_list_file_path
                 )
                 farm_report_list_df = pd.concat(
                     [farm_report_list_df, farm_report_list_temp_df], ignore_index=True
@@ -454,7 +472,7 @@ def __generate_farm_report_qst_tot_sum_file(
 
             # 周回報告クエスト全体概要データフレームの保存
             pandas_util.save_farm_report_qst_tot_sum_df(
-                farm_report_tot_sum_df, farm_report_tot_sum_file_path
+                use_debug_mode, farm_report_tot_sum_df, farm_report_tot_sum_file_path
             )
     except Exception as e:
         raise (e)

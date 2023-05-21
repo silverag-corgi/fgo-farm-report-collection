@@ -28,11 +28,13 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
     clg: Optional[pyl.CustomLogger] = None
 
     try:
+        # 引数の取得
+        arg: argument.FarmReportTotalSummaryArg = argument.FarmReportTotalSummaryArg(arg_namespace)
+
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数の検証
-        arg: argument.FarmReportTotalSummaryArg = argument.FarmReportTotalSummaryArg(arg_namespace)
         __validate_arg(arg)
 
         # ロジック(周回報告一覧生成)の実行
@@ -41,12 +43,14 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
                 pyl.measure_proc_time(
                     farm_report_list_gen.do_logic_that_generate_list_by_col_year,
                 )(
+                    arg.use_debug_mode,
                     arg.col_year,
                 )
             elif arg.col_year_month is not None:
                 pyl.measure_proc_time(
                     farm_report_list_gen.do_logic_that_generate_list_by_col_year_month,
                 )(
+                    arg.use_debug_mode,
                     arg.col_year_month,
                 )
 
@@ -79,6 +83,7 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
         # ロジック(周回報告全体概要生成)の実行
         if function_object is not None:
             pyl.measure_proc_time(function_object)(
+                (arg.use_debug_mode),
                 (arg.col_year if arg.col_year is not None else arg.col_year_month),
                 (
                     (farm_report_total_summary_gen).EnumOfProc.GENERATE_YEARLY_USER_TOTAL_SUMMARY
@@ -113,7 +118,7 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
                     if arg.min_num_of_event_quest is not None
                     else const_util.QUEST_KINDS
                 ),
-                arg.output_user_name,
+                (arg.output_user_name),
             )
     except Exception as e:
         raise (e)
@@ -128,7 +133,7 @@ def __validate_arg(arg: argument.FarmReportTotalSummaryArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:
