@@ -22,7 +22,7 @@ def do_logic_that_generate_list_by_col_year(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告一覧生成(年指定)を開始します。")
+        clg.log_inf(f"ロジック(周回報告一覧生成(年指定))実行を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
@@ -34,7 +34,7 @@ def do_logic_that_generate_list_by_col_year(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告一覧生成(年指定)を終了します。")
+            clg.log_inf(f"ロジック(周回報告一覧生成(年指定))実行を終了します。")
 
     return None
 
@@ -50,7 +50,7 @@ def do_logic_that_generate_list_by_col_year_month(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告一覧生成(年月指定)を開始します。")
+        clg.log_inf(f"ロジック(周回報告一覧生成(年月指定))実行を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -108,7 +108,7 @@ def do_logic_that_generate_list_by_col_year_month(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告一覧生成(年月指定)を終了します。")
+            clg.log_inf(f"ロジック(周回報告一覧生成(年月指定))実行を終了します。")
 
     return None
 

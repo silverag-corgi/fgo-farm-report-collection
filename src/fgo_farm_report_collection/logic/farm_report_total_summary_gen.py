@@ -37,7 +37,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告年間全体概要生成(年指定)を開始します。")
+        clg.log_inf(f"ロジック(周回報告年間全体概要生成(年指定))実行を開始します。")
 
         # 収集年月の生成
         col_year_months: list[str] = [
@@ -58,7 +58,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告年間全体概要生成(年指定)を終了します。")
+            clg.log_inf(f"ロジック(周回報告年間全体概要生成(年指定))実行を終了します。")
 
     return None
 
@@ -78,7 +78,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告月間全体概要生成(年指定)を開始します。")
+        clg.log_inf(f"ロジック(周回報告月間全体概要生成(年指定))実行を開始します。")
 
         for index in range(const_util.NUM_OF_MONTHS):
             # 収集年月の生成
@@ -98,7 +98,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告月間全体概要生成(年指定)を終了します。")
+            clg.log_inf(f"ロジック(周回報告月間全体概要生成(年指定))実行を終了します。")
 
     return None
 
@@ -118,7 +118,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告月間全体概要生成(年月指定)を開始します。")
+        clg.log_inf(f"ロジック(周回報告月間全体概要生成(年月指定))実行を開始します。")
 
         # ロジック(周回報告全体概要生成(共通))の実行
         __do_logic_that_generate_tot_sum(
@@ -134,7 +134,7 @@ def do_logic_that_generate_monthly_tot_sum_by_col_year_month(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告月間全体概要生成(年月指定)を終了します。")
+            clg.log_inf(f"ロジック(周回報告月間全体概要生成(年月指定))実行を終了します。")
 
     return None
 
@@ -155,7 +155,6 @@ def __do_logic_that_generate_tot_sum(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告全体概要生成(共通)を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -244,9 +243,6 @@ def __do_logic_that_generate_tot_sum(
                 )
     except Exception as e:
         raise (e)
-    finally:
-        if clg is not None:
-            clg.log_inf(f"周回報告全体概要生成(共通)を終了します。")
 
     return None
 

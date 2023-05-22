@@ -33,6 +33,7 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
 
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
+        clg.log_inf(f"周回報告全体概要生成を開始します。")
 
         # 引数の検証
         __validate_arg(arg)
@@ -122,6 +123,9 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
             )
     except Exception as e:
         raise (e)
+    finally:
+        if clg is not None:
+            clg.log_inf(f"周回報告全体概要生成を終了します。")
 
     return None
 

@@ -8,20 +8,20 @@ from fgo_farm_report_collection.logic import farm_report_list_gen
 from fgo_farm_report_collection.util import const_util, pandas_util
 
 
-def do_logic(
+def do_logic_that_generate_ind_sum(
     use_debug_mode: bool,
     col_year: str,
     user_id: str,
     generate_list: bool,
 ) -> None:
-    """ロジック実行"""
+    """ロジック(周回報告個人概要生成)実行"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"周回報告個人概要生成を開始します。")
+        clg.log_inf(f"ロジック(周回報告個人概要生成)実行を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -85,7 +85,7 @@ def do_logic(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"周回報告個人概要生成を終了します。")
+            clg.log_inf(f"ロジック(周回報告個人概要生成)実行を終了します。")
 
     return None
 

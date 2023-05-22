@@ -30,6 +30,7 @@ def generate_farm_report_list(arg_namespace: argparse.Namespace) -> None:
 
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
+        clg.log_inf(f"周回報告一覧生成を開始します。")
 
         # 引数の検証
         __validate_arg(arg)
@@ -51,6 +52,9 @@ def generate_farm_report_list(arg_namespace: argparse.Namespace) -> None:
             )
     except Exception as e:
         raise (e)
+    finally:
+        if clg is not None:
+            clg.log_inf(f"周回報告一覧生成(年指定)を終了します。")
 
     return None
 

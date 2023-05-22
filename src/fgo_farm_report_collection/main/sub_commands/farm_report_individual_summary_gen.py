@@ -34,13 +34,14 @@ def generate_farm_report_individual_summary(arg_namespace: argparse.Namespace) -
 
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
+        clg.log_inf(f"周回報告個人概要生成を開始します。")
 
         # 引数の検証
         __validate_arg(arg)
 
         # ロジック(周回報告個人概要生成)の実行
         pyl.measure_proc_time(
-            farm_report_individual_summary_gen.do_logic,
+            farm_report_individual_summary_gen.do_logic_that_generate_ind_sum,
         )(
             arg.col_year,
             arg.user_id,
@@ -49,6 +50,9 @@ def generate_farm_report_individual_summary(arg_namespace: argparse.Namespace) -
         )
     except Exception as e:
         raise (e)
+    finally:
+        if clg is not None:
+            clg.log_inf(f"周回報告個人概要生成を終了します。")
 
     return None
 
