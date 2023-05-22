@@ -172,7 +172,7 @@ def __do_logic_that_generate_tot_sum(
 
             # 周回報告一覧ファイルパスの追加
             if first_date_of_col_year_month > first_date_of_this_month:
-                clg.log_inf(f"収集年月が未来です。(col_year_month:{col_year_month})")
+                clg.log_wrn(f"収集年月が未来です。(col_year_month:{col_year_month})")
             else:
                 farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
                     col_year_month
@@ -271,7 +271,7 @@ def __generate_farm_report_usr_tot_sum_file(
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
         for farm_report_list_file_path in farm_report_list_file_paths:
             if os.path.isfile(farm_report_list_file_path) is False:
-                clg.log_inf(
+                clg.log_wrn(
                     f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
                 )
             else:
@@ -398,7 +398,7 @@ def __generate_farm_report_qst_tot_sum_file(
         for farm_report_list_file_path in farm_report_list_file_paths:
             # 周回報告一覧ファイルの存在確認
             if os.path.isfile(farm_report_list_file_path) is False:
-                clg.log_inf(
+                clg.log_wrn(
                     f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
                 )
             else:

@@ -60,7 +60,7 @@ def do_logic_that_generate_list_by_col_year_month(
         col_first_date: date = datetime.strptime(col_year_month + "-01", "%Y-%m-%d").date()
         first_date_of_this_month: date = pyl.get_first_date_of_this_month(today)
         if col_first_date > first_date_of_this_month:
-            clg.log_inf(f"収集年月が未来です。(col_year_month:{col_year_month})")
+            clg.log_wrn(f"収集年月が未来です。(col_year_month:{col_year_month})")
         else:
             # 周回報告一覧ファイルパスの生成
             farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
@@ -194,7 +194,7 @@ def __generate_farm_report_list_file(
             for list_gen_date in pyl.gen_date_range(list_gen_start_date, list_gen_end_date):
                 # 周回報告サイトURLの生成
                 farm_report_site_url: str = const_util.FARM_REPORT_SITE_URL.format(list_gen_date)
-                clg.log_inf(f"周回報告サイトURL：{farm_report_site_url}")
+                clg.log_dbg(f"周回報告サイトURL：{farm_report_site_url}")
 
                 # 周回報告サイトからの周回報告の取得
                 farm_report_site_response: Response = requests.get(farm_report_site_url)
