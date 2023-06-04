@@ -35,32 +35,32 @@ def merge_farm_report_gen_result(arg_namespace: argparse.Namespace) -> None:
         __validate_arg(arg)
 
         # ロジック(周回報告生成結果マージ)の実行
-        if bool(arg.merge_list) is True:
+        if arg.merge_list is True:
             farm_report_gen_result_merge.do_logic_that_merge_list(
                 arg.use_debug_mode,
                 arg.append_sheet,
             )
-        elif bool(arg.merge_yearly_user_total_summary) is True:
+        elif arg.merge_yearly_user_total_summary is True:
             farm_report_gen_result_merge.do_logic_that_merge_yearly_usr_tot_sum(
                 arg.use_debug_mode,
                 arg.append_sheet,
             )
-        elif bool(arg.merge_yearly_quest_total_summary) is True:
+        elif arg.merge_yearly_quest_total_summary is True:
             farm_report_gen_result_merge.do_logic_that_merge_yearly_qst_tot_sum(
                 arg.use_debug_mode,
                 arg.append_sheet,
             )
-        elif bool(arg.merge_monthly_user_total_summary) is True:
+        elif arg.merge_monthly_user_total_summary is True:
             farm_report_gen_result_merge.do_logic_that_merge_monthly_usr_tot_sum(
                 arg.use_debug_mode,
                 arg.append_sheet,
             )
-        elif bool(arg.merge_monthly_quest_total_summary) is True:
+        elif arg.merge_monthly_quest_total_summary is True:
             farm_report_gen_result_merge.do_logic_that_merge_monthly_qst_tot_sum(
                 arg.use_debug_mode,
                 arg.append_sheet,
             )
-        elif bool(arg.merge_individual_summary) is True:
+        elif arg.merge_individual_summary is True:
             farm_report_gen_result_merge.do_logic_that_merge_ind_sum(
                 arg.use_debug_mode,
                 arg.append_sheet,
