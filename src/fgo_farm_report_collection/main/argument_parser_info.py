@@ -9,6 +9,95 @@ from fgo_farm_report_collection.main.sub_commands import (
     farm_report_total_summary_gen,
 )
 
+DESC_OF_GEN_LIST: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - 周回報告一覧生成
+    - 概要
+        - 周回報告一覧ファイルを生成します
+    - 生成ファイル
+        - 周回報告一覧ファイル
+            - ./dest/farm_report_list/[収集年月].csv
+    - コマンド例
+        - poetry run fgo gen-list -y 2021
+        - poetry run fgo gen-list -m 2021-01
+    """
+)
+
+DESC_OF_GEN_TOT: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - 周回報告全体概要生成
+    - 概要
+        - 事前に任意で周回報告一覧ファイルを生成します
+        - 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
+    - 生成ファイル
+        - 周回報告一覧ファイル
+            - ./dest/farm_report_list/[収集年月].csv
+        - 周回報告年間ユーザ全体概要ファイル
+            - ./dest/farm_report_total_summary/yearly_user/[収集年]_[クエスト種別]_[最低周回数].csv
+        - 周回報告年間クエスト全体概要ファイル
+            - ./dest/farm_report_total_summary/yearly_quest/[収集年]_[クエスト種別]_[最低周回数].csv
+        - 周回報告月間ユーザ全体概要ファイル
+            - ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
+        - 周回報告月間クエスト全体概要ファイル
+            - ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
+    - コマンド例
+        - poetry run fgo gen-tot -y 2021 -yu -a 100 -u
+        - poetry run fgo gen-tot -y 2021 -yq -a 100
+        - poetry run fgo gen-tot -y 2021 -mu -a 100 -u
+        - poetry run fgo gen-tot -y 2021 -mq -a 100
+        - poetry run fgo gen-tot -m 2021-01 -mu -a 100 -u
+        - poetry run fgo gen-tot -m 2021-01 -mq -a 100
+    """
+)
+
+DESC_OF_GEN_IND: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - 周回報告個人概要生成
+    - 概要
+        - 事前に任意で周回報告一覧ファイルを生成します
+        - 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します
+    - 生成ファイル
+        - 周回報告一覧ファイル
+            - ./dest/farm_report_list/[収集年月].csv
+        - 周回報告個人概要ファイル
+            - ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
+    - コマンド例
+        - poetry run fgo gen-ind 2021 silverag_corgi
+    """
+)
+
+DESC_OF_MERGE: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - 周回報告生成結果マージ
+    - 概要
+        - 生成結果をExcelファイル(マージ結果ファイル)にマージします
+    - 生成ファイル
+        - 周回報告一覧マージ結果ファイル
+            - ./dest/merge_result/周回報告一覧.xlsx
+        - 周回報告年間ユーザ全体概要マージ結果ファイル
+            - ./dest/merge_result/周回報告年間ユーザ全体概要.xlsx
+        - 周回報告年間クエスト全体概要マージ結果ファイル
+            - ./dest/merge_result/周回報告年間クエスト全体概要.xlsx
+        - 周回報告月間ユーザ全体概要マージ結果ファイル
+            - ./dest/merge_result/周回報告ユーザ全体概要.xlsx
+        - 周回報告月間クエスト全体概要マージ結果ファイル
+            - ./dest/merge_result/周回報告クエスト全体概要.xlsx
+        - 周回報告個人概要マージ結果ファイル
+            - ./dest/merge_result/周回報告個人概要.xlsx
+    - コマンド例
+        - poetry run fgo merge -l
+        - poetry run fgo merge -yu
+        - poetry run fgo merge -yq
+        - poetry run fgo merge -mu
+        - poetry run fgo merge -mq
+        - poetry run fgo merge -i
+    """
+)
+
 ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
     "description": textwrap.dedent(
         """\
@@ -32,20 +121,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
         "commands": [
             {
                 "name": ["gen-list"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - 周回報告一覧生成
-                    - 概要
-                        - 周回報告一覧ファイルを生成します
-                    - 生成ファイル
-                        - 周回報告一覧ファイル
-                            - ./dest/farm_report_list/[収集年月].csv
-                    - コマンド例
-                        - poetry run fgo gen-list -y 2021
-                        - poetry run fgo gen-list -m 2021-01
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_GEN_LIST,
+                "description": DESC_OF_GEN_LIST,
                 "func": farm_report_list_gen.generate_farm_report_list,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -74,33 +151,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["gen-tot"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - 周回報告全体概要生成
-                    - 概要
-                        - 事前に任意で周回報告一覧ファイルを生成します
-                        - 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
-                    - 生成ファイル
-                        - 周回報告一覧ファイル
-                            - ./dest/farm_report_list/[収集年月].csv
-                        - 周回報告年間ユーザ全体概要ファイル
-                            - ./dest/farm_report_total_summary/yearly_user/[収集年]_[クエスト種別]_[最低周回数].csv
-                        - 周回報告年間クエスト全体概要ファイル
-                            - ./dest/farm_report_total_summary/yearly_quest/[収集年]_[クエスト種別]_[最低周回数].csv
-                        - 周回報告月間ユーザ全体概要ファイル
-                            - ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
-                        - 周回報告月間クエスト全体概要ファイル
-                            - ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
-                    - コマンド例
-                        - poetry run fgo gen-tot -y 2021 -yu -a 100 -u
-                        - poetry run fgo gen-tot -y 2021 -yq -a 100
-                        - poetry run fgo gen-tot -y 2021 -mu -a 100 -u
-                        - poetry run fgo gen-tot -y 2021 -mq -a 100
-                        - poetry run fgo gen-tot -m 2021-01 -mu -a 100 -u
-                        - poetry run fgo gen-tot -m 2021-01 -mq -a 100
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_GEN_TOT,
+                "description": DESC_OF_GEN_TOT,
                 "func": farm_report_total_summary_gen.generate_farm_report_total_summary,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -241,22 +293,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["gen-ind"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - 周回報告個人概要生成
-                    - 概要
-                        - 事前に任意で周回報告一覧ファイルを生成します
-                        - 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します
-                    - 生成ファイル
-                        - 周回報告一覧ファイル
-                            - ./dest/farm_report_list/[収集年月].csv
-                        - 周回報告個人概要ファイル
-                            - ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
-                    - コマンド例
-                        - poetry run fgo gen-ind 2021 silverag_corgi
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_GEN_IND,
+                "description": DESC_OF_GEN_IND,
                 "func": farm_report_individual_summary_gen.generate_farm_report_individual_summary,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -295,34 +333,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["merge"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - 周回報告生成結果マージ
-                    - 概要
-                        - 生成結果をExcelファイル(マージ結果ファイル)にマージします
-                    - 生成ファイル
-                        - 周回報告一覧マージ結果ファイル
-                            - ./dest/merge_result/周回報告一覧.xlsx
-                        - 周回報告年間ユーザ全体概要マージ結果ファイル
-                            - ./dest/merge_result/周回報告年間ユーザ全体概要.xlsx
-                        - 周回報告年間クエスト全体概要マージ結果ファイル
-                            - ./dest/merge_result/周回報告年間クエスト全体概要.xlsx
-                        - 周回報告月間ユーザ全体概要マージ結果ファイル
-                            - ./dest/merge_result/周回報告ユーザ全体概要.xlsx
-                        - 周回報告月間クエスト全体概要マージ結果ファイル
-                            - ./dest/merge_result/周回報告クエスト全体概要.xlsx
-                        - 周回報告個人概要マージ結果ファイル
-                            - ./dest/merge_result/周回報告個人概要.xlsx
-                    - コマンド例
-                        - poetry run fgo merge -l
-                        - poetry run fgo merge -yu
-                        - poetry run fgo merge -yq
-                        - poetry run fgo merge -mu
-                        - poetry run fgo merge -mq
-                        - poetry run fgo merge -i
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_MERGE,
+                "description": DESC_OF_MERGE,
                 "func": farm_report_gen_result_merge.merge_farm_report_gen_result,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
