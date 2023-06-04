@@ -4,6 +4,7 @@ from typing import Final
 
 from fgo_farm_report_collection.main.sub_commands import (
     farm_report_gen_result_merge,
+    farm_report_individual_summary_gen,
     farm_report_list_gen,
     farm_report_total_summary_gen,
 )
@@ -256,7 +257,7 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                         - poetry run fgo gen-ind 2021 silverag_corgi
                     """  # noqa: E501
                 ),
-                # "func": farm_report_list_gen.generate_farm_report_list,
+                "func": farm_report_individual_summary_gen.generate_farm_report_individual_summary,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
                     # グループA(必須)
