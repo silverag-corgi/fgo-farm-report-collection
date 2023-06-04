@@ -285,6 +285,17 @@ $ poetry run fgo gen-list -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: fgo gen-list [-h] [-y COL_YEAR | -m COL_YEAR_MONTH]
 
+- 機能名
+    - 周回報告一覧生成
+- 概要
+    - 周回報告一覧ファイルを生成します
+- 生成ファイル
+    - 周回報告一覧ファイル
+        - ./dest/farm_report_list/[収集年月].csv
+- コマンド例
+    - poetry run fgo gen-list -y 2021
+    - poetry run fgo gen-list -m 2021-01
+
 options:
   -h, --help            show this help message and exit
   -y COL_YEAR, --col_year COL_YEAR
@@ -328,6 +339,30 @@ $ poetry run fgo gen-tot -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: fgo gen-tot [-h] [-y COL_YEAR | -m COL_YEAR_MONTH] [-yu | -yq | -mu | -mq] [-a MIN_NUM_OF_ALL_QUEST | -n MIN_NUM_OF_NORMAL_QUEST | -e MIN_NUM_OF_EVENT_QUEST | -b MIN_NUM_OF_QUEST_BY_BATCH]
                    [-l] [-u]
+
+- 機能名
+    - 周回報告全体概要生成
+- 概要
+    - 事前に任意で周回報告一覧ファイルを生成します
+    - 周回報告一覧ファイルを基に周回報告全体概要ファイルを生成します
+- 生成ファイル
+    - 周回報告一覧ファイル
+        - ./dest/farm_report_list/[収集年月].csv
+    - 周回報告年間ユーザ全体概要ファイル
+        - ./dest/farm_report_total_summary/yearly_user/[収集年]_[クエスト種別]_[最低周回数].csv
+    - 周回報告年間クエスト全体概要ファイル
+        - ./dest/farm_report_total_summary/yearly_quest/[収集年]_[クエスト種別]_[最低周回数].csv
+    - 周回報告月間ユーザ全体概要ファイル
+        - ./dest/farm_report_total_summary/monthly_user/[収集年月]_[クエスト種別]_[最低周回数].csv
+    - 周回報告月間クエスト全体概要ファイル
+        - ./dest/farm_report_total_summary/monthly_quest/[収集年月]_[クエスト種別]_[最低周回数].csv
+- コマンド例
+    - poetry run fgo gen-tot -y 2021 -yu -a 100 -u
+    - poetry run fgo gen-tot -y 2021 -yq -a 100
+    - poetry run fgo gen-tot -y 2021 -mu -a 100 -u
+    - poetry run fgo gen-tot -y 2021 -mq -a 100
+    - poetry run fgo gen-tot -m 2021-01 -mu -a 100 -u
+    - poetry run fgo gen-tot -m 2021-01 -mq -a 100
 
 options:
   -h, --help            show this help message and exit
@@ -457,6 +492,19 @@ $ poetry run fgo gen-ind -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: fgo gen-ind [-h] [-l] col_year user_id
 
+- 機能名
+    - 周回報告個人概要生成
+- 概要
+    - 事前に任意で周回報告一覧ファイルを生成します
+    - 周回報告一覧ファイルを基に周回報告個人概要ファイルを生成します
+- 生成ファイル
+    - 周回報告一覧ファイル
+        - ./dest/farm_report_list/[収集年月].csv
+    - 周回報告個人概要ファイル
+        - ./dest/farm_report_individual_summary/[収集年]_[ユーザID].csv
+- コマンド例
+    - poetry run fgo gen-ind 2021 silverag_corgi
+
 positional arguments:
   col_year             - [グループA(必須)] 収集年(yyyy形式)
   user_id              - [グループA(必須)] ユーザID
@@ -502,6 +550,31 @@ $ poetry run fgo merge -h
 [INF][         MainProcess][          MainThread][                                 main.py:0021][                                    main] コマンド：['fgo', 'merge', '-h']
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: fgo merge [-h] [-l | -yu | -yq | -mu | -mq | -i] [-a]
+
+- 機能名
+    - 周回報告生成結果マージ
+- 概要
+    - 生成結果をExcelファイル(マージ結果ファイル)にマージします
+- 生成ファイル
+    - 周回報告一覧マージ結果ファイル
+        - ./dest/merge_result/周回報告一覧.xlsx
+    - 周回報告年間ユーザ全体概要マージ結果ファイル
+        - ./dest/merge_result/周回報告年間ユーザ全体概要.xlsx
+    - 周回報告年間クエスト全体概要マージ結果ファイル
+        - ./dest/merge_result/周回報告年間クエスト全体概要.xlsx
+    - 周回報告月間ユーザ全体概要マージ結果ファイル
+        - ./dest/merge_result/周回報告ユーザ全体概要.xlsx
+    - 周回報告月間クエスト全体概要マージ結果ファイル
+        - ./dest/merge_result/周回報告クエスト全体概要.xlsx
+    - 周回報告個人概要マージ結果ファイル
+        - ./dest/merge_result/周回報告個人概要.xlsx
+- コマンド例
+    - poetry run fgo merge -l
+    - poetry run fgo merge -yu
+    - poetry run fgo merge -yq
+    - poetry run fgo merge -mu
+    - poetry run fgo merge -mq
+    - poetry run fgo merge -i
 
 options:
   -h, --help            show this help message and exit
