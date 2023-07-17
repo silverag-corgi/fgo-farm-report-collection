@@ -1,12 +1,13 @@
 import argparse
+from abc import ABCMeta
 from datetime import datetime
 from typing import Optional
 
 import python_lib_for_me as pyl
 
 
-class FarmReportBaseArg:
-    """周回報告基本引数"""
+class FarmReportAbstractBaseArg(metaclass=ABCMeta):
+    """周回報告抽象基底引数"""
 
     def __init__(
         self,
@@ -20,7 +21,7 @@ class FarmReportBaseArg:
         return self.__use_debug_mode
 
 
-class FarmReportListArg(FarmReportBaseArg):
+class FarmReportListArg(FarmReportAbstractBaseArg):
     """周回報告一覧引数"""
 
     def __init__(
@@ -216,7 +217,7 @@ class FarmReportTotalSummaryArg(FarmReportListArg):
         return self.__output_user_name
 
 
-class FarmReportIndividualSummaryArg(FarmReportBaseArg):
+class FarmReportIndividualSummaryArg(FarmReportAbstractBaseArg):
     """周回報告個人概要引数"""
 
     def __init__(
@@ -278,7 +279,7 @@ class FarmReportIndividualSummaryArg(FarmReportBaseArg):
         return self.__generate_list
 
 
-class FarmReportGenResultArg(FarmReportBaseArg):
+class FarmReportGenResultArg(FarmReportAbstractBaseArg):
     """周回報告生成結果引数"""
 
     def __init__(
