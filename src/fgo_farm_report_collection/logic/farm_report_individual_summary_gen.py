@@ -38,9 +38,7 @@ def do_logic_that_generate_ind_sum(
             col_year_month: str = f"{col_year:04}-{(index+1):02}"
 
             # 周回報告一覧ファイルパスの生成
-            farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
-                col_year_month
-            )
+            farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
 
             # 周回報告個人概要更新の判定
             update_ind_sum: bool = True
@@ -60,9 +58,7 @@ def do_logic_that_generate_ind_sum(
                     update_ind_sum = False
 
             # 周回報告個人概要データフレームの更新
-            farm_report_ind_sum_df.at[
-                index, const_util.FARM_REPORT_IND_SUM_HEADER[0]
-            ] = col_year_month
+            farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_IND_SUM_HEADER[0]] = col_year_month
             if update_ind_sum is True:
                 __update_farm_report_ind_sum_df(
                     use_debug_mode,
@@ -73,14 +69,10 @@ def do_logic_that_generate_ind_sum(
                 )
 
         # 周回報告個人概要ファイルパスの生成
-        farm_report_ind_sum_file_path: str = const_util.FARM_REPORT_IND_SUM_FILE_PATH.format(
-            col_year, user_id
-        )
+        farm_report_ind_sum_file_path: str = const_util.FARM_REPORT_IND_SUM_FILE_PATH.format(col_year, user_id)
 
         # 周回報告個人概要データフレームの保存
-        pandas_util.save_farm_report_ind_sum_df(
-            use_debug_mode, farm_report_ind_sum_df, farm_report_ind_sum_file_path
-        )
+        pandas_util.save_farm_report_ind_sum_df(use_debug_mode, farm_report_ind_sum_df, farm_report_ind_sum_file_path)
     except Exception as e:
         raise (e)
     finally:
@@ -123,12 +115,12 @@ def __update_farm_report_ind_sum_df(
         )
 
         # 周回数の更新
-        farm_report_ind_sum_df.at[
-            index, const_util.FARM_REPORT_IND_SUM_HEADER[1]
-        ] = df_by_user_id_and_normal_quest[const_util.FARM_REPORT_LIST_HEADER[5]].sum()
-        farm_report_ind_sum_df.at[
-            index, const_util.FARM_REPORT_IND_SUM_HEADER[2]
-        ] = df_by_user_id_and_event_quest[const_util.FARM_REPORT_LIST_HEADER[5]].sum()
+        farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_IND_SUM_HEADER[1]] = df_by_user_id_and_normal_quest[
+            const_util.FARM_REPORT_LIST_HEADER[5]
+        ].sum()
+        farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_IND_SUM_HEADER[2]] = df_by_user_id_and_event_quest[
+            const_util.FARM_REPORT_LIST_HEADER[5]
+        ].sum()
         farm_report_ind_sum_df.at[index, const_util.FARM_REPORT_IND_SUM_HEADER[3]] = df_by_user_id[
             const_util.FARM_REPORT_LIST_HEADER[5]
         ].sum()

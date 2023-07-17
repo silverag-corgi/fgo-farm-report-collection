@@ -54,9 +54,7 @@ class FarmReportListArg(FarmReportAbstractBaseArg):
                 try:
                     datetime.strptime(self.col_year, "%Y")
                 except ValueError as e:
-                    raise pyl.ArgumentValidationError(
-                        f"収集年が年(yyyy形式)ではありません。(col_year:{self.col_year})"
-                    )
+                    raise pyl.ArgumentValidationError(f"収集年が年(yyyy形式)ではありません。(col_year:{self.col_year})")
             elif self.col_year_month is not None:
                 try:
                     datetime.strptime(self.col_year_month, "%Y-%m")
@@ -90,18 +88,10 @@ class FarmReportTotalSummaryArg(FarmReportListArg):
     ) -> None:
         super().__init__(arg_namespace)
         # グループB2(1つのみ必須)
-        self.__generate_yearly_user_total_summary: bool = (
-            arg_namespace.generate_yearly_user_total_summary
-        )
-        self.__generate_yearly_quest_total_summary: bool = (
-            arg_namespace.generate_yearly_quest_total_summary
-        )
-        self.__generate_monthly_user_total_summary: bool = (
-            arg_namespace.generate_monthly_user_total_summary
-        )
-        self.__generate_monthly_quest_total_summary: bool = (
-            arg_namespace.generate_monthly_quest_total_summary
-        )
+        self.__generate_yearly_user_total_summary: bool = arg_namespace.generate_yearly_user_total_summary
+        self.__generate_yearly_quest_total_summary: bool = arg_namespace.generate_yearly_quest_total_summary
+        self.__generate_monthly_user_total_summary: bool = arg_namespace.generate_monthly_user_total_summary
+        self.__generate_monthly_quest_total_summary: bool = arg_namespace.generate_monthly_quest_total_summary
         # グループB3(1つのみ必須)
         self.__min_num_of_all_quest: Optional[int] = arg_namespace.min_num_of_all_quest
         self.__min_num_of_normal_quest: Optional[int] = arg_namespace.min_num_of_normal_quest
@@ -133,12 +123,10 @@ class FarmReportTotalSummaryArg(FarmReportListArg):
             # 検証：周回報告年間ユーザ全体概要生成要否、もしくは、周回報告年間クエスト全体概要生成要否が真の場合は、
             # 収集年が指定されていること
             if (
-                self.generate_yearly_user_total_summary is True
-                or self.generate_yearly_quest_total_summary is True
+                self.generate_yearly_user_total_summary is True or self.generate_yearly_quest_total_summary is True
             ) and self.col_year is None:
                 raise pyl.ArgumentValidationError(
-                    f"収集年が指定されていません。"
-                    + f"(col_year:{self.col_year}, col_year_month:{self.col_year_month})"
+                    f"収集年が指定されていません。(col_year:{self.col_year}, col_year_month:{self.col_year_month})"
                 )
 
             # 検証：最低周回数のいずれかが0以上であること
@@ -146,17 +134,13 @@ class FarmReportTotalSummaryArg(FarmReportListArg):
                 raise pyl.ArgumentValidationError(
                     f"最低周回数(全て)が0以上ではありません。(min_num_of_all_quest:{self.min_num_of_all_quest})"
                 )
-            elif self.min_num_of_normal_quest is not None and not (
-                self.min_num_of_normal_quest >= 0
-            ):
+            elif self.min_num_of_normal_quest is not None and not (self.min_num_of_normal_quest >= 0):
                 raise pyl.ArgumentValidationError(
-                    f"最低周回数(通常クエ)が0以上ではありません。"
-                    + f"(min_num_of_normal_quest:{self.min_num_of_normal_quest})"
+                    f"最低周回数(通常クエ)が0以上ではありません。(min_num_of_normal_quest:{self.min_num_of_normal_quest})"
                 )
             elif self.min_num_of_event_quest is not None and not (self.min_num_of_event_quest >= 0):
                 raise pyl.ArgumentValidationError(
-                    f"最低周回数(イベクエ)が0以上ではありません。"
-                    + f"(min_num_of_event_quest:{self.min_num_of_event_quest})"
+                    f"最低周回数(イベクエ)が0以上ではありません。(min_num_of_event_quest:{self.min_num_of_event_quest})"
                 )
         except Exception as e:
             raise (e)
@@ -251,9 +235,7 @@ class FarmReportIndividualSummaryArg(FarmReportAbstractBaseArg):
             try:
                 datetime.strptime(self.col_year, "%Y")
             except ValueError:
-                raise pyl.ArgumentValidationError(
-                    f"収集年が年(yyyy形式)ではありません。(col_year:{self.col_year})"
-                )
+                raise pyl.ArgumentValidationError(f"収集年が年(yyyy形式)ではありません。(col_year:{self.col_year})")
 
             # 検証：ユーザIDが4文字以上であること
             if not (len(self.user_id) >= 4):
@@ -290,15 +272,9 @@ class FarmReportGenResultArg(FarmReportAbstractBaseArg):
         # グループB1(1つのみ必須)
         self.__merge_list: bool = arg_namespace.merge_list
         self.__merge_yearly_user_total_summary: bool = arg_namespace.merge_yearly_user_total_summary
-        self.__merge_yearly_quest_total_summary: bool = (
-            arg_namespace.merge_yearly_quest_total_summary
-        )
-        self.__merge_monthly_user_total_summary: bool = (
-            arg_namespace.merge_monthly_user_total_summary
-        )
-        self.__merge_monthly_quest_total_summary: bool = (
-            arg_namespace.merge_monthly_quest_total_summary
-        )
+        self.__merge_yearly_quest_total_summary: bool = arg_namespace.merge_yearly_quest_total_summary
+        self.__merge_monthly_user_total_summary: bool = arg_namespace.merge_monthly_user_total_summary
+        self.__merge_monthly_quest_total_summary: bool = arg_namespace.merge_monthly_quest_total_summary
         self.__merge_individual_summary: bool = arg_namespace.merge_individual_summary
         # グループC(任意)
         self.__append_sheet: bool = arg_namespace.append_sheet

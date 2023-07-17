@@ -54,25 +54,12 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
         # 関数オブジェクトの取得
         function_object: Optional[Callable] = None
         if arg.col_year is not None:
-            if (
-                arg.generate_yearly_user_total_summary is True
-                or arg.generate_yearly_quest_total_summary is True
-            ):
-                function_object = (
-                    farm_report_total_summary_gen
-                ).do_logic_that_generate_yearly_tot_sum_by_col_year
-            elif (
-                arg.generate_monthly_user_total_summary is True
-                or arg.generate_monthly_quest_total_summary is True
-            ):
-                function_object = (
-                    farm_report_total_summary_gen
-                ).do_logic_that_generate_monthly_tot_sum_by_col_year
+            if arg.generate_yearly_user_total_summary is True or arg.generate_yearly_quest_total_summary is True:
+                function_object = (farm_report_total_summary_gen).do_logic_that_generate_yearly_tot_sum_by_col_year
+            elif arg.generate_monthly_user_total_summary is True or arg.generate_monthly_quest_total_summary is True:
+                function_object = (farm_report_total_summary_gen).do_logic_that_generate_monthly_tot_sum_by_col_year
         elif arg.col_year_month is not None:
-            if (
-                arg.generate_monthly_user_total_summary is True
-                or arg.generate_monthly_quest_total_summary is True
-            ):
+            if arg.generate_monthly_user_total_summary is True or arg.generate_monthly_quest_total_summary is True:
                 function_object = (
                     farm_report_total_summary_gen
                 ).do_logic_that_generate_monthly_tot_sum_by_col_year_month
@@ -85,17 +72,11 @@ def generate_farm_report_total_summary(arg_namespace: argparse.Namespace) -> Non
                 (
                     (farm_report_total_summary_gen).EnumOfProc.GENERATE_YEARLY_USER_TOTAL_SUMMARY
                     if arg.generate_yearly_user_total_summary is True
-                    else (
-                        farm_report_total_summary_gen
-                    ).EnumOfProc.GENERATE_YEARLY_QUEST_TOTAL_SUMMARY
+                    else (farm_report_total_summary_gen).EnumOfProc.GENERATE_YEARLY_QUEST_TOTAL_SUMMARY
                     if arg.generate_yearly_quest_total_summary is True
-                    else (
-                        farm_report_total_summary_gen
-                    ).EnumOfProc.GENERATE_MONTHLY_USER_TOTAL_SUMMARY
+                    else (farm_report_total_summary_gen).EnumOfProc.GENERATE_MONTHLY_USER_TOTAL_SUMMARY
                     if arg.generate_monthly_user_total_summary is True
-                    else (
-                        farm_report_total_summary_gen
-                    ).EnumOfProc.GENERATE_MONTHLY_QUEST_TOTAL_SUMMARY
+                    else (farm_report_total_summary_gen).EnumOfProc.GENERATE_MONTHLY_QUEST_TOTAL_SUMMARY
                 ),
                 (
                     arg.min_num_of_all_quest

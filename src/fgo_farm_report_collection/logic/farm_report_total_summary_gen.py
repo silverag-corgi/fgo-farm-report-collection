@@ -40,9 +40,7 @@ def do_logic_that_generate_yearly_tot_sum_by_col_year(
         clg.log_inf(f"ロジック(周回報告年間全体概要生成(年指定))実行を開始します。")
 
         # 収集年月の生成
-        col_year_months: list[str] = [
-            f"{col_year:04}-{(index+1):02}" for index in range(const_util.NUM_OF_MONTHS)
-        ]
+        col_year_months: list[str] = [f"{col_year:04}-{(index+1):02}" for index in range(const_util.NUM_OF_MONTHS)]
 
         # ロジック(周回報告全体概要生成(共通))の実行
         __do_logic_that_generate_tot_sum(
@@ -163,9 +161,7 @@ def __do_logic_that_generate_tot_sum(
         farm_report_list_file_paths: list[str] = []
         for col_year_month in col_year_months:
             # 初日(収集年月、今月)の取得
-            first_date_of_col_year_month: date = datetime.strptime(
-                col_year_month + "-01", "%Y-%m-%d"
-            ).date()
+            first_date_of_col_year_month: date = datetime.strptime(col_year_month + "-01", "%Y-%m-%d").date()
             today: date = datetime.today().date()
             first_date_of_this_month: date = pyl.get_first_date_of_this_month(today)
 
@@ -173,37 +169,27 @@ def __do_logic_that_generate_tot_sum(
             if first_date_of_col_year_month > first_date_of_this_month:
                 clg.log_wrn(f"収集年月が未来です。(col_year_month:{col_year_month})")
             else:
-                farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
-                    col_year_month
-                )
+                farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
                 farm_report_list_file_paths.append(farm_report_list_file_path)
 
         for quest_kind in quest_kinds:
             # 周回報告全体概要ファイルパスの生成
             farm_report_tot_sum_file_path: str = ""
             if enum_of_proc == EnumOfProc.GENERATE_YEARLY_USER_TOTAL_SUMMARY:
-                farm_report_tot_sum_file_path = (
-                    const_util.FARM_REPORT_YEARLY_USR_TOT_SUM_FILE_PATH.format(
-                        col_year_month_for_file_path, quest_kind, min_num_of_farms
-                    )
+                farm_report_tot_sum_file_path = const_util.FARM_REPORT_YEARLY_USR_TOT_SUM_FILE_PATH.format(
+                    col_year_month_for_file_path, quest_kind, min_num_of_farms
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_YEARLY_QUEST_TOTAL_SUMMARY:
-                farm_report_tot_sum_file_path = (
-                    const_util.FARM_REPORT_YEARLY_QST_TOT_SUM_FILE_PATH.format(
-                        col_year_month_for_file_path, quest_kind, min_num_of_farms
-                    )
+                farm_report_tot_sum_file_path = const_util.FARM_REPORT_YEARLY_QST_TOT_SUM_FILE_PATH.format(
+                    col_year_month_for_file_path, quest_kind, min_num_of_farms
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_MONTHLY_USER_TOTAL_SUMMARY:
-                farm_report_tot_sum_file_path = (
-                    const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH.format(
-                        col_year_month_for_file_path, quest_kind, min_num_of_farms
-                    )
+                farm_report_tot_sum_file_path = const_util.FARM_REPORT_MONTHLY_USR_TOT_SUM_FILE_PATH.format(
+                    col_year_month_for_file_path, quest_kind, min_num_of_farms
                 )
             elif enum_of_proc == EnumOfProc.GENERATE_MONTHLY_QUEST_TOTAL_SUMMARY:
-                farm_report_tot_sum_file_path = (
-                    const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH.format(
-                        col_year_month_for_file_path, quest_kind, min_num_of_farms
-                    )
+                farm_report_tot_sum_file_path = const_util.FARM_REPORT_MONTHLY_QST_TOT_SUM_FILE_PATH.format(
+                    col_year_month_for_file_path, quest_kind, min_num_of_farms
                 )
 
             # 周回報告全体概要ファイルの生成
@@ -267,16 +253,12 @@ def __generate_farm_report_usr_tot_sum_file(
         farm_report_list_df: pd.DataFrame = pd.DataFrame()
         for farm_report_list_file_path in farm_report_list_file_paths:
             if os.path.isfile(farm_report_list_file_path) is False:
-                clg.log_wrn(
-                    f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
-                )
+                clg.log_wrn(f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})")
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
                     use_debug_mode, farm_report_list_file_path
                 )
-                farm_report_list_df = pd.concat(
-                    [farm_report_list_df, farm_report_list_temp_df], ignore_index=True
-                )
+                farm_report_list_df = pd.concat([farm_report_list_df, farm_report_list_temp_df], ignore_index=True)
 
         if len(farm_report_list_df) > 0 and quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
@@ -323,21 +305,15 @@ def __generate_farm_report_usr_tot_sum_file(
             )
 
             # 周回数の揃え
-            farm_report_tot_sum_df[
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[6]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
-            farm_report_tot_sum_df[
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[7]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
-            farm_report_tot_sum_df[
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_USR_TOT_SUM_HEADER[8]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
 
             # 列(ユーザ名)の追加
             farm_report_tot_sum_df.insert(0, const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1], "-")
@@ -347,9 +323,7 @@ def __generate_farm_report_usr_tot_sum_file(
                 clg.log_inf(f"時間がかかるため気長にお待ちください。")
                 for user_id, _ in farm_report_tot_sum_df.iterrows():
                     try:
-                        user_info_site_url: str = const_util.USER_INFO_SITE_URL.format(
-                            str(user_id).strip()
-                        )
+                        user_info_site_url: str = const_util.USER_INFO_SITE_URL.format(str(user_id).strip())
                         user_info_site_response: Response = requests.get(user_info_site_url)
                         user_info_site_bs: BeautifulSoup = BeautifulSoup(
                             cast(str, user_info_site_response.content),
@@ -357,9 +331,9 @@ def __generate_farm_report_usr_tot_sum_file(
                             from_encoding=const_util.ENCODING,
                         )
                         user_name_rs: ResultSet = user_info_site_bs.find_all(class_="name")
-                        farm_report_tot_sum_df.at[
-                            user_id, const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]
-                        ] = user_name_rs[0].get_text()
+                        farm_report_tot_sum_df.at[user_id, const_util.FARM_REPORT_USR_TOT_SUM_HEADER[1]] = user_name_rs[
+                            0
+                        ].get_text()
                         clg.log_dbg(f"ユーザ名の設定に成功しました。(user_id:{user_id})")
                     except Exception as e:
                         clg.log_wrn(f"ユーザ名の設定に失敗しました。アカウントが削除されている可能性があります。(user_id:{user_id})")
@@ -394,16 +368,12 @@ def __generate_farm_report_qst_tot_sum_file(
         for farm_report_list_file_path in farm_report_list_file_paths:
             # 周回報告一覧ファイルの存在確認
             if os.path.isfile(farm_report_list_file_path) is False:
-                clg.log_wrn(
-                    f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})"
-                )
+                clg.log_wrn(f"周回報告一覧ファイルが存在しません。(farm_report_list_file_path:{farm_report_list_file_path})")
             else:
                 farm_report_list_temp_df: pd.DataFrame = pandas_util.read_farm_report_list_file(
                     use_debug_mode, farm_report_list_file_path
                 )
-                farm_report_list_df = pd.concat(
-                    [farm_report_list_df, farm_report_list_temp_df], ignore_index=True
-                )
+                farm_report_list_df = pd.concat([farm_report_list_df, farm_report_list_temp_df], ignore_index=True)
 
         if len(farm_report_list_df) > 0 and quest_kind in const_util.QUEST_KINDS:
             # クエスト種別による抽出
@@ -450,21 +420,15 @@ def __generate_farm_report_qst_tot_sum_file(
             )
 
             # 周回数の揃え
-            farm_report_tot_sum_df[
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[6]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
-            farm_report_tot_sum_df[
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[7]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
-            farm_report_tot_sum_df[
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
+            farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]] = farm_report_tot_sum_df[
                 const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]
-            ] = farm_report_tot_sum_df[const_util.FARM_REPORT_QST_TOT_SUM_HEADER[8]].apply(
-                lambda data: cast(Any, pyl.round_half_up(data, 2))
-            )
+            ].apply(lambda data: cast(Any, pyl.round_half_up(data, 2)))
 
             # 周回報告クエスト全体概要データフレームの保存
             pandas_util.save_farm_report_qst_tot_sum_df(

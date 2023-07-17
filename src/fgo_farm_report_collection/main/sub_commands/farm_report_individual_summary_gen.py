@@ -27,9 +27,7 @@ def generate_farm_report_individual_summary(arg_namespace: argparse.Namespace) -
 
     try:
         # 引数の取得
-        arg: argument.FarmReportIndividualSummaryArg = argument.FarmReportIndividualSummaryArg(
-            arg_namespace
-        )
+        arg: argument.FarmReportIndividualSummaryArg = argument.FarmReportIndividualSummaryArg(arg_namespace)
 
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)

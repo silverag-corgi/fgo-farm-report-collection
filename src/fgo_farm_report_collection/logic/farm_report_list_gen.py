@@ -63,9 +63,7 @@ def do_logic_that_generate_list_by_col_year_month(
             clg.log_wrn(f"収集年月が未来です。(col_year_month:{col_year_month})")
         else:
             # 周回報告一覧ファイルパスの生成
-            farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(
-                col_year_month
-            )
+            farm_report_list_file_path: str = const_util.FARM_REPORT_LIST_FILE_PATH.format(col_year_month)
 
             # 周回報告一覧ファイルの存在有無チェック
             has_farm_report_list: bool = os.path.isfile(farm_report_list_file_path)
@@ -91,9 +89,7 @@ def do_logic_that_generate_list_by_col_year_month(
                     clg.log_inf(f"周回報告一覧は最新です。(col_year_month:{col_year_month})")
                 else:
                     generate_list = True
-                    clg.log_inf(
-                        f"周回報告一覧を生成します。(col_year_month:{list_gen_start_date}～{list_gen_end_date})"
-                    )
+                    clg.log_inf(f"周回報告一覧を生成します。(col_year_month:{list_gen_start_date}～{list_gen_end_date})")
 
             # 周回報告一覧ファイルの生成
             if generate_list is True:
@@ -131,13 +127,9 @@ def __generate_list_gen_start_date(
             post_datetime_of_last_line_timestamp: pd.Timestamp = (
                 farm_report_list_df[const_util.FARM_REPORT_LIST_HEADER[0]].tail(1).item()
             )
-            post_datetime_of_last_line_date: date = pd.to_datetime(
-                post_datetime_of_last_line_timestamp
-            ).date()
+            post_datetime_of_last_line_date: date = pd.to_datetime(post_datetime_of_last_line_timestamp).date()
 
-            if post_datetime_of_last_line_date != pyl.get_last_date_of_this_month(
-                post_datetime_of_last_line_date
-            ):
+            if post_datetime_of_last_line_date != pyl.get_last_date_of_this_month(post_datetime_of_last_line_date):
                 list_gen_start_date = post_datetime_of_last_line_date + timedelta(days=1)
             else:
                 list_gen_start_date = None
@@ -212,9 +204,7 @@ def __generate_farm_report_list_file(
                     farm_report_df = pd.DataFrame(
                         [
                             [
-                                pyl.convert_timestamp_to_jst(
-                                    farm_report["timestamp"], "%Y-%m-%dT%H:%M:%S%z"
-                                ),
+                                pyl.convert_timestamp_to_jst(farm_report["timestamp"], "%Y-%m-%dT%H:%M:%S%z"),
                                 f"{farm_report['reporter']: <15}",
                                 (
                                     const_util.QUEST_KINDS[1]
@@ -225,23 +215,16 @@ def __generate_farm_report_list_file(
                                 farm_report["place"],
                                 farm_report["runcount"],
                                 ", ".join(
-                                    [
-                                        "{0}: {1}".format(key, value)
-                                        for key, value in farm_report["items"].items()
-                                    ]
+                                    ["{0}: {1}".format(key, value) for key, value in farm_report["items"].items()]
                                 ),
                             ]
                         ],
                         columns=const_util.FARM_REPORT_LIST_HEADER,
                     )
-                    farm_report_list_df = pd.concat(
-                        [farm_report_list_df, farm_report_df], ignore_index=True
-                    )
+                    farm_report_list_df = pd.concat([farm_report_list_df, farm_report_df], ignore_index=True)
 
             # 投稿日による昇順ソート
-            farm_report_list_df.sort_values(
-                const_util.FARM_REPORT_LIST_HEADER[0], ascending=True, inplace=True
-            )
+            farm_report_list_df.sort_values(const_util.FARM_REPORT_LIST_HEADER[0], ascending=True, inplace=True)
 
         # 周回報告一覧データフレームの保存
         if len(farm_report_list_df) > 0:

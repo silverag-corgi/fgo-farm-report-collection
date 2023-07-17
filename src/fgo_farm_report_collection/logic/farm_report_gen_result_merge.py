@@ -305,9 +305,7 @@ def __do_logic_that_merge_gen_result(
 
         # 周回報告生成結果ファイルの件数が0件の場合
         if len(gen_result_file_paths) == 0:
-            clg.log_wrn(
-                f"周回報告生成結果ファイルの件数が0件です。(gen_result_file_path:{gen_result_file_path_with_wildcard})"
-            )
+            clg.log_wrn(f"周回報告生成結果ファイルの件数が0件です。(gen_result_file_path:{gen_result_file_path_with_wildcard})")
         else:
             # Pandasによる周回報告マージ結果ファイルの生成
             __generate_merge_result_file_by_pandas(
@@ -376,9 +374,7 @@ def __generate_merge_result_file_by_pandas(
                 merge_result_sheet_name: str = pyl.generate_file_name(gen_result_file_path)
 
                 # 周回報告マージ結果ヘッダ部スタイルフレームの生成
-                merge_result_header_part_sfs: list[
-                    StyleFrame
-                ] = __generate_merge_result_header_part_sfs(
+                merge_result_header_part_sfs: list[StyleFrame] = __generate_merge_result_header_part_sfs(
                     use_debug_mode,
                     merge_result_book_name,
                     merge_result_sheet_name,
