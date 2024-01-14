@@ -10,24 +10,22 @@ update:
 	@poetry update
 
 lint:
-	@echo -------------------- run pflake8 to check grammar ----------------------------------------
-	@poetry run pflake8 .
-	@echo -------------------- run mypy to check type ----------------------------------------------
+	@echo -------------------- run ruff ------------------------------------------------------------
+	@poetry run ruff check . --exit-zero
+	@poetry run ruff check . --statistics
+	@poetry run ruff format . --check
+	@echo -------------------- run mypy ------------------------------------------------------------
 	@poetry run mypy .
-	@echo -------------------- run isort to check import statement ---------------------------------
-	@poetry run isort --check .
-	@echo -------------------- run black to check code ---------------------------------------------
-	@poetry run black --check .
 
 format:
-	@echo -------------------- run isort to format import statement --------------------------------
-	@poetry run isort .
-	@echo -------------------- run black to format code ---------------------------------------------
-	@poetry run black .
+	@echo -------------------- run ruff ------------------------------------------------------------
+	@poetry run ruff check . --fix-only
+	@poetry run ruff format .
 
 clean:
 	@echo -------------------- clean package -------------------------------------------------------
 	@find . | grep .venv$ | xargs rm -fr
+	@find . | grep .ruff_cache$ | xargs rm -fr
 	@find . | grep .mypy_cache$ | xargs rm -fr
 	@find . | grep .pytest_cache$ | xargs rm -fr
 	@find . | grep __pycache__$ | xargs rm -fr
